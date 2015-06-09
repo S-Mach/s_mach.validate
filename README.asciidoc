@@ -12,7 +12,9 @@ Output types are serialization format neutral. A printer for displaying issues a
 TODO
 
 == Example
+
 ---
+
 Welcome to Scala version 2.11.6 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_40).
 Type in expressions to have them evaluated.
 Type :help for more information.
