@@ -1,0 +1,172 @@
+= s_mach.validate: Case class validators
+Lance Gatlin <lance.gatlin@gmail.com>
+v1,8-Jun-2015
+:blogpost-status: unpublished
+:blogpost-categories: s_mach, scala
+
++s_mach.validate+ is an open-source Scala library that provides validators for case classes that can output a
+human-readable explanation of validation failures and also a human-readable schema of type and validation checks.
+Output types are serialization format neutral. A printer for displaying issues and schema in Play JSON is provided.
+
+== Include in SBT
+TODO
+
+== Example
+---
+Welcome to Scala version 2.11.6 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_40).
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala> :paste
+// Entering paste mode (ctrl-D to finish)
+
+import s_mach.validate._
+import play.api.libs.json._
+import s_mach.validate.play_json._
+
+type Name = String
+val isName = {
+  import Text._
+  Validator.builder[String]
+   .ensure(nonEmpty)
+   .ensure(maxLength(64))
+   .ensure(allLettersOrWhitespace)
+   .build()
+}
+
+type Age = Int
+val isAge =
+Validator.builder[Int]
+ .ensure(s"must be between (0,150)") { age =>
+   0 <= age && age <= 150
+ }
+ .build()
+
+case class Person(id: Int, name: String, age: Int)
+
+object Person {
+implicit val validator_Person =
+ Validator.builder[Person]
+   .field("id",_.id)()
+   .field("name",_.name)(
+     _.ensure(isName)
+   )
+   .field("age",_.age)(
+     _.ensure(isAge)
+   )
+   .ensure("age plus id must be less than 1000")(p => p.id + p.age < 1000)
+   .build()
+}
+
+case class Family(
+  father: Person,
+  mother: Person,
+  children: Seq[Person],
+  grandMother: Option[Person],
+  grandFather: Option[Person]
+)
+
+object Family {
+implicit val validator_Family =
+Validator.builder[Family]
+  .field("father",_.father)()
+  .field("mother",_.mother)()
+  .field("children",_.children)()
+  .field("grandMother",_.grandMother)()
+  .field("grandFather",_.grandFather)()
+  .ensure("father must be older than children") { family =>
+    family.children.forall(_.age < family.father.age)
+  }
+  .ensure("mother must be older than children") { family =>
+    family.children.forall(_.age < family.mother.age)
+  }
+  .build()
+}
+
+// Exiting paste mode, now interpreting.
+
+import s_mach.validate._
+defined type alias Name
+isName: s_mach.validate.Validator[String] = CompositeValidator(List(EnsureValidator(must contain only letters or whitespace,<function1>), EnsureValidator(must not be longer than 64 characters,<function1>), EnsureValidator(must not be empty,<function1>), SchemaValidator(Schema(List(),java.lang.String,(1,1)))))
+defined type alias Age
+isAge: s_mach.validate.Validator[Int] = CompositeValidator(List(EnsureValidator(must be between (0,150),<function1>), SchemaValidator(Schema(List(),Int,(1,1)))))
+defined class Person
+defined object Person
+defined class Family
+defined object Family
+
+scala> Json.prettyPrint(implicitly[Validator[Person]].explain.printJson)
+res0: String =
+{
+  "name" : [ "must be string", "must not be empty", "must not be longer than 64 characters", "must contain only letters or whitespace" ],
+  "age" : [ "must be integer", "must be between (0,150)" ],
+  "id" : [ "must be integer" ],
+  "this" : "age plus id must be less than 1000"
+}
+
+scala> println(Json.prettyPrint(implicitly[Validator[Family]].explain.printJson))
+{
+  "mother" : {
+    "name" : [ "must be string", "must not be empty", "must not be longer than 64 characters", "must contain only letters or whitespace" ],
+    "age" : [ "must be integer", "must be between (0,150)" ],
+    "id" : [ "must be integer" ],
+    "this" : "age plus id must be less than 1000"
+  },
+  "father" : {
+    "name" : [ "must be string", "must not be empty", "must not be longer than 64 characters", "must contain only letters or whitespace" ],
+    "age" : [ "must be integer", "must be between (0,150)" ],
+    "id" : [ "must be integer" ],
+    "this" : "age plus id must be less than 1000"
+  },
+  "children" : {
+    "member" : {
+      "name" : [ "must be string", "must not be empty", "must not be longer than 64 characters", "must contain only letters or whitespace" ],
+      "age" : [ "must be integer", "must be between (0,150)" ],
+      "id" : [ "must be integer" ],
+      "this" : "age plus id must be less than 1000"
+    },
+    "this" : "must be array of zero or more members"
+  },
+  "grandMother" : {
+    "name" : [ "must be string", "must not be empty", "must not be longer than 64 characters", "must contain only letters or whitespace" ],
+    "age" : [ "must be integer", "must be between (0,150)" ],
+    "id" : [ "must be integer" ],
+    "this" : [ "optional", "age plus id must be less than 1000" ]
+  },
+  "grandFather" : {
+    "name" : [ "must be string", "must not be empty", "must not be longer than 64 characters", "must contain only letters or whitespace" ],
+    "age" : [ "must be integer", "must be between (0,150)" ],
+    "id" : [ "must be integer" ],
+    "this" : [ "optional", "age plus id must be less than 1000" ]
+  },
+  "this" : [ "father must be older than children", "mother must be older than children" ]
+}
+
+scala> Json.prettyPrint(Person(1,"!!!",-1).validate.printJson)
+res1: String =
+{
+  "name" : [ "must contain only letters or whitespace" ],
+  "age" : [ "must be between (0,150)" ]
+}
+
+scala> val family = Family(Person(1,"father",30),Person(2,"mother",29),Seq(Person(3,"child1!",31),Person(4,"child2!",1)),None,Some(Person(5,"grandmother",-1)))
+family: Family = Family(Person(1,father,30),Person(2,mother,29),List(Person(3,child1!,31), Person(4,child2!,1)),None,Some(Person(5,grandmother,-1)))
+
+scala> Json.prettyPrint(family.validate.printJson)
+res2: String =
+{
+  "children" : {
+    "1" : {
+      "name" : [ "must contain only letters or whitespace" ]
+    },
+    "0" : {
+      "name" : [ "must contain only letters or whitespace" ]
+    }
+  },
+  "grandFather" : {
+    "age" : [ "must be between (0,150)" ]
+  },
+  "this" : [ "father must be older than children", "mother must be older than children" ]
+}
+
+---
