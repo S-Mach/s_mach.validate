@@ -42,7 +42,7 @@ val isAge =
    .ensure(s"must be between (0,150)") { age =>
      0 <= age && age <= 150
    }
- .build()
+   .build()
 
 case class Person(id: Int, name: String, age: Int)
 
