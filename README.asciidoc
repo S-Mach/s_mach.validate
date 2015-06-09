@@ -11,6 +11,7 @@ v1,8-Jun-2015
 * You want to write validation code once in a single place that can be reused in many places for various serialization formats
 * You want a validation DSL that is light-weight, terse, reuseable and composable
 * You want to be able to display a light-weight human-readable schema for case classes derived from the validation DSL 
+* You want to be able to create case class instances that might contain invalid data (as opposed to construction based validation that prevents creating invalid instances) to allow fixing, serializing or transmitting structurally correct but possibly invalid data.
 
 == Include in SBT
 TODO
