@@ -4,7 +4,7 @@ v1,8-Jun-2015
 :blogpost-status: unpublished
 :blogpost-categories: s_mach, scala
 
-+s_mach.validate+ is an open-source Scala library that provides methods for easily building reuseable validators for case classes. Validators can output both a human-readable explanation of validation failures and also a human-readable explanation of schema and validation checks. Validators return +List[Explain]+ which is serialization format neutral (see +Explain+) and can be converted to any specific serialization format. A converter for printing a +List[Explain]+ as Play JSON is provided.
++s_mach.validate+ is an open-source Scala library that provides methods for easily building reuseable validators for case classes. Given an instance of a case class, validators can test one or more constraints and produce a human-readable list of validation failures. Each failure includes the case class field path to the failure (similar to +play.api.libs.json.JsError+). Additionally, validators can output a light-weight schema, which includes a human-readable explanation of all possible validation failures and the expected type of each primitive field. Validators return +List[Explain]+ which is serialization format neutral (see +Explain+). +List[Explain]+ can later be converted to any specific serialization format or schema. A converter for converting +List[Explain]+ to Play JSON is provided.
 
 == Include in SBT
 TODO
