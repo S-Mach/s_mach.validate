@@ -9,8 +9,8 @@ v1,8-Jun-2015
 == Why?
 
 * You want to write validation code once in a single place that can be reused in many places for various serialization formats
-* You want a DSL that is light-weight and terse
-* You want to be able to display a light-weight human-readable schema for case classes
+* You want a validation DSL that is light-weight, terse, reuseable and composable
+* You want to be able to display a light-weight human-readable schema for case classes derived from the validation DSL 
 
 == Include in SBT
 TODO
