@@ -4,20 +4,26 @@ v1,8-Jun-2015
 :blogpost-status: unpublished
 :blogpost-categories: s_mach, scala
 
-+s_mach.validate+ is an open-source Scala library that provides methods for easily building reuseable, composable and serialization format agnostic validators for case classes. 
++s_mach.validate+ is an open-source Scala library that provides methods for easily building reuseable, composable and
+serialization format agnostic data validators.
 
 == Features
-* Given an instance of a case class, validators can test one or more rules and produce a human-readable list of validation failures. Each failure includes the case class field path to the failure (similar to +play.api.libs.json.JsError+).
-* Validators can output a light-weight schema for the case class, which includes a human-readable explanation of all possible validation failures and the expected type of each primitive field. 
-* Validators return +List[Explain]+ which is serialization format agnostic. +List[Explain]+ can later be converted to any specific serialization format or schema. 
-* Convenience methods and converters for working Play JSON are provided.
+* Validators test data against one or more rules and produce a human-readable list of validation failures.
+* Validators can output a light-weight human-readable "schema" of all rules tested and the expected type of each
+primitive field.
+* Validators return +List[Explain]+ or +List[Rule]+ which are serialization format agnostic.
+* Convenience methods for converting to Play JSON are provided.
+* Validators can be composed with existing Play Format/Reads.
 
 == Why do I need this?
 
-* You want to write validation code once in a single place that can be reused in many places for various serialization formats
-* You want a validation DSL that is light-weight, terse, reuseable and composable
-* You want to be able to display a light-weight human-readable schema for case classes derived from the validation DSL 
-* You want to be able to create case class instances that might contain invalid data (as opposed to construction based validation that prevents creating invalid instances) to allow fixing, serializing or transmitting structurally correct but possibly invalid data.
+* You want to write validation code once in a single place that can be reused in many places for various serialization
+formats.
+* You want a validation DSL that is light-weight, terse, reuseable and composable.
+* You want to be able to display a light-weight human-readable schema for case classes derived from the validation DSL.
+* You want to be able to create case class instances that might contain invalid data (as opposed to construction based
+validation that prevents creating invalid instances) to allow fixing, serializing or transmitting structurally correct
+but possibly invalid data.
 
 == Include in SBT
 TODO
