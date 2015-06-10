@@ -97,7 +97,7 @@ defined object Person
 defined class Family
 defined object Family
 
-scala> Json.prettyPrint(implicitly[Validator[Person]].explain.printJson)
+scala> implicitly[Validator[Person]].explain.prettyPrintJson
 res0: String =
 {
   "name" : [ "must be string", "must not be empty", "must not be longer than 64 characters", "must contain only letters or whitespace" ],
@@ -106,7 +106,7 @@ res0: String =
   "this" : "age plus id must be less than 1000"
 }
 
-scala> println(Json.prettyPrint(implicitly[Validator[Family]].explain.printJson))
+scala> println(implicitly[Validator[Family]].explain.prettyPrintJson)
 {
   "mother" : {
     "name" : [ "must be string", "must not be empty", "must not be longer than 64 characters", "must contain only letters or whitespace" ],
@@ -144,7 +144,7 @@ scala> println(Json.prettyPrint(implicitly[Validator[Family]].explain.printJson)
   "this" : [ "father must be older than children", "mother must be older than children" ]
 }
 
-scala> Json.prettyPrint(Person(1,"!!!",-1).validate.printJson)
+scala> Person(1,"!!!",-1).validate.prettyPrintJson
 res1: String =
 {
   "name" : [ "must contain only letters or whitespace" ],
@@ -154,7 +154,7 @@ res1: String =
 scala> val family = Family(Person(1,"father",30),Person(2,"mother",29),Seq(Person(3,"child1!",31),Person(4,"child2!",1)),None,Some(Person(5,"grandmother",-1)))
 family: Family = Family(Person(1,father,30),Person(2,mother,29),List(Person(3,child1!,31), Person(4,child2!,1)),None,Some(Person(5,grandmother,-1)))
 
-scala> Json.prettyPrint(family.validate.printJson)
+scala> family.validate.prettyPrintJson
 res2: String =
 {
   "children" : {

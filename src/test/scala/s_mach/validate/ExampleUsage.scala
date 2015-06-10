@@ -1,8 +1,7 @@
-package net.s_mach.validate
+package s_mach.validate
 
 object ExampleUsage {
 
-import s_mach.validate._
 import play.api.libs.json._
 import s_mach.validate.play_json._
 
@@ -38,6 +37,8 @@ object Person {
       )
      .ensure("age plus id must be less than 1000")(p => p.id + p.age < 1000)
      .build()
+
+  implicit val format_Person = Json.format[Person].withValidator
 }
 
 case class Family(
@@ -49,20 +50,21 @@ case class Family(
 )
 
 object Family {
-implicit val validator_Family =
-  Validator.builder[Family]
-    .field("father",_.father)()
-    .field("mother",_.mother)()
-    .field("children",_.children)()
-    .field("grandMother",_.grandMother)()
-    .field("grandFather",_.grandFather)()
-    .ensure("father must be older than children") { family =>
-      family.children.forall(_.age < family.father.age)
-    }
-    .ensure("mother must be older than children") { family =>
-      family.children.forall(_.age < family.mother.age)
-    }
-    .build()
+  implicit val validator_Family =
+    Validator.builder[Family]
+      .field("father",_.father)()
+      .field("mother",_.mother)()
+      .field("children",_.children)()
+      .field("grandMother",_.grandMother)()
+      .field("grandFather",_.grandFather)()
+      .ensure("father must be older than children") { family =>
+        family.children.forall(_.age < family.father.age)
+      }
+      .ensure("mother must be older than children") { family =>
+        family.children.forall(_.age < family.mother.age)
+      }
+      .build()
+  implicit val format_Family = Json.format[Family].withValidator
 }
 
 }

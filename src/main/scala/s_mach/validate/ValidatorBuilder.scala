@@ -25,12 +25,13 @@ case class ValidatorBuilder[A](
     ensure(SchemaValidator(s))
 
   /**
-   * Add a comment to the issues of the validator
+   * Add a comment to the rules of the validator (that
+   * does not test anything)
    * @param message message to show
    * @return a copy of this builder with the comment
    */
   def comment(message: String) : ValidatorBuilder[A] =
-    ensure(ExplainValidator(Issue(Nil,message)))
+    ensure(ExplainValidator(Rule(Nil,message)))
 
   /**
    * Add a validator as a composite of this validator
@@ -52,7 +53,7 @@ case class ValidatorBuilder[A](
    * @return a copy of this builder with the validator
    */
   def ensure(message: String)(f: A => Boolean) : ValidatorBuilder[A] =
-    ensure(Validator.ensure(message)(f))
+    ensure(EnsureValidator(message, f))
 
   /**
    * Add a validator for a field (of type B) that is member of A
@@ -74,7 +75,8 @@ case class ValidatorBuilder[A](
     bValidator: Validator[B] = Validator.empty[B],
     cb: ClassTag[B]
   ) : ValidatorBuilder[A] = {
-    val finalbValidator = g(ValidatorBuilder[B]().ensure(bValidator)).build()
+    val finalbValidator =
+      g(ValidatorBuilder[B](bValidator :: Nil)).build()
 
     ensure(
       FieldValidator(
@@ -92,7 +94,8 @@ case class ValidatorBuilder[A](
   def build() : Validator[A] = {
     val validatorsWithSchema =
       validators ::: {
-          // If one of the validators has a schema for this validator
+          // If one of the validators already has a schema for this
+          // validator
           if(validators.exists(_.schema.exists(_.path.isEmpty))) {
             Nil
           } else {
@@ -100,7 +103,7 @@ case class ValidatorBuilder[A](
           }
         }
     validatorsWithSchema.size match {
-      case 0 => Validator.empty
+      case 0 => ??? // unreachable
       case 1 => validatorsWithSchema.head
       case _ => CompositeValidator(validatorsWithSchema)
     }
@@ -116,7 +119,7 @@ object ValidatorBuilder {
    */
   case class CompositeValidator[A](validators: List[Validator[A]]) extends Validator[A] {
     def apply(a: A) = validators.flatMap(_(a))
-    val issues = validators.flatMap(_.issues)
+    val rules = validators.flatMap(_.rules)
     val schema = validators.flatMap(_.schema)
   }
 
@@ -127,8 +130,8 @@ object ValidatorBuilder {
    * @tparam A type validated
    */
   case class EnsureValidator[A](message: String, f: A => Boolean) extends Validator[A] {
-    def apply(a: A) = if(f(a)) Nil else issues
-    val issues = Issue(Nil,message) :: Nil
+    def apply(a: A) = if(f(a)) Nil else rules
+    val rules = Rule(Nil,message) :: Nil
     val schema = Nil
   }
 
@@ -137,9 +140,9 @@ object ValidatorBuilder {
    * @param i issue to add
    * @tparam A type validated
    */
-  case class ExplainValidator[A](i: Issue) extends Validator[A] {
+  case class ExplainValidator[A](i: Rule) extends Validator[A] {
     def apply(a: A) = Nil
-    val issues = i  :: Nil
+    val rules = i  :: Nil
     val schema = Nil
   }
 
@@ -150,7 +153,7 @@ object ValidatorBuilder {
    */
   case class SchemaValidator[A](s: Schema) extends Validator[A] {
     def apply(a: A) = Nil
-    val issues = Nil
+    val rules = Nil
     val schema = s :: Nil
   }
 
@@ -172,8 +175,8 @@ object ValidatorBuilder {
   ) extends Validator[A] {
     def apply(a: A) =
       bValidator(f(a)).map(_.pushPath(field))
-    def issues =
-      bValidator.issues.map(_.pushPath(field))
+    def rules =
+      bValidator.rules.map(_.pushPath(field))
     def schema =
       bValidator.schema.map(_.pushPath(field))
   }
@@ -189,8 +192,8 @@ object ValidatorBuilder {
   )(implicit
     ca:ClassTag[A]
   ) extends Validator[Option[A]] {
-    def apply(oa: Option[A]) = oa.fold(List.empty[Issue])(a => va(a))
-    def issues = va.issues
+    def apply(oa: Option[A]) = oa.fold(List.empty[Rule])(a => va(a))
+    def rules = va.rules
     def schema = va.schema.map {
       case Schema(Nil,name,_) => Schema(Nil,name,(0,1))
       case s => s
@@ -217,7 +220,7 @@ object ValidatorBuilder {
         .flatMap { case (a,i) =>
           va(a).map(_.pushPath(i.toString))
         }
-    def issues = va.issues.map(_.pushPath("member"))
+    def rules = va.rules.map(_.pushPath("member"))
     def schema =
       Schema(Nil,ca.toString(),(0,Int.MaxValue)) ::
       va.schema.map(_.pushPath("member"))

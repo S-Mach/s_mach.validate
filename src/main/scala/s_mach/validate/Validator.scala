@@ -12,22 +12,22 @@ trait Validator[A] {
   /**
    * Validate an instance
    * @param a instance to validate
-   * @return list of issues that failed to validate or
+   * @return list of rules that failed to validate or
    *         Nil if the instance passes all validation
    */
-  def apply(a: A) : List[Issue]
+  def apply(a: A) : List[Rule]
 
-  /** @return list of issues that are validated */
-  def issues : List[Issue]
+  /** @return list of rules that this validator tests */
+  def rules : List[Rule]
 
-  /** @return list of schema for fields or just one */
+  /** @return list of schema for type A and any fields of A (recursively) */
   def schema: List[Schema]
 }
 
 object Validator {
   private[this] val _empty = new Validator[Any] {
     def apply(a: Any) = Nil
-    def issues = Nil
+    def rules = Nil
     def schema = Nil
   }
   /** @return validator that has no issues or schema and never fails */
@@ -55,7 +55,7 @@ object Validator {
    * @param i issue to add
    * @tparam A type validated
    */
-  def explain[A](i: Issue) : Validator[A] =
+  def explain[A](i: Rule) : Validator[A] =
     ExplainValidator(i)
 
   /**
@@ -93,11 +93,15 @@ object Validator {
     ca:ClassTag[A]
   ) : Validator[M[A]] = TraversableValidator(va)
 
+  /** @return an optional validator wrapper for any type that implicitly defines
+    *         a validator */
   implicit def validator_Option[A](implicit
     va:Validator[A] = Validator.empty[A],
     ca:ClassTag[A]
   ) : Validator[Option[A]] = OptionValidator(va)
 
+  /** @return a collection validator wrapper for any type that implicitly defines
+    *         a validator */
   implicit def validator_Traversable[
     M[AA] <: Traversable[AA],
     A

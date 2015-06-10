@@ -1,5 +1,8 @@
 package s_mach.validate
 
+/**
+ * Various common text validators
+ */
 object Text {
   val nonEmpty =
     Validator.ensure[String](
