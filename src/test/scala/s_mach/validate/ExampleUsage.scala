@@ -6,7 +6,6 @@ import s_mach.validate._
 import play.api.libs.json._
 import s_mach.validate.play_json._
 
-type Name = String
 val isName = {
   import Text._
   Validator.builder[String]
@@ -16,7 +15,6 @@ val isName = {
    .build()
 }
 
-type Age = Int
 val isAge =
   Validator.builder[Int]
    .ensure(s"must be between (0,150)") { age =>
