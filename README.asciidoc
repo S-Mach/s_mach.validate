@@ -19,6 +19,12 @@ TODO
 == Example
 
 ----
+Welcome to Scala version 2.11.6 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_40).
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala> :paste
+// Entering paste mode (ctrl-D to finish)
 
 import play.api.libs.json._
 import s_mach.validate.play_json._
@@ -59,30 +65,37 @@ object Person {
   implicit val format_Person = Json.format[Person].withValidator
 }
 
-case class Family(
-  father: Person,
-  mother: Person,
-  children: Seq[Person],
-  grandMother: Option[Person],
-  grandFather: Option[Person]
-)
+// Exiting paste mode, now interpreting.
 
-object Family {
-  implicit val validator_Family =
-    Validator.builder[Family]
-      .field("father",_.father)()
-      .field("mother",_.mother)()
-      .field("children",_.children)()
-      .field("grandMother",_.grandMother)()
-      .field("grandFather",_.grandFather)()
-      .ensure("father must be older than children") { family =>
-        family.children.forall(_.age < family.father.age)
-      }
-      .ensure("mother must be older than children") { family =>
-        family.children.forall(_.age < family.mother.age)
-      }
-      .build()
-  implicit val format_Family = Json.format[Family].withValidator
+import s_mach.validate._
+import play.api.libs.json._
+import s_mach.validate.play_json._
+defined type alias Name
+isName: s_mach.validate.Validator[String] = CompositeValidator(List(EnsureValidator(must contain only letters or whitespace,<function1>), EnsureValidator(must not be longer than 64 characters,<function1>), EnsureValidator(must not be empty,<function1>), SchemaValidator(Schema(List(),java.lang.String,(1,1)))))
+defined type alias Age
+isAge: s_mach.validate.Validator[Int] = CompositeValidator(List(EnsureValidator(must be between (0,150),<function1>), SchemaValidator(Schema(List(),Int,(1,1)))))
+defined class Person
+defined object Person
+
+scala> Person(1,"chad!!!",200)
+res0: Person = Person(1,chad!!!,200)
+
+scala> res0.validate
+res1: List[s_mach.validate.Rule] = List(age: must be between (0,150), name: must contain only letters or whitespace)
+
+scala> Json.toJson(res0)
+res2: play.api.libs.json.JsValue = {"id":1,"name":"chad!!!","age":200}
+
+scala> Json.fromJson[Person](res2)
+res3: play.api.libs.json.JsResult[Person] = JsError(ArrayBuffer((/age,List(ValidationError(must be between (0,150),WrappedArray()))), (/name,List(ValidationError(must contain only letters or whitespace,WrappedArray())))))
+
+scala> validator[Person].explain.prettyPrintJson
+res4: String =
+{
+  "name" : [ "must be string", "must not be empty", "must not be longer than 64 characters", "must contain only letters or whitespace" ],
+  "age" : [ "must be integer", "must be between (0,150)" ],
+  "id" : [ "must be integer" ],
+  "this" : "age plus id must be less than 1000"
 }
 
 ----

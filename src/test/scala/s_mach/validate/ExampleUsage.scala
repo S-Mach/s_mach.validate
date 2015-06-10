@@ -2,6 +2,7 @@ package s_mach.validate
 
 object ExampleUsage {
 
+import s_mach.validate._
 import play.api.libs.json._
 import s_mach.validate.play_json._
 
