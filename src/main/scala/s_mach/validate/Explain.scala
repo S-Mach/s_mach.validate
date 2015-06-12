@@ -2,8 +2,8 @@ package s_mach.validate
 
 /**
  * A base trait for an entity that provides human-readable information
- * about a field (or "this") within a case class. A field path is used
- * to point at which field within a some context the information is
+ * about a field (or no field) within a case class. A field path is used
+ * to point at which field within the "context" the information is
  * associated with.
  * Ex:
  * case class A(i: Int)
@@ -11,6 +11,12 @@ package s_mach.validate
  *
  * Field path for the i field of A from within B:
  * "a" :: "i" :: Nil
+ *
+ * Field path of i from within context of A:
+ * "i" :: Nil
+ *
+ * Field path used to "this" (for A or B):
+ * Nil
  */
 sealed trait Explain {
   /** @return field path */

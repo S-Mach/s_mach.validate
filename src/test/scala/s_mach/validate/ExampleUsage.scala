@@ -8,19 +8,13 @@ import s_mach.validate.play_json._
 
 val isName = {
   import Text._
-  Validator.builder[String]
-   .ensure(nonEmpty)
-   .ensure(maxLength(64))
-   .ensure(allLettersOrWhitespace)
-   .build()
+  nonEmpty and maxLength(64) and allLettersOrSpaces
 }
 
 val isAge =
-  Validator.builder[Int]
-   .ensure(s"must be between (0,150)") { age =>
+  Validator.ensure(s"must be between (0,150)") { age:Int =>
      0 <= age && age <= 150
    }
-   .build()
 
 case class Person(id: Int, name: String, age: Int)
 

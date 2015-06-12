@@ -10,15 +10,14 @@ object JsonPrinter {
     if(explains.isEmpty) {
       JsNull
     } else {
-      val ordered = explains.sortBy(i => -i.path.size)
       val root = new ExplainNode()
-      ordered.foreach(root.append)
+      explains.foreach(root.append)
       root.toJson
     }
   }
 
   private class ExplainNode(
-    fields: mutable.Map[String,ExplainNode] = mutable.Map.empty,
+    fields: mutable.Buffer[(String,ExplainNode)] = mutable.Buffer.empty,
     messages: mutable.Buffer[String] = mutable.Buffer.empty
   ) {
     def append(e: Explain) : Unit = {
@@ -33,32 +32,52 @@ object JsonPrinter {
           }
         case _ =>
           val (head,recurse) = e.popPath()
-          fields.get(head) match {
-            case Some(node) =>
+          fields.find(_._1 == head) match {
+            case Some((_,node)) =>
               node.append(recurse)
             case None =>
               val node = new ExplainNode()
               node.append(recurse)
-              fields.put(head,node)
+              fields.append((head,node))
           }
 
       }
     }
 
     def toJson : JsValue = {
-      fields.size match {
-        case 0 => JsArray(messages.reverseMap(JsString.apply))
-        case _ =>
-          val optThis = messages.size match {
-            case 0 => None
-            case 1 => Some("this" -> JsString(messages.head))
-            case _ => Some("this" -> JsArray(messages.reverseMap(JsString.apply)))
+
+      def mkJsObject(messages: Seq[String]) : JsObject = {
+        val baseJsObj =
+          JsObject(fields.map { case (field,node) =>
+            (field,node.toJson)
+          }.toSeq)
+
+        {
+          messages.size match {
+            case 0 => Json.obj()
+            case 1 => Json.obj(
+              "this" -> messages.head
+            )
+            case _ => Json.obj(
+              "this" -> messages
+            )
           }
-          val fieldsWithThis =
-            fields.toSeq.map { case (field,node) =>
-              (field,node.toJson)
-            } ++ optThis
-          JsObject(fieldsWithThis)
+        } ++ baseJsObj
+      }
+
+      fields.size match {
+        case 0 =>
+          JsArray(messages.map(JsString.apply))
+        case _ =>
+          messages.find(_.startsWith("must be array of")) match {
+            case Some(arrayMsg) =>
+              val otherMsgs = messages.filter(_ != arrayMsg)
+              Json.obj(
+                "this" -> arrayMsg,
+                "member" -> mkJsObject(otherMsgs)
+              )
+            case None => mkJsObject(messages)
+          }
       }
     }
   }

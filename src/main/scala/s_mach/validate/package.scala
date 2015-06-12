@@ -1,5 +1,7 @@
 package s_mach
 
+import scala.language.higherKinds
+import scala.language.implicitConversions
 import s_mach.validate.ValidatorBuilder._
 import scala.reflect.ClassTag
 
@@ -20,10 +22,10 @@ package object validate {
     def optional(implicit ca:ClassTag[A]) = OptionValidator(self)
     /** @return a collection validator wrapper of self */
     def zeroOrMore(implicit ca:ClassTag[A]) = TraversableValidator(self)
-    /** @return a list of all rules and schema */
-    def explain : List[Explain] = rules ++ schema
     /** @return TRUE if the validator has no rules or schema */
     def isEmpty = rules.isEmpty && schema.isEmpty
-  }
 
+    def and(other: Validator[A]) : CompositeValidator[A] =
+      CompositeValidator(self :: other :: Nil)
+  }
 }

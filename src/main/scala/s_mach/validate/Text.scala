@@ -19,18 +19,29 @@ object Text {
       "must contain only letters"
     )(_.forall(_.isLetter))
 
+  val allDigits =
+    Validator.ensure[String](
+      "must contain only digits"
+    )(_.forall(_.isDigit))
+
   val allLettersOrDigits =
     Validator.ensure[String](
       "must contain only letters or digits"
     )(_.forall(_.isLetterOrDigit))
 
-  val allLettersOrWhitespace =
+  val allLettersOrSpaces =
     Validator.ensure[String](
-      "must contain only letters or whitespace"
-    )(_.forall(c => c.isLetter || c.isWhitespace))
+      "must contain only letters or spaces"
+    )(_.forall(c => c.isLetter || c.isSpaceChar))
 
-  val allLettersDigitsOrWhitespace =
+  val allLettersDigitsOrSpaces =
     Validator.ensure[String](
-      "must contain only letters, digits or whitespace"
-    )(_.forall(c => c.isLetterOrDigit || c.isWhitespace))
+      "must contain only letters, digits or spaces"
+    )(_.forall(c => c.isLetterOrDigit || c.isSpaceChar))
+
+  val base64UrlSafeRegex = "[A-Za-z0-9-_]*".r
+  val isBase64UrlSafe =
+    Validator.ensure[String](
+      "must be a base 64 url safe value ([A-Za-z0-9-_]*)"
+    )(s => base64UrlSafeRegex.findFirstIn(s).nonEmpty)
 }

@@ -22,6 +22,9 @@ trait Validator[A] {
 
   /** @return list of schema for type A and any fields of A (recursively) */
   def schema: List[Schema]
+
+  /** @return list of rules and schema for type A */
+  def explain: List[Explain]
 }
 
 object Validator {
@@ -29,6 +32,7 @@ object Validator {
     def apply(a: Any) = Nil
     def rules = Nil
     def schema = Nil
+    def explain = Nil
   }
   /** @return validator that has no issues or schema and never fails */
   def empty[A] = _empty.asInstanceOf[Validator[A]]
@@ -38,8 +42,8 @@ object Validator {
    * @param validators composed validators
    * @tparam A type validated
    */
-  def apply[A](validators: List[Validator[A]]) : Validator[A] =
-    CompositeValidator[A](validators)
+  def apply[A](validators: Validator[A]*) : CompositeValidator[A] =
+    CompositeValidator[A](validators.toList)
 
   /**
    * A validator that tests a constraint
@@ -47,16 +51,16 @@ object Validator {
    * @param f tests the constraint
    * @tparam A type validated
    */
-  def ensure[A](message: String)(f: A => Boolean) : Validator[A] =
-    EnsureValidator(message,f)
+  def ensure[A](message: String)(f: A => Boolean) =
+    EnsureValidator[A](message,f)
 
   /**
-   * A validator that adds a message to issues
-   * @param i issue to add
+   * A validator that adds a comment to rules
+   * @param message comment
    * @tparam A type validated
    */
-  def explain[A](i: Rule) : Validator[A] =
-    ExplainValidator(i)
+  def comment[A](message: String) =
+    ExplainValidator[A](Rule(Nil,message))
 
   /**
    * A builder for a Validator for a type A
@@ -75,7 +79,7 @@ object Validator {
     va: Validator[A]
   )(implicit
     ca:ClassTag[A]
-  ) : Validator[Option[A]] = OptionValidator(va)
+  ) = OptionValidator[A](va)
 
   /**
    * A validator for a collection of A
@@ -90,15 +94,16 @@ object Validator {
   ](
     va: Validator[A]
   )(implicit
-    ca:ClassTag[A]
-  ) : Validator[M[A]] = TraversableValidator(va)
+    ca:ClassTag[A],
+    cm:ClassTag[M[A]]
+  ) = TraversableValidator[M,A](va)
 
   /** @return an optional validator wrapper for any type that implicitly defines
     *         a validator */
   implicit def validator_Option[A](implicit
     va:Validator[A] = Validator.empty[A],
     ca:ClassTag[A]
-  ) : Validator[Option[A]] = OptionValidator(va)
+  ) = OptionValidator[A](va)
 
   /** @return a collection validator wrapper for any type that implicitly defines
     *         a validator */
@@ -107,7 +112,10 @@ object Validator {
     A
   ](implicit
     va:Validator[A] = Validator.empty[A],
-    ca:ClassTag[A]
-  ) : Validator[M[A]] = TraversableValidator(va)
+    ca:ClassTag[A],
+    cm:ClassTag[M[A]]
+  ) = TraversableValidator[M,A](va)
 
+// Note: if Validator[-A] is used this is required
+//  implicit val validator_String = empty[String]
 }

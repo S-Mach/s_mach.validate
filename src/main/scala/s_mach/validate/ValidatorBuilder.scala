@@ -21,8 +21,17 @@ case class ValidatorBuilder[A](
    * @param s schema to use
    * @return copy of this builder with schema
    */
-  def schema(s: Schema) : ValidatorBuilder[A] =
-    ensure(SchemaValidator(s))
+  def schema(s: Schema) : ValidatorBuilder[A] = {
+    copy(
+      SchemaValidator[A](s) ::
+      // Ensure there is only ever one root schema
+      validators.filter {
+        case SchemaValidator(Schema(Nil,_,_)) => false
+        case _ => true
+      }
+    )
+  }
+
 
   /**
    * Add a comment to the rules of the validator (that
@@ -93,7 +102,7 @@ case class ValidatorBuilder[A](
    */
   def build() : Validator[A] = {
     val validatorsWithSchema =
-      validators ::: {
+       {
           // If one of the validators already has a schema for this
           // validator
           if(validators.exists(_.schema.exists(_.path.isEmpty))) {
@@ -101,12 +110,16 @@ case class ValidatorBuilder[A](
           } else {
             SchemaValidator[A](Schema(Nil,ca.toString(),(1,1))) :: Nil
           }
-        }
-    validatorsWithSchema.size match {
-      case 0 => ??? // unreachable
-      case 1 => validatorsWithSchema.head
-      case _ => CompositeValidator(validatorsWithSchema)
-    }
+        } ::: validators.reverse
+    CompositeValidator(validatorsWithSchema)
+// This doesn't really help much - with even one added validator there
+// will always be two (since Schema is added if missing)
+// Just schema will be pretty rare
+//    validatorsWithSchema.size match {
+//      case 0 => ??? // unreachable
+//      case 1 => validatorsWithSchema.head
+//      case _ => CompositeValidator(validatorsWithSchema)
+//    }
   }
 }
 
@@ -121,6 +134,12 @@ object ValidatorBuilder {
     def apply(a: A) = validators.flatMap(_(a))
     val rules = validators.flatMap(_.rules)
     val schema = validators.flatMap(_.schema)
+    val explain = validators.flatMap(_.explain)
+    def and(other: Validator[A]) : CompositeValidator[A] =
+      other match {
+        case CompositeValidator(more) => copy(more ::: validators)
+        case _ => copy(other :: validators)
+      }
   }
 
   /**
@@ -133,17 +152,19 @@ object ValidatorBuilder {
     def apply(a: A) = if(f(a)) Nil else rules
     val rules = Rule(Nil,message) :: Nil
     val schema = Nil
+    val explain = rules
   }
 
   /**
-   * A validator that adds a message to issues
-   * @param i issue to add
+   * A validator that adds a rule for display but not check
+   * @param r rule to display but not check
    * @tparam A type validated
    */
-  case class ExplainValidator[A](i: Rule) extends Validator[A] {
+  case class ExplainValidator[A](r: Rule) extends Validator[A] {
     def apply(a: A) = Nil
-    val rules = i  :: Nil
+    val rules = r  :: Nil
     val schema = Nil
+    val explain = rules
   }
 
   /**
@@ -155,6 +176,7 @@ object ValidatorBuilder {
     def apply(a: A) = Nil
     val rules = Nil
     val schema = s :: Nil
+    val explain = schema
   }
 
  /**
@@ -175,10 +197,18 @@ object ValidatorBuilder {
   ) extends Validator[A] {
     def apply(a: A) =
       bValidator(f(a)).map(_.pushPath(field))
-    def rules =
+    val rules =
       bValidator.rules.map(_.pushPath(field))
-    def schema =
+    val schema =
       bValidator.schema.map(_.pushPath(field))
+    val explain =
+      bValidator.explain.map(_.pushPath(field))
+  }
+
+  private def modSchemaCardinality(cardinality: (Int,Int)) : Explain => Explain = {
+    case s@Schema(Nil,name,_) =>
+      s.copy(cardinality = cardinality)
+    case s => s
   }
 
   /**
@@ -193,10 +223,14 @@ object ValidatorBuilder {
     ca:ClassTag[A]
   ) extends Validator[Option[A]] {
     def apply(oa: Option[A]) = oa.fold(List.empty[Rule])(a => va(a))
-    def rules = va.rules
-    def schema = va.schema.map {
-      case Schema(Nil,name,_) => Schema(Nil,name,(0,1))
-      case s => s
+    val rules = va.rules
+    val schema = va.schema.map {
+      case s@Schema(Nil,_,_) => s.copy(cardinality = (0,1))
+      case other => other
+    }
+    val explain = va.explain.map {
+      case s@Schema(Nil,_,_) => s.copy(cardinality = (0,1))
+      case other => other
     }
   }
 
@@ -213,17 +247,23 @@ object ValidatorBuilder {
   ](
     va:Validator[A]
   )(implicit
-    ca:ClassTag[A]
+    ca:ClassTag[A],
+    cm:ClassTag[M[A]]
   ) extends Validator[M[A]] {
     def apply(ma: M[A]) =
       ma.toList.zipWithIndex
         .flatMap { case (a,i) =>
           va(a).map(_.pushPath(i.toString))
         }
-    def rules = va.rules.map(_.pushPath("member"))
-    def schema =
-      Schema(Nil,ca.toString(),(0,Int.MaxValue)) ::
-      va.schema.map(_.pushPath("member"))
+    val rules = va.rules
+    val schema = va.schema.map {
+      case s@Schema(Nil,_,_) => s.copy(cardinality = (0,Int.MaxValue))
+      case other => other
+    }
+    val explain = va.explain.map {
+      case s@Schema(Nil,_,_) => s.copy(cardinality = (0,Int.MaxValue))
+      case other => other
+    }
   }
 
 }
