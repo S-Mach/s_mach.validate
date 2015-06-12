@@ -1,19 +1,18 @@
-package s_mach.validate
+package s_mach.validate.play_json
 
-import org.scalatest.{Matchers, FlatSpec}
-import ExampleUsage._
-import play.api.libs.json.Json
-import s_mach.validate.play_json.JsonPrinter
+import org.scalatest.{FlatSpec, Matchers}
+import s_mach.validate.ExampleUsage._
+import s_mach.validate.Validator
 
 class JsonPrinterTest extends FlatSpec with Matchers {
   "JsonPrinter.print" should "correctly print JSON from Seq[Explain] for a single validator" in {
-    Json.prettyPrint(JsonPrinter.print(isName.explain)) should equal(
+    isName.explain.prettyPrintJson should equal(
 """[ "must contain only letters or spaces", "must not be empty", "must not be longer than 64 characters" ]"""
     )
   }
-  
+
   "JsonPrinter.print" should "correctly print JSON from Seq[Explain] for a single case class validator" in {
-    Json.prettyPrint(JsonPrinter.print(implicitly[Validator[Person]].explain)) should equal(
+    implicitly[Validator[Person]].explain.prettyPrintJson should equal(
 """{
   "this" : "age plus id must be less than 1000",
   "id" : [ "must be integer" ],
@@ -24,7 +23,7 @@ class JsonPrinterTest extends FlatSpec with Matchers {
   }
 
   "JsonPrinter.print" should "correctly print JSON from Seq[Explain] for a nested case class validator" in {
-    Json.prettyPrint(JsonPrinter.print(implicitly[Validator[Family]].explain)) should equal(
+    implicitly[Validator[Family]].explain.prettyPrintJson should equal(
 """{
   "this" : [ "father must be older than children", "mother must be older than children" ],
   "father" : {
