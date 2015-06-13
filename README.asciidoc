@@ -38,39 +38,54 @@ Type :help for more information.
 scala> :paste
 // Entering paste mode (ctrl-D to finish)
 
+import s_mach.validate._
 import play.api.libs.json._
 import s_mach.validate.play_json._
 
-val isName = {
-  import Text._
-  Validator.builder[String]
-   .ensure(nonEmpty)
-   .ensure(maxLength(64))
-   .ensure(allLettersOrWhitespace)
-   .build()
+implicit class Name(
+  val underlying: String
+) extends AnyVal with IsValueType[String]
+object Name {
+  implicit val valueType_Name = ValueType[Name, String](
+    new Name(_),
+    _.underlying
+  )
+  implicit val validator_Name =
+    Validator.forValueType[Name, String] {
+      import Text._
+      nonEmpty and maxLength(64) and allLettersOrSpaces
+    }
 }
 
-val isAge =
-  Validator.builder[Int]
-   .ensure(s"must be between (0,150)") { age =>
-     0 <= age && age <= 150
-   }
-   .build()
+implicit class Age(
+  val underlying: Int
+) extends AnyVal with IsValueType[Int]
+object Age {
+  implicit val valueType_Age = ValueType[Age,Int](
+    new Age(_),
+    _.underlying
+  )
+  implicit val validator_Age = {
+    import Validator._
+    forValueType[Age,Int](
+      ensure(s"must be between (0,150)") { age =>
+        0 <= age && age <= 150
+      }
+    )
+  }
+}
 
-case class Person(id: Int, name: String, age: Int)
+case class Person(id: Int, name: Name, age: Age)
 
 object Person {
-  implicit val validator_Person =
-    Validator.builder[Person]
-      .field("id",_.id)()
-      .field("name",_.name)(
-        _.ensure(isName)
-      )
-      .field("age",_.age)(
-        _.ensure(isAge)
-      )
-     .ensure("age plus id must be less than 1000")(p => p.id + p.age < 1000)
-     .build()
+  implicit val validator_Person = {
+    import Validator._
+
+    forProductType[Person] and
+    ensure(
+      "age plus id must be less than 1000"
+    )(p => p.id + p.age < 1000)
+  }
 
   implicit val format_Person = Json.format[Person].withValidator
 }
@@ -80,32 +95,32 @@ object Person {
 import s_mach.validate._
 import play.api.libs.json._
 import s_mach.validate.play_json._
-defined type alias Name
-isName: s_mach.validate.Validator[String] = CompositeValidator(List(EnsureValidator(must contain only letters or whitespace,<function1>), EnsureValidator(must not be longer than 64 characters,<function1>), EnsureValidator(must not be empty,<function1>), SchemaValidator(Schema(List(),java.lang.String,(1,1)))))
-defined type alias Age
-isAge: s_mach.validate.Validator[Int] = CompositeValidator(List(EnsureValidator(must be between (0,150),<function1>), SchemaValidator(Schema(List(),Int,(1,1)))))
+defined class Name
+defined object Name
+defined class Age
+defined object Age
 defined class Person
 defined object Person
 
-scala> Person(1,"chad!!!",200)
-res0: Person = Person(1,chad!!!,200)
+scala> Person(1,"!!!",200)
+res0: Person = Person(1,!!!,200)
 
 scala> res0.validate
-res1: List[s_mach.validate.Rule] = List(age: must be between (0,150), name: must contain only letters or whitespace)
+res1: List[s_mach.validate.Rule] = List(name: must contain only letters or spaces, age: must be between (0,150))
 
 scala> Json.toJson(res0)
-res2: play.api.libs.json.JsValue = {"id":1,"name":"chad!!!","age":200}
+res2: play.api.libs.json.JsValue = {"id":1,"name":"!!!","age":200}
 
 scala> Json.fromJson[Person](res2)
-res3: play.api.libs.json.JsResult[Person] = JsError(ArrayBuffer((/age,List(ValidationError(must be between (0,150),WrappedArray()))), (/name,List(ValidationError(must contain only letters or whitespace,WrappedArray())))))
+res3: play.api.libs.json.JsResult[Person] = JsError(ArrayBuffer((/age,List(ValidationError(List(must be between (0,150)),WrappedArray()))), (/name,List(ValidationError(List(must contain only letters or spaces),WrappedArray())))))
 
 scala> validator[Person].explain.prettyPrintJson
 res4: String =
 {
-  "name" : [ "must be string", "must not be empty", "must not be longer than 64 characters", "must contain only letters or whitespace" ],
-  "age" : [ "must be integer", "must be between (0,150)" ],
+  "this" : "age plus id must be less than 1000",
   "id" : [ "must be integer" ],
-  "this" : "age plus id must be less than 1000"
+  "name" : [ "must be string", "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ],
+  "age" : [ "must be integer", "must be between (0,150)" ]
 }
 
 ----
