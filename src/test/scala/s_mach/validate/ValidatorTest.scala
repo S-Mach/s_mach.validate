@@ -1,7 +1,7 @@
 package s_mach.validate
 
 import org.scalatest.{FlatSpec, Matchers}
-
+import scala.reflect._
 import ExampleUsage._
 
 class ValidatorTest extends FlatSpec with Matchers {
@@ -11,14 +11,6 @@ class ValidatorTest extends FlatSpec with Matchers {
     val expected = Rule(Nil,"message") :: Nil
     v("nottest") should equal(expected)
     v.rules should equal(expected)
-    v.schema should equal(Nil)
-  }
-  "Validator.empty" should "create a validator with no rules or schema" in {
-    val v = Validator.empty[String]
-    v("999") should equal(Nil)
-    v("") should equal(Nil)
-    v("aaa") should equal(Nil)
-    v.rules should equal(Nil)
     v.schema should equal(Nil)
   }
   "Validator.apply" should "create a validator composed of other validators" in {
@@ -37,25 +29,8 @@ class ValidatorTest extends FlatSpec with Matchers {
     v.rules should equal(Rule(Nil,"message") :: Nil)
     v.schema should equal(Nil)
   }
-  "Validator.builder" should "create a builder that allows creating a validator" in {
-    val v =
-      Validator.builder[String]
-        .ensure(Text.nonEmpty)
-        .ensure(Text.allDigits)
-        .build()
-
-    v("999") should equal(Nil)
-    v("") should equal(Text.nonEmpty.rules)
-    v("aaa") should equal(Text.allDigits.rules)
-    v.rules should equal(Text.nonEmpty.rules ::: Text.allDigits.rules)
-    v.schema should equal(Schema(Nil,"java.lang.String",(1,1)):: Nil)
-  }
   "Validator.optional" should "create a validator that modifies the cardinality of another validator" in {
-    val v2 =
-      Validator.builder[String]
-          .ensure(Text.nonEmpty)
-          .ensure(Text.allDigits)
-          .build()
+    val v2 = Validator.schema[String] and Text.nonEmpty and Text.allDigits
     val v = Validator.optional(v2)
 
 
@@ -68,13 +43,8 @@ class ValidatorTest extends FlatSpec with Matchers {
   }
 
   "Validator.zeroOrMore" should "create a validator with zero or more cardinality that wraps another validator" in {
-    val v2 =
-      Validator.builder[String]
-          .ensure(Text.nonEmpty)
-          .ensure(Text.allDigits)
-          .build()
+    val v2 = Validator.schema[String] and Text.nonEmpty and Text.allDigits
     val v : Validator[Vector[String]] = Validator.zeroOrMore(v2)
-
 
     v(Vector("999")) should equal(Nil)
     v(Vector.empty) should equal(Nil)
@@ -87,13 +57,9 @@ class ValidatorTest extends FlatSpec with Matchers {
     )
   }
   "Validator implicits" should "create optional and zero or more validators for existing implicit validators" in {
-    implicit val v =
-      Validator.builder[String]
-          .ensure(Text.nonEmpty)
-          .ensure(Text.allDigits)
-          .build()
+    implicit val v = Validator.schema[String] and Text.nonEmpty and Text.allDigits
 
-    val ov = implicitly[Validator[Option[String]]]
+    val ov = validator_Option(v,classTag[String])//implicitly[Validator[Option[String]]]
     ov(Some("999")) should equal(Nil)
     ov(None) should equal(Nil)
     ov(Some("")) should equal(Text.nonEmpty.rules)
@@ -101,7 +67,7 @@ class ValidatorTest extends FlatSpec with Matchers {
     ov.rules should equal(Text.nonEmpty.rules ::: Text.allDigits.rules)
     ov.schema should equal(Schema(Nil,"java.lang.String",(0,1)):: Nil)
 
-    val zv = implicitly[Validator[Vector[String]]]
+    val zv = validator_Traversable[Vector,String](v,classTag[String],classTag[Vector[String]])//implicitly[Validator[Vector[String]]]
     zv(Vector("999")) should equal(Nil)
     zv(Vector.empty) should equal(Nil)
     zv(Vector("999","")) should equal(Text.nonEmpty.rules.map(_.pushPath("1")))

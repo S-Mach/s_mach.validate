@@ -2,10 +2,17 @@ package s_mach
 
 import scala.language.higherKinds
 import scala.language.implicitConversions
-import s_mach.validate.ValidatorBuilder._
+import s_mach.validate.impl._
 import scala.reflect.ClassTag
 
-package object validate {
+package object validate extends
+  TupleValidatorImplicits with
+  DataTypeValidatorImplicits with
+  CollectionValidatorImplicits
+{
+
+  @inline implicit def fromValueType[A](v: IsValueType[A]) : A =
+    v.underlying
 
   /** @return the Validator for the type */
   def validator[A](implicit v:Validator[A]) = v
@@ -16,16 +23,9 @@ package object validate {
   }
 
   implicit class Net_SMach_PimpMyValidator[A](val self: Validator[A]) extends AnyVal {
-    import self._
-
     /** @return an optional validator wrapper of self */
     def optional(implicit ca:ClassTag[A]) = OptionValidator(self)
     /** @return a collection validator wrapper of self */
-    def zeroOrMore(implicit ca:ClassTag[A]) = TraversableValidator(self)
-    /** @return TRUE if the validator has no rules or schema */
-    def isEmpty = rules.isEmpty && schema.isEmpty
-
-    def and(other: Validator[A]) : CompositeValidator[A] =
-      CompositeValidator(self :: other :: Nil)
+    def zeroOrMore(implicit ca:ClassTag[A]) = CollectionValidator(self)
   }
 }

@@ -2,12 +2,12 @@ package s_mach.validate.play_json
 
 import org.scalatest.{FlatSpec, Matchers}
 import s_mach.validate.ExampleUsage._
-import s_mach.validate.Validator
+import s_mach.validate.{Text, Validator}
 
 class JsonPrinterTest extends FlatSpec with Matchers {
   "JsonPrinter.print" should "correctly print JSON from Seq[Explain] for a single validator" in {
-    isName.explain.prettyPrintJson should equal(
-"""[ "must contain only letters or spaces", "must not be empty", "must not be longer than 64 characters" ]"""
+    implicitly[Validator[Name]].explain.prettyPrintJson should equal(
+"""[ "must be string", "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ]"""
     )
   }
 
@@ -16,7 +16,7 @@ class JsonPrinterTest extends FlatSpec with Matchers {
 """{
   "this" : "age plus id must be less than 1000",
   "id" : [ "must be integer" ],
-  "name" : [ "must be string", "must contain only letters or spaces", "must not be empty", "must not be longer than 64 characters" ],
+  "name" : [ "must be string", "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ],
   "age" : [ "must be integer", "must be between (0,150)" ]
 }"""
     )
@@ -29,13 +29,13 @@ class JsonPrinterTest extends FlatSpec with Matchers {
   "father" : {
     "this" : "age plus id must be less than 1000",
     "id" : [ "must be integer" ],
-    "name" : [ "must be string", "must contain only letters or spaces", "must not be empty", "must not be longer than 64 characters" ],
+    "name" : [ "must be string", "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ],
     "age" : [ "must be integer", "must be between (0,150)" ]
   },
   "mother" : {
     "this" : "age plus id must be less than 1000",
     "id" : [ "must be integer" ],
-    "name" : [ "must be string", "must contain only letters or spaces", "must not be empty", "must not be longer than 64 characters" ],
+    "name" : [ "must be string", "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ],
     "age" : [ "must be integer", "must be between (0,150)" ]
   },
   "children" : {
@@ -43,20 +43,20 @@ class JsonPrinterTest extends FlatSpec with Matchers {
     "member" : {
       "this" : "age plus id must be less than 1000",
       "id" : [ "must be integer" ],
-      "name" : [ "must be string", "must contain only letters or spaces", "must not be empty", "must not be longer than 64 characters" ],
+      "name" : [ "must be string", "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ],
       "age" : [ "must be integer", "must be between (0,150)" ]
     }
   },
   "grandMother" : {
     "this" : [ "optional", "age plus id must be less than 1000" ],
     "id" : [ "must be integer" ],
-    "name" : [ "must be string", "must contain only letters or spaces", "must not be empty", "must not be longer than 64 characters" ],
+    "name" : [ "must be string", "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ],
     "age" : [ "must be integer", "must be between (0,150)" ]
   },
   "grandFather" : {
     "this" : [ "optional", "age plus id must be less than 1000" ],
     "id" : [ "must be integer" ],
-    "name" : [ "must be string", "must contain only letters or spaces", "must not be empty", "must not be longer than 64 characters" ],
+    "name" : [ "must be string", "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ],
     "age" : [ "must be integer", "must be between (0,150)" ]
   }
 }"""

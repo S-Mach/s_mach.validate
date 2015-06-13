@@ -1,14 +1,78 @@
-scalaVersion := "2.11.6"
+sbtVersion := "0.13.5"
 
-organization := "net.s_mach"
+val nexus = "https://oss.sonatype.org/"
+val nexusSnapshots = "snapshots" at nexus + "content/repositories/snapshots"
+val nexusReleases = "releases"  at nexus + "service/local/staging/deploy/maven2"
 
-name := "validate"
+// TODO: figure out how to move this into publish.sbt
+val publishSettings = Seq(
+  publishMavenStyle := true,
+  pomIncludeRepository := { _ => false },
+  publishTo := {
+    if (isSnapshot.value)
+      Some(nexusSnapshots)
+    else
+      Some(nexusReleases)
+  },
+  pomExtra :=
+    <url>https://github.com/S-Mach/s_mach.validate</url>
+      <licenses>
+        <license>
+          <name>MIT</name>
+          <url>http://opensource.org/licenses/MIT</url>
+          <distribution>repo</distribution>
+        </license>
+      </licenses>
+      <scm>
+        <url>git@github.com:S-Mach/s_mach.validate.git</url>
+        <connection>scm:git:git@github.com:S-Mach/s_mach.validate.git</connection>
+        <developerConnection>scm:git:git@github.com:S-Mach/s_mach.validate.git</developerConnection>
+      </scm>
+      <developers>
+        <developer>
+          <id>lancegatlin</id>
+          <name>Lance Gatlin</name>
+          <email>lance.gatlin@gmail.com</email>
+          <organization>S-Mach</organization>
+          <organizationUrl>http://s-mach.net</organizationUrl>
+        </developer>
+      </developers>
+)
 
-version := "1.0.0-SNAPSHOT"
+val defaultSettings = Defaults.coreDefaultSettings ++ publishSettings ++ Seq(
+  scalaVersion := "2.11.6",
+  organization := "net.s_mach",
+  version := "1.0.0",
+  scalacOptions ++= Seq(
+    "-feature",
+    "-unchecked",
+    "-deprecation"
+  )
+)
 
-scalacOptions ++= Seq("-feature","-unchecked", "-deprecation")
-
-libraryDependencies ++= Seq(
-  "com.typesafe.play" %% "play-json" % "2.3.8",
+val test = Seq(
   "org.scalatest" % "scalatest_2.11" % "2.2.0" % "test"
 )
+
+lazy val validate = Project(
+  id = "validate",
+  base = file("."),
+  aggregate = Seq(
+    validateCore
+  ),
+  dependencies = Seq("validate-core")
+)
+  .settings(libraryDependencies ++= Seq(
+    "com.typesafe.play" %% "play-json" % "2.4.0"
+  ))
+  .settings(defaultSettings: _*)
+  .settings(libraryDependencies ++= test)
+
+lazy val validateCore = Project(
+  id = "validate-core",
+  base = file("validate-core")
+)
+  .settings(defaultSettings: _*)
+  .settings(libraryDependencies ++= Seq(
+    "net.s_mach" %% "codetools" % "1.0.4"
+  ))

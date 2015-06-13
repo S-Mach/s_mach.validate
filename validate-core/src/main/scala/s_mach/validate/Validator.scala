@@ -1,8 +1,11 @@
 package s_mach.validate
 
+
 import scala.language.higherKinds
-import s_mach.validate.ValidatorBuilder._
+import scala.language.experimental.macros
+import scala.reflect.macros.blackbox
 import scala.reflect.ClassTag
+import s_mach.validate.impl._
 
 /**
  * A type-class for validating instances of a type
@@ -25,17 +28,47 @@ trait Validator[A] {
 
   /** @return list of rules and schema for type A */
   def explain: List[Explain]
+
+  /**
+   * Compose two validators
+   * @param other validtor to compose with this
+   * @return a new validator composed of this and other
+   */
+  def and(other: Validator[A]) : Validator[A]
 }
 
 object Validator {
-  private[this] val _empty = new Validator[Any] {
-    def apply(a: Any) = Nil
-    def rules = Nil
-    def schema = Nil
-    def explain = Nil
+  /**
+   * Generate a DataDiff implementation for a product type
+   * @tparam A the value type
+   * @return the DataDiff implementation
+   */
+  def forProductType[A <: Product] : Validator[A] =
+    macro macroForProductType[A]
+
+  // Note: Scala requires this to be public
+  def macroForProductType[A:c.WeakTypeTag](
+    c: blackbox.Context
+  ) : c.Expr[Validator[A]] = {
+    val builder = new impl.ValidateMacroBuilderImpl(c)
+    builder.build[A]().asInstanceOf[c.Expr[Validator[A]]]
   }
-  /** @return validator that has no issues or schema and never fails */
-  def empty[A] = _empty.asInstanceOf[Validator[A]]
+
+  /**
+   *
+   * @param other
+   * @param va
+   * @param vt
+   * @tparam V
+   * @tparam A
+   * @return
+   */
+  def forValueType[V <: IsValueType[A],A](other: Validator[A])(implicit
+    va:Validator[A],
+    vt: ValueType[V,A]
+  ) = ValueTypeValidator[V,A](
+    va and other
+  )
 
   /**
    * A validator that is composed of zero or more validators
@@ -62,12 +95,23 @@ object Validator {
   def comment[A](message: String) =
     ExplainValidator[A](Rule(Nil,message))
 
-  /**
-   * A builder for a Validator for a type A
-   * @param ca class tag for A used to build default Schema
-   * @tparam A type validated
-   */
-  def builder[A](implicit ca: ClassTag[A]) = ValidatorBuilder[A]()
+  def schema[A](
+    typeName: String,
+    cardinality: (Int,Int) = (1,1)
+  ) =
+    SchemaValidator[A](Schema(Nil, typeName, cardinality))
+
+  def schema[A](
+    cardinality: (Int,Int)
+  )(implicit
+    ca: ClassTag[A]
+  ) =
+    SchemaValidator[A](Schema(Nil, ca.toString(), cardinality))
+
+  def schema[A]()(implicit
+    ca: ClassTag[A]
+  ) =
+    SchemaValidator[A](Schema(Nil, ca.toString(), (1,1)))
 
   /**
    * A validator for an Option[A] that always passes if set to None
@@ -96,26 +140,5 @@ object Validator {
   )(implicit
     ca:ClassTag[A],
     cm:ClassTag[M[A]]
-  ) = TraversableValidator[M,A](va)
-
-  /** @return an optional validator wrapper for any type that implicitly defines
-    *         a validator */
-  implicit def validator_Option[A](implicit
-    va:Validator[A] = Validator.empty[A],
-    ca:ClassTag[A]
-  ) = OptionValidator[A](va)
-
-  /** @return a collection validator wrapper for any type that implicitly defines
-    *         a validator */
-  implicit def validator_Traversable[
-    M[AA] <: Traversable[AA],
-    A
-  ](implicit
-    va:Validator[A] = Validator.empty[A],
-    ca:ClassTag[A],
-    cm:ClassTag[M[A]]
-  ) = TraversableValidator[M,A](va)
-
-// Note: if Validator[-A] is used this is required
-//  implicit val validator_String = empty[String]
+  ) = CollectionValidator[M,A](va)
 }
