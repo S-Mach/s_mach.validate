@@ -69,7 +69,7 @@ import s_mach.validate.play_json._
 
 // Use Scala value-class to restrict the value space of String
 // Name can be treated as String in code
-// See http://www.scala-lang.org/api/current/index.html#scala.AnyVal
+// See http://docs.scala-lang.org/overviews/core/value-classes.html
 implicit class Name(
   val underlying: String
 ) extends AnyVal with IsValueClass[String]
