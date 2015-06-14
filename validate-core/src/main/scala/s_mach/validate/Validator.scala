@@ -80,7 +80,6 @@ object Validator {
    */
   def forValueType[V <: IsValueType[A],A](other: Validator[A])(implicit
     va:Validator[A],
-    vt: ValueType[V,A],
     ca: ClassTag[A],
     cv: ClassTag[V]
   ) : Validator[V] = ValueTypeValidator[V,A](

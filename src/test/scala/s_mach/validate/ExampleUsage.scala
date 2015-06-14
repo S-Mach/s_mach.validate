@@ -19,20 +19,22 @@ object Name {
   // add an implicit here to support using Name with StringOps methods such
   // as foreach, map, etc
   implicit def stringOps_Name(name: Name) = new StringOps(name.underlying)
-  implicit val valueType_Name = ValueType[Name, String](new Name(_))
   implicit val validator_Name =
     Validator.forValueType[Name, String] {
       import Text._
       // Build a Validator[String] by composing some pre-defined validators
       nonEmpty and maxLength(64) and allLettersOrSpaces
     }
+
+  // Append the serialization-neutral Validator[Name] to the Play JSON Format[Name]
+  implicit val format_Name =
+    Json.forValueType.format[Name,String](new Name(_)).withValidator
 }
 
 implicit class Age(
   val underlying: Int
 ) extends AnyVal with IsValueType[Int]
 object Age {
-  implicit val valueType_Age = ValueType[Age,Int](new Age(_))
   implicit val validator_Age = {
     import Validator._
     forValueType[Age,Int](
@@ -41,6 +43,8 @@ object Age {
       }
     )
   }
+  implicit val format_Age =
+    Json.forValueType.format[Age,Int](new Age(_)).withValidator
 }
 
 case class Person(id: Int, name: Name, age: Age)
@@ -62,8 +66,6 @@ object Person {
     )(p => p.id + p.age < 1000)
   }
 
-  // Append the serialization-neutral Validator[Person] to the Play JSON
-  // Reads[Person] (in the Format[Person])
   implicit val format_Person = Json.format[Person].withValidator
 }
 

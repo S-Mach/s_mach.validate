@@ -5,15 +5,28 @@ import play_json.PlayJsonUtils._
 
 package object play_json {
 
-  implicit def valueType_Reads[V <: IsValueType[A],A](implicit
-    vt: ValueType[V,A],
-    aReads: Reads[A]
-  ) = Reads[V](js => aReads.reads(js).map(vt.apply))
+  object ValueTypeJson {
+    def writes[V <: IsValueType[A],A](implicit
+      aWrites:Writes[A]
+    ) : Writes[V] =
+      Writes[V](v => aWrites.writes(v.underlying))
 
-  implicit def valueType_Writes[V <: IsValueType[A],A](implicit
-    vt: ValueType[V,A],
-    aWrites: Writes[A]
-  ) = Writes[V](v => aWrites.writes(vt.unapply(v)))
+    def reads[V <: IsValueType[A],A](f: A => V)(implicit
+      aReads:Reads[A]
+    ) : Reads[V] =
+      Reads[V](js => aReads.reads(js).map(f))
+
+    def format[V <: IsValueType[A],A](
+      f: A => V
+    )(implicit
+      aReads: Reads[A],
+      aWrites: Writes[A]
+    ) : Format[V] = Format(reads(f),writes)
+  }
+
+  implicit class Net_SMach_Validate_PimpJsonType(val self: Json.type) extends AnyVal {
+    def forValueType = ValueTypeJson
+  }
 
   implicit class Net_SMach_Validate_PimpMyListOfExplain(val self: List[Explain]) extends AnyVal {
     def printJson: JsValue = JsonPrinter.print(self)
