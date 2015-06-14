@@ -9,7 +9,7 @@ package s_mach.validate
  * underling type is provided in the s_mach.validate package object.
  * Zero-runtime cost conversion to the underlying type is provided
  * automatically through Scala's value-class (see
- * http://www.scala-lang.org/api/current/index.html#scala.AnyVal).
+ * http://docs.scala-lang.org/overviews/core/value-classes.html).
  *
  * Example:
  *
