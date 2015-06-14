@@ -42,6 +42,11 @@ trait Validator[A] {
 }
 
 object Validator {
+  // Note: have
+  /**
+   * @return a Validator that has no rules or descendant schema
+   * with a default schema for the type
+   */
   def empty[A](implicit ca:ClassTag[A]) = new Validator[A] {
     def apply(a: A) = Nil
     def and(other: Validator[A]) = other
@@ -67,12 +72,10 @@ object Validator {
   }
 
   /**
-   *
-   * @param other
-   * @param va
-   * @param vt
-   * @tparam V
-   * @tparam A
+   * A validator for a user-defined value type that constrains
+   * the value space of the underlying type
+   * @param other validators that constrain the value space of the
+   *              underlying type
    * @return
    */
   def forValueType[V <: IsValueType[A],A](other: Validator[A])(implicit
@@ -80,7 +83,7 @@ object Validator {
     vt: ValueType[V,A],
     ca: ClassTag[A],
     cv: ClassTag[V]
-  ) = ValueTypeValidator[V,A](
+  ) : Validator[V] = ValueTypeValidator[V,A](
     va and other
   )
 
@@ -93,7 +96,7 @@ object Validator {
     validators: Validator[A]*
   )(implicit
     ca:ClassTag[A]
-  ) : CompositeValidator[A] =
+  ) : Validator[A] =
     CompositeValidator[A](validators.toList)
 
   /**
@@ -108,7 +111,7 @@ object Validator {
     f: A => Boolean
   )(implicit
     ca:ClassTag[A]
-  ) =
+  ) : Validator[A] =
     EnsureValidator[A](message,f)
 
   /**
@@ -116,7 +119,7 @@ object Validator {
    * @param message comment
    * @tparam A type validated
    */
-  def comment[A](message: String)(implicit ca:ClassTag[A]) =
+  def comment[A](message: String)(implicit ca:ClassTag[A]) : Validator[A] =
     ExplainValidator[A](Rule(Nil,message))
 
   /**
@@ -129,7 +132,7 @@ object Validator {
     va: Validator[A]
   )(implicit
     ca:ClassTag[A]
-  ) = OptionValidator[A](va)
+  ) : Validator[Option[A]] = OptionValidator[A](va)
 
   /**
    * A validator for a collection of A
@@ -146,5 +149,5 @@ object Validator {
   )(implicit
     ca:ClassTag[A],
     cm:ClassTag[M[A]]
-  ) = CollectionValidator[M,A](va)
+  ) : Validator[M[A]] = CollectionValidator[M,A](va)
 }
