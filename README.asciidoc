@@ -31,8 +31,9 @@ serialization format agnostic data validators.
 == Why do I need this?
 
 * You want to write validation code once in a single place that can be reused in many places.
-* You want to write validation code that can be used for any serialization format.
 * You want a validation DSL that is light-weight, terse, reuseable and composable.
+* You want to write validation code that doesn't require first converting to a specific serialization format.
+* You want to write validation code that can be used for with serialization format.
 * You want to be able to display a light-weight human-readable schema derived from the validation code.
 
 == Features
