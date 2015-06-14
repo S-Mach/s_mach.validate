@@ -29,16 +29,6 @@ support can be added if there is interest)
 +s_mach.validate+ is an open-source Scala library that provides methods for easily building reuseable, composable and
 serialization format agnostic data validators.
 
-== Features
-* Validators test data against one or more rules and produce a human-readable list of validation failures.
-* Validators return +List[Rule]+ which is serialization format agnostic.
-* Validators can output a light-weight human-readable "schema" of all rules tested and the expected type of each
-primitive field or value.
-* Convenience methods for converting +List[Explain]+ or +List[Rule]+ to Play JSON are provided.
-* Validators can be composed with existing Play Format/Reads.
-* Validators for any product type (case class or tuple) can be macro-generated.
-* Validators for user-defined value classes (that restrict the values of an underlying type) are supported.
-
 == Why do I need this?
 
 * You want to write validation code once in a single place that can be reused in many places for various serialization
@@ -49,6 +39,16 @@ formats.
 validation that prevents creating invalid instances) to allow fixing, serializing or transmitting structurally correct
 but possibly invalid data.
 * You want to leverage macros to avoid case class boiler plate.
+
+== Features
+* Validators test data against one or more rules and produce a human-readable list of validation failures.
+* Validators return +List[Rule]+ which is serialization format agnostic.
+* Validators can output a light-weight human-readable "schema" of all rules tested and the expected type of each
+primitive field or value.
+* Convenience methods for converting +List[Explain]+ or +List[Rule]+ to Play JSON are provided.
+* Validators can be composed with existing Play Format/Reads.
+* Validators for any product type (case class or tuple) can be macro-generated.
+* Validators for user-defined value classes (that restrict the values of an underlying type) are supported.
 
 == Example
 
