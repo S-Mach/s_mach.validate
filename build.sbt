@@ -54,6 +54,21 @@ val test = Seq(
   "org.scalatest" % "scalatest_2.11" % "2.2.0" % "test"
 )
 
+lazy val validatePlayJson = Project(
+  id = "validate-play-json",
+  base = file("validate-play-json"),
+  aggregate = Seq(
+    validate
+  ),
+  dependencies = Seq("validate")
+)
+  .settings(libraryDependencies ++= Seq(
+    "com.typesafe.play" %% "play-json" % "2.4.0"
+  ))
+  .settings(defaultSettings: _*)
+  .settings(libraryDependencies ++= test)
+
+
 lazy val validate = Project(
   id = "validate",
   base = file("."),
@@ -62,9 +77,6 @@ lazy val validate = Project(
   ),
   dependencies = Seq("validate-core")
 )
-  .settings(libraryDependencies ++= Seq(
-    "com.typesafe.play" %% "play-json" % "2.4.0"
-  ))
   .settings(defaultSettings: _*)
   .settings(libraryDependencies ++= test)
 

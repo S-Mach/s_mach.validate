@@ -4,6 +4,25 @@ v1,8-Jun-2015
 :blogpost-status: unpublished
 :blogpost-categories: s_mach, scala
 
+== Include in SBT
+
+1. Add to +build.sbt+
++
+[source,sbt,numbered]
+----
+libraryDependencies += "net.s_mach" %% "validate" % "1.0.0"
+----
+2. For Play JSON support, add to +build.sbt+
++
+[source,sbt,numbered]
+----
+libraryDependencies += "net.s_mach" %% "validate-play-json" % "1.0.0"
+----
+NOTE: +s_mach.validate+ is currently only compiled for Scala 2.11 (though 2.10.4
+support can be added if there is interest)
+
+== Overview
+
 +s_mach.validate+ is an open-source Scala library that provides methods for easily building reuseable, composable and
 serialization format agnostic data validators.
 
@@ -27,9 +46,6 @@ formats.
 validation that prevents creating invalid instances) to allow fixing, serializing or transmitting structurally correct
 but possibly invalid data.
 * You want to leverage macros to avoid case class boiler plate.
-
-== Include in SBT
-TODO
 
 == Example
 

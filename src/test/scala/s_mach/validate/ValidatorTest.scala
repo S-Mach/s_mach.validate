@@ -1,10 +1,43 @@
+/*
+                    ,i::,
+               :;;;;;;;
+              ;:,,::;.
+            1ft1;::;1tL
+              t1;::;1,
+               :;::;               _____       __  ___              __
+          fCLff ;:: tfLLC         / ___/      /  |/  /____ _ _____ / /_
+         CLft11 :,, i1tffLi       \__ \ ____ / /|_/ // __ `// ___// __ \
+         1t1i   .;;   .1tf       ___/ //___// /  / // /_/ // /__ / / / /
+       CLt1i    :,:    .1tfL.   /____/     /_/  /_/ \__,_/ \___//_/ /_/
+       Lft1,:;:       , 1tfL:
+       ;it1i ,,,:::;;;::1tti      s_mach.validate
+         .t1i .,::;;; ;1tt        Copyright (c) 2014 S-Mach, Inc.
+         Lft11ii;::;ii1tfL:       Author: lance.gatlin@gmail.com
+          .L1 1tt1ttt,,Li
+            ...1LLLL...
+*/
 package s_mach.validate
 
 import org.scalatest.{FlatSpec, Matchers}
-import scala.reflect._
-import ExampleUsage._
 
+object ValidatorTest {
+  implicit class Name(
+    val underlying: String
+  ) extends AnyVal with IsValueClass[String]
+  object Name {
+    implicit val validator_Name =
+      // Create a Validator[Name] based on a Validator[String]
+      Validator.forValueClass[Name, String] {
+        import Text._
+        // Build a Validator[String] by composing some pre-defined validators
+        nonEmpty and maxLength(64) and allLettersOrSpaces
+      }
+  }
+
+}
 class ValidatorTest extends FlatSpec with Matchers {
+  import ValidatorTest._
+
   "Validator.ensure" should "create a validator with a single rule and no schema" in {
     val v = Validator.ensure[String]("message")(_ == "test")
     v("test") should equal(Nil)
@@ -53,6 +86,7 @@ class ValidatorTest extends FlatSpec with Matchers {
     v.rules should equal(Text.nonEmpty.rules ::: Text.allDigits.rules)
     v.schema should equal(Schema(Nil,"java.lang.String",(0,Int.MaxValue)))
   }
+
   "Validator implicits" should "create optional and zero or more validators for existing implicit validators" in {
     val ov = validator[Option[Name]]
     ov(Some("aaa")) should equal(Nil)
