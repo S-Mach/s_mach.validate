@@ -57,9 +57,6 @@ val test = Seq(
 lazy val validatePlayJson = Project(
   id = "validate-play-json",
   base = file("validate-play-json"),
-  aggregate = Seq(
-    validate
-  ),
   dependencies = Seq("validate")
 )
   .settings(libraryDependencies ++= Seq(
@@ -73,7 +70,8 @@ lazy val validate = Project(
   id = "validate",
   base = file("."),
   aggregate = Seq(
-    validateCore
+    validateCore,
+    validatePlayJson
   ),
   dependencies = Seq("validate-core")
 )
@@ -86,5 +84,5 @@ lazy val validateCore = Project(
 )
   .settings(defaultSettings: _*)
   .settings(libraryDependencies ++= Seq(
-    "net.s_mach" %% "codetools" % "1.0.4"
+    "net.s_mach" %% "codetools" % "1.0.5"
   ))
