@@ -20,6 +20,7 @@ object Name {
   // as foreach, map, etc
   implicit def stringOps_Name(name: Name) = new StringOps(name.underlying)
   implicit val validator_Name =
+    // Create a Validator[Name] based on a Validator[String]
     Validator.forValueClass[Name, String] {
       import Text._
       // Build a Validator[String] by composing some pre-defined validators
