@@ -26,13 +26,7 @@ case class CollectionValidator[
         va(a).map(_.pushPath(i.toString))
       }
   val rules = va.rules
-  val schema = va.schema.map {
-    case s@Schema(Nil,_,_) => s.copy(cardinality = (0,Int.MaxValue))
-    case other => other
-  }
-  val explain = va.explain.map {
-    case s@Schema(Nil,_,_) => s.copy(cardinality = (0,Int.MaxValue))
-    case other => other
-  }
+  override val schema = va.schema.copy(cardinality = (0,Int.MaxValue))
+  val descendantSchema = va.descendantSchema
 }
 

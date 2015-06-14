@@ -36,10 +36,10 @@ sealed trait Explain {
 case class Rule(path: List[String], desc: String) extends Explain {
   override def toString = s"${
     path match {
-      case Nil => ""
-      case _ => path.mkString(".") + ": "
+      case Nil => "this"
+      case _ => path.mkString(".")
     }
-  }$desc"
+  }: $desc"
 
   override def pushPath(field: String) : Rule =
     copy(path = field :: path)
@@ -58,6 +58,20 @@ case class Rule(path: List[String], desc: String) extends Explain {
  *                    (0,Int.MaxValue) => collection
  */
 case class Schema(path: List[String], typeName: String, cardinality: (Int,Int)) extends Explain {
+  override def toString = s"${
+    path match {
+      case Nil => "this"
+      case _ => path.mkString(".")
+    }
+  }: $typeName${
+    cardinality match {
+      case (1,1) => ""
+      case (0,1) => "?"
+      case (0,Int.MaxValue) => "*"
+      case (1,Int.MaxValue) => "+"
+      case (min,max) => s"{$min,$max}"
+    }
+  }"
   override def pushPath(field: String) : Schema =
     copy(path = field :: path)
   override def popPath() : (String, Schema) =

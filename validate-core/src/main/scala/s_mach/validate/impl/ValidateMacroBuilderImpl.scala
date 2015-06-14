@@ -51,7 +51,7 @@ new s_mach.validate.impl.ValidatorImpl[$aType] {
       }.reduce((a,b) => q"$a ::: $b")
     }
   }
-  def rules = {
+  val rules = {
     ${
       fields.map { field =>
         import field._
@@ -59,21 +59,12 @@ new s_mach.validate.impl.ValidatorImpl[$aType] {
       }.reduce((a,b) => q"$a ::: $b")
     }
   }
-  def schema = {
-    Schema(Nil,${aType.toString},(1,1)) ::
+  override val schema = Schema(Nil,${aType.toString},(1,1))
+  val descendantSchema = {
     ${
       fields.map { field =>
         import field._
-        q"$validatorTermName.schema.map(_.pushPath($name))".asInstanceOf[c.Tree]
-      }.reduce((a,b) => q"$a ::: $b")
-    }
-  }
-  def explain = {
-    Schema(Nil,${aType.toString},(1,1)) ::
-    ${
-      fields.map { field =>
-        import field._
-        q"$validatorTermName.explain.map(_.pushPath($name))".asInstanceOf[c.Tree]
+        q"($validatorTermName.schema.pushPath($name) :: $validatorTermName.descendantSchema.map(_.pushPath($name)))".asInstanceOf[c.Tree]
       }.reduce((a,b) => q"$a ::: $b")
     }
   }

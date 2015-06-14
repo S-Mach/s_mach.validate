@@ -1,6 +1,5 @@
 package s_mach.validate
 
-
 import scala.language.higherKinds
 import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
@@ -23,11 +22,16 @@ trait Validator[A] {
   /** @return list of rules that this validator tests */
   def rules : List[Rule]
 
-  /** @return list of schema for type A and any fields of A (recursively) */
-  def schema: List[Schema]
+  /** @return schema for type A */
+  def schema: Schema
 
-  /** @return list of rules and schema for type A */
-  def explain: List[Explain]
+  /** @return list of schema for child fields and their descendants */
+  def descendantSchema: List[Schema]
+
+  /** @return list of rules and all schema for type A */
+  final def explain: List[Explain] =
+    // Order here is important
+    schema :: (descendantSchema ::: rules)
 
   /**
    * Compose two validators
@@ -38,6 +42,14 @@ trait Validator[A] {
 }
 
 object Validator {
+  def empty[A](implicit ca:ClassTag[A]) = new Validator[A] {
+    def apply(a: A) = Nil
+    def and(other: Validator[A]) = other
+    def rules = Nil
+    def descendantSchema = Nil
+    val schema = Schema(Nil,ca.toString(),(1,1))
+  }
+
   /**
    * Generate a DataDiff implementation for a product type
    * @tparam A the value type
@@ -65,7 +77,9 @@ object Validator {
    */
   def forValueType[V <: IsValueType[A],A](other: Validator[A])(implicit
     va:Validator[A],
-    vt: ValueType[V,A]
+    vt: ValueType[V,A],
+    ca: ClassTag[A],
+    cv: ClassTag[V]
   ) = ValueTypeValidator[V,A](
     va and other
   )
@@ -75,7 +89,11 @@ object Validator {
    * @param validators composed validators
    * @tparam A type validated
    */
-  def apply[A](validators: Validator[A]*) : CompositeValidator[A] =
+  def apply[A](
+    validators: Validator[A]*
+  )(implicit
+    ca:ClassTag[A]
+  ) : CompositeValidator[A] =
     CompositeValidator[A](validators.toList)
 
   /**
@@ -84,7 +102,13 @@ object Validator {
    * @param f tests the constraint
    * @tparam A type validated
    */
-  def ensure[A](message: String)(f: A => Boolean) =
+  def ensure[A](
+    message: String
+  )(
+    f: A => Boolean
+  )(implicit
+    ca:ClassTag[A]
+  ) =
     EnsureValidator[A](message,f)
 
   /**
@@ -92,26 +116,8 @@ object Validator {
    * @param message comment
    * @tparam A type validated
    */
-  def comment[A](message: String) =
+  def comment[A](message: String)(implicit ca:ClassTag[A]) =
     ExplainValidator[A](Rule(Nil,message))
-
-  def schema[A](
-    typeName: String,
-    cardinality: (Int,Int) = (1,1)
-  ) =
-    SchemaValidator[A](Schema(Nil, typeName, cardinality))
-
-  def schema[A](
-    cardinality: (Int,Int)
-  )(implicit
-    ca: ClassTag[A]
-  ) =
-    SchemaValidator[A](Schema(Nil, ca.toString(), cardinality))
-
-  def schema[A]()(implicit
-    ca: ClassTag[A]
-  ) =
-    SchemaValidator[A](Schema(Nil, ca.toString(), (1,1)))
 
   /**
    * A validator for an Option[A] that always passes if set to None

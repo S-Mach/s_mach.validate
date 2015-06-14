@@ -1,8 +1,12 @@
 package s_mach.validate.impl
 
-import s_mach.validate.Validator
+import s_mach.validate.{Schema, Validator}
 
-abstract class ValidatorImpl[A] extends Validator[A] {
+import scala.reflect.ClassTag
+
+abstract class ValidatorImpl[A](implicit ca:ClassTag[A]) extends Validator[A] {
+  val schema = Schema(Nil,ca.toString(),(1,1))
+
   def and(other: Validator[A]) =
     other match {
       case CompositeValidator(validators) =>
