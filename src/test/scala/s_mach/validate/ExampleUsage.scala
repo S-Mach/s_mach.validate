@@ -12,7 +12,7 @@ import s_mach.validate.play_json._
 // See http://www.scala-lang.org/api/current/index.html#scala.AnyVal
 implicit class Name(
   val underlying: String
-) extends AnyVal with IsValueType[String]
+) extends AnyVal with IsValueClass[String]
 object Name {
   import scala.language.implicitConversions
   // Because Scala doesn't support recursive implicit resolution, need to
@@ -20,31 +20,35 @@ object Name {
   // as foreach, map, etc
   implicit def stringOps_Name(name: Name) = new StringOps(name.underlying)
   implicit val validator_Name =
-    Validator.forValueType[Name, String] {
+    Validator.forValueClass[Name, String] {
       import Text._
       // Build a Validator[String] by composing some pre-defined validators
       nonEmpty and maxLength(64) and allLettersOrSpaces
     }
 
-  // Append the serialization-neutral Validator[Name] to the Play JSON Format[Name]
   implicit val format_Name =
-    Json.forValueType.format[Name,String](new Name(_)).withValidator
+    Json
+      // Auto-generate a value-class format from the already existing implicit
+      // Format[String]
+      .forValueClass.format[Name,String](new Name(_))
+      // Append the serialization-neutral Validator[Name] to the Play JSON Format[Name]
+      .withValidator
 }
 
 implicit class Age(
   val underlying: Int
-) extends AnyVal with IsValueType[Int]
+) extends AnyVal with IsValueClass[Int]
 object Age {
   implicit val validator_Age = {
     import Validator._
-    forValueType[Age,Int](
+    forValueClass[Age,Int](
       ensure(s"must be between (0,150)") { age =>
         0 <= age && age <= 150
       }
     )
   }
   implicit val format_Age =
-    Json.forValueType.format[Age,Int](new Age(_)).withValidator
+    Json.forValueClass.format[Age,Int](new Age(_)).withValidator
 }
 
 case class Person(id: Int, name: Name, age: Age)

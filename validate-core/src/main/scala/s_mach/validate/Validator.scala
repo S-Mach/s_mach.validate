@@ -57,7 +57,7 @@ object Validator {
 
   /**
    * Generate a DataDiff implementation for a product type
-   * @tparam A the value type
+   * @tparam A the product type
    * @return the DataDiff implementation
    */
   def forProductType[A <: Product] : Validator[A] =
@@ -72,17 +72,17 @@ object Validator {
   }
 
   /**
-   * A validator for a user-defined value type that constrains
+   * A validator for a user-defined value class that constrains
    * the value space of the underlying type
    * @param other validators that constrain the value space of the
    *              underlying type
    * @return
    */
-  def forValueType[V <: IsValueType[A],A](other: Validator[A])(implicit
+  def forValueClass[V <: IsValueClass[A],A](other: Validator[A])(implicit
     va:Validator[A],
     ca: ClassTag[A],
     cv: ClassTag[V]
-  ) : Validator[V] = ValueTypeValidator[V,A](
+  ) : Validator[V] = ValueClassValidator[V,A](
     va and other
   )
 

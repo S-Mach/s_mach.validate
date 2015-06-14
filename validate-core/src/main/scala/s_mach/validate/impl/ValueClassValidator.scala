@@ -4,7 +4,7 @@ import s_mach.validate._
 
 import scala.reflect.ClassTag
 
-case class ValueTypeValidator[V <: IsValueType[A],A](
+case class ValueClassValidator[V <: IsValueClass[A],A](
   va: Validator[A]
 )(implicit
   ca: ClassTag[A],

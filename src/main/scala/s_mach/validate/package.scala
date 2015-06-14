@@ -11,7 +11,7 @@ package object validate extends
   CollectionValidatorImplicits
 {
 
-  @inline implicit def fromValueType[A](v: IsValueType[A]) : A =
+  @inline implicit def valueClassToA[A](v: IsValueClass[A]) : A =
     v.underlying
 
   /** @return the Validator for the type */
