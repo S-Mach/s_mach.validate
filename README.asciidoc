@@ -40,7 +40,7 @@ serialization format agnostic data validators.
 * Write DRY validation code, exactly once, that can be re-used, composed and can be applied to all serialization formats.
 * Validate an instance against a Validator to produce a human-readable list of validation failures (+List[Rule]+).
 * Output a human-readable "schema" of all rules tested and the expected type of each
-primitive value from any Validator using +Validator[A].explain+.
+primitive value from any Validator using +Validator.explain+.
 * Macro-generate Validators for any product type (i.e. case class or tuple) using +Validator.forProductType+.
 * Constrain value space of value types (e.g. String or Int) using value classes and +Validator.forValueClass+.
 * Convert +List[Explain]+ or +List[Rule]+ to human-readable Play JSON using +prettyPrintJson+ method.
