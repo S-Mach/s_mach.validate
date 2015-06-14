@@ -49,7 +49,7 @@ primitive value from any Validator using +Validator[A].explain+.
 * Macro-generate Validators for any product type (i.e. case class or tuple) using +Validator.forProductType+.
 * Constrain value space of value types (e.g. String or Int) using value classes and +Validator.forValueClass+.
 * Convert +List[Explain]+ or +List[Rule]+ to human-readable Play JSON using +prettyPrintJson+ method.
-* Compose Validators with existing Play Format/Reads by using +Format.withValidator+ or +Reads.withValidator'
+* Compose Validators with existing Play Format/Reads by using +Format.withValidator+ or +Reads.withValidator+
 convenience methods.
 
 == Example
