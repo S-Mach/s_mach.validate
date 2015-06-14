@@ -21,8 +21,7 @@ libraryDependencies ++= Seq(
   "net.s_mach" %% "validate-play-json" % "1.0.0"
 )
 ----
-NOTE: +s_mach.validate+ artifacts are currently only compiled for Scala 2.11 (though 2.10.4
-support can be added if there is interest)
+NOTE: +s_mach.validate+ is based on blackbox macro support only present in Scala 2.11+
 
 == Overview
 
@@ -51,6 +50,15 @@ primitive value from any Validator using +Validator[A].explain+.
 * Convert +List[Explain]+ or +List[Rule]+ to human-readable Play JSON using +prettyPrintJson+ method.
 * Compose Validators with existing Play Format/Reads by using +Format.withValidator+ or +Reads.withValidator+
 convenience methods.
+
+== Versioning
++s_mach.validate+ uses semantic versioning (http://semver.org/).
++s_mach.validate+ does not use the package private modifier. Instead, all code
+files outside of the +s_mach.validate.impl+ package form the public interface
+and are governed by the rules of semantic versioning. Code files inside the
++s_mach.validate.impl+ package may be used by downstream applications and
+libraries. However, no guarantees are made as to the stability or interface of
+code in the +s_mach.validate.impl+ package between versions.
 
 == Example
 
