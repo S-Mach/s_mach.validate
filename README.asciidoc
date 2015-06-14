@@ -155,7 +155,7 @@ case class Family(
 
 object Family {
   implicit val validator_Family =
-    // Macro generate a Validator for Family. Implicits methods in
+    // Macro generate a Validator for Family. Implicit methods in
     // s_mach.validate.CollectionValidatorImplicits automatically handle creating
     // Validators for Option and any Scala collection that inherits
     // scala.collection.Traversable (as long as the contained type has an implicit
