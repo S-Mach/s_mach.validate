@@ -1,9 +1,8 @@
 package s_mach.validate
 
-import scala.collection.immutable.StringOps
-
 object ExampleUsage {
 
+import scala.collection.immutable.StringOps
 import s_mach.validate._
 import play.api.libs.json._
 import s_mach.validate.play_json._
