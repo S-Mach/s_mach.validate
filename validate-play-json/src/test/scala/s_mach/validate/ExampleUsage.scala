@@ -101,9 +101,7 @@ case class Family(
 )
 
 object Family {
-  implicit val validator_Family = {
-    import Validator._
-
+  implicit val validator_Family =
     // Macro generate a Validator for Family. Implicits methods in
     // s_mach.validate.CollectionValidatorImplicits automatically handle creating
     // Validators for Option and any Scala collection that inherits
@@ -112,15 +110,14 @@ object Family {
     // If set to None, Validator[Option[Person]], checks no Validator[Person] rules.
     // For Validator[M[A]] (where M[AA] <: Traversable[AA]) the rules of
     // Validator[Person] are checked for each Person in the collection.
-    forProductType[Family]
-      // Optional builder syntax (IntelliJ IDEA doesn't like this but it compiles)
+    Validator.forProductType[Family]
+      // Optional builder syntax
       .ensure("father must be older than children") { family =>
         family.children.forall(_.age < family.father.age)
       }
       .ensure("mother must be older than children") { family =>
         family.children.forall(_.age < family.mother.age)
       }
-  }
 
   implicit val format_Family = Json.format[Family].withValidator
 }
