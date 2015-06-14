@@ -21,7 +21,7 @@ libraryDependencies ++= Seq(
   "net.s_mach" %% "validate-play-json" % "1.0.0"
 )
 ----
-NOTE: +s_mach.validate+ is based on blackbox macro support only present in Scala 2.11+
+NOTE: +s_mach.validate+ is based on blackbox macro support, present only in Scala 2.11+
 
 == Overview
 
