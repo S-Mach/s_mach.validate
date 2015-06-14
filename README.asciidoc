@@ -164,7 +164,7 @@ object Family {
     // For Validator[M[A]] (where M[AA] <: Traversable[AA]) the rules of
     // Validator[Person] are checked for each Person in the collection.
     Validator.forProductType[Family]
-      // Optional builder syntax
+      // Add some extra constaints using the optional builder syntax
       .ensure("father must be older than children") { family =>
         family.children.forall(_.age < family.father.age)
       }

@@ -102,7 +102,7 @@ case class Family(
 
 object Family {
   implicit val validator_Family =
-    // Macro generate a Validator for Family. Implicits methods in
+    // Macro generate a Validator for Family. Implicit methods in
     // s_mach.validate.CollectionValidatorImplicits automatically handle creating
     // Validators for Option and any Scala collection that inherits
     // scala.collection.Traversable (as long as the contained type has an implicit
@@ -111,7 +111,7 @@ object Family {
     // For Validator[M[A]] (where M[AA] <: Traversable[AA]) the rules of
     // Validator[Person] are checked for each Person in the collection.
     Validator.forProductType[Family]
-      // Optional builder syntax
+      // Add some extra constaints using the optional builder syntax
       .ensure("father must be older than children") { family =>
         family.children.forall(_.age < family.father.age)
       }
