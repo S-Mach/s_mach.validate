@@ -41,14 +41,16 @@ but possibly invalid data.
 * You want to leverage macros to avoid case class boiler plate.
 
 == Features
-* Validators test data against one or more rules and produce a human-readable list of validation failures.
-* Validators return +List[Rule]+ which is serialization format agnostic.
-* Validators can output a light-weight human-readable "schema" of all rules tested and the expected type of each
-primitive field or value.
-* Convenience methods for converting +List[Explain]+ or +List[Rule]+ to Play JSON are provided.
-* Validators can be composed with existing Play Format/Reads.
-* Validators for any product type (case class or tuple) can be macro-generated.
-* Validators for user-defined value classes (that restrict the values of an underlying type) are supported.
+* Create Validators that test validation rules using a light-weight and terse DSL.
+* Write DRY validation code, exactly once, that can be re-used, composed and can be applied to all serialization formats.
+* Validate an instance against a Validator to produce a human-readable list of validation failures (+List[Rule]+).
+* Output a human-readable "schema" of all rules tested and the expected type of each
+primitive value from any Validator using +Validator[A].explain+.
+* Macro-generate Validators for any product type (i.e. case class or tuple) using +Validator.forProductType+.
+* Constrain value space of value types (e.g. String or Int) using value classes and +Validator.forValueClass+.
+* Convert +List[Explain]+ or +List[Rule]+ to human-readable Play JSON using +prettyPrintJson+ method.
+* Compose Validators with existing Play Format/Reads by using +Format.withValidator+ or +Reads.withValidator'
+convenience methods.
 
 == Example
 
