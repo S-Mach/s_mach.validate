@@ -112,13 +112,14 @@ object Family {
     // If set to None, Validator[Option[Person]], checks no Validator[Person] rules.
     // For Validator[M[A]] (where M[AA] <: Traversable[AA]) the rules of
     // Validator[Person] are checked for each Person in the collection.
-    forProductType[Family] and
-    ensure("father must be older than children") { family =>
-      family.children.forall(_.age < family.father.age)
-    } and
-    ensure("mother must be older than children") { family =>
-      family.children.forall(_.age < family.mother.age)
-    }
+    forProductType[Family]
+      // Optional builder syntax (IntelliJ IDEA doesn't like this but it compiles)
+      .ensure("father must be older than children") { family =>
+        family.children.forall(_.age < family.father.age)
+      }
+      .ensure("mother must be older than children") { family =>
+        family.children.forall(_.age < family.mother.age)
+      }
   }
 
   implicit val format_Family = Json.format[Family].withValidator

@@ -41,9 +41,35 @@ package object validate extends
   }
 
   implicit class Net_SMach_PimpMyValidator[A](val self: Validator[A]) extends AnyVal {
+    /** @return composite Validator of self and Validator.ensure */
+    def ensure(
+      message: String
+    )(
+      f: A => Boolean
+    )(implicit
+      ca:ClassTag[A]
+    ) : Validator[A] =
+      self and Validator.ensure(message)(f)
+
+    /** @return composite Validator of self and Validator.comment */
+    def comment(message: String)(implicit ca:ClassTag[A]) : Validator[A] =
+      self and Validator.comment(message)
+
+    /** @return composite Validator of self and Validator.field */
+    def field[B](
+      fieldName: String,
+      unapply: A => B
+    )(
+      vb: Validator[B]
+    )(implicit
+      ca: ClassTag[A]
+    ) : Validator[A] = self and Validator.field(fieldName,unapply)(vb)
+
     /** @return an optional validator wrapper of self */
     def optional(implicit ca:ClassTag[A]) = OptionValidator(self)
+
     /** @return a collection validator wrapper of self */
     def zeroOrMore(implicit ca:ClassTag[A]) = CollectionValidator(self)
   }
+
 }

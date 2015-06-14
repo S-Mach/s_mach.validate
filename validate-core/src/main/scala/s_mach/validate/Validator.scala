@@ -74,6 +74,13 @@ object Validator {
   }
 
   /**
+   * Alias for empty to support builder syntax
+   * @return an empty Validator
+   * */
+  @inline def builder[A](implicit ca:ClassTag[A]) : Validator[A] =
+    empty[A]
+
+  /**
    * Generate a DataDiff implementation for a product type
    * @tparam A the product type
    * @return the DataDiff implementation
@@ -138,6 +145,16 @@ object Validator {
    */
   def comment[A](message: String)(implicit ca:ClassTag[A]) : Validator[A] =
     ExplainValidator[A](Rule(Nil,message))
+
+  def field[A,B](
+    fieldName: String,
+    unapply: A => B
+  )(
+    vb: Validator[B]
+  )(implicit
+    ca: ClassTag[A]
+  ) : Validator[A] =
+    FieldValidator(fieldName,unapply,vb)
 
   /**
    * A validator for an Option[A] that always passes if set to None

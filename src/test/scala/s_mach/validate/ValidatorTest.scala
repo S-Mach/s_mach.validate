@@ -33,7 +33,7 @@ object ValidatorTest {
         nonEmpty and maxLength(64) and allLettersOrSpaces
       }
   }
-
+  case class Person(id: Int, name: Name, age: Int)
 }
 class ValidatorTest extends FlatSpec with Matchers {
   import ValidatorTest._
@@ -61,6 +61,30 @@ class ValidatorTest extends FlatSpec with Matchers {
     v("aaa") should equal(Nil)
     v.rules should equal(Rule(Nil,"message") :: Nil)
     v.schema should equal(Schema(Nil,"java.lang.String",(1,1)))
+  }
+  "Validator.field" should "create a validator that tests a constraint on a field" in {
+    val msg = "must be between 0 and 150"
+    val msg1 = "less than 1000"
+    val v = {
+      import Validator._
+
+      Validator.builder[Person]
+        .field("age",_.age) {
+          ensure(msg)(age => 0 <= age && age <= 150)
+        }
+        .field("id",_.id) {
+          ensure(msg1)(_ <  1000)
+        }
+    }
+
+    v(Person(1,"asdf",150)) should equal(Nil)
+    v(Person(1,"asdf",151)) should equal(Rule("age" :: Nil,msg) :: Nil)
+    v.rules should equal(
+      Rule("age" :: Nil,msg) ::
+      Rule("id" :: Nil,msg1) ::
+      Nil
+    )
+    v.schema should equal(Schema(Nil,"s_mach.validate.ValidatorTest$Person",(1,1)))
   }
   "Validator.optional" should "create a validator that modifies the cardinality of another validator" in {
     val v2 = Text.nonEmpty and Text.allDigits
