@@ -19,21 +19,29 @@
 package s_mach.validate
 
 /**
- * A base trait for a user-defined value-class (UDVC) that is used to
- * constrain the value space of the underlying type . The UDVC attempts
- * to behave exactly as the underlying type in code. Methods
- * such as toString, hashCode and equals* pass-thru to the underlying
- * type. For other methods, implicit conversion from the UDVC to the
- * underling type is provided in the s_mach.validate package object.
- * Zero-runtime cost conversion to the underlying type is provided
- * automatically through Scala's value-class (see
- * http://docs.scala-lang.org/overviews/core/value-classes.html).
+ * A base trait for a user-defined value-class that standardizes the name of
+ * the value-class val to "underlying" and toString to underlying toString. This
+ * allows creating a conversion from an instance of any value-class to its
+ * underlying representation.
+ *
+ * For details on value-class see:
+ * http://docs.scala-lang.org/overviews/core/value-classes.html
  *
  * Example value-class:
  * implicit class Name(underlying: String) extends AnyVal with IsValueType[String]
  *
- * Note: equals is a special case that still requires normalizing the right-hand
- * type to match the value class. Ex:
+ * Note1: When using creating a value-class for String, it is necessary to create an
+ * implicit view to StringOps to use the Scala extended String methods on instances
+ * of the value-class.
+ * Example for Name above:
+ * object Name {
+ *   import scala.collection.immutable.StringOps
+ *   implicit def stringOps_Name(n: Name) = new StringOps(n.underlying)
+ * }
+ *
+ * Note2: while almost every method on underlying can be used on the value-class without
+ * special code, the equals method is a special case that still requires wrapping the
+ * right-hand type in the value-class to match the other side. Ex:
  *
  * Name("Hal") == "Hal" // always returns false + compiler warning
  * Name("Hal") == Name("Hal") // works correctly
