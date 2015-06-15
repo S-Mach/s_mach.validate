@@ -76,6 +76,7 @@ lazy val validate = Project(
   dependencies = Seq("validate-core")
 )
   .settings(defaultSettings: _*)
+  .settings(unidocSettings: _*)
   .settings(libraryDependencies ++= test)
 
 lazy val validateCore = Project(
