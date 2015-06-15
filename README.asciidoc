@@ -126,23 +126,21 @@ object Age {
 case class Person(id: Int, name: Name, age: Age)
 
 object Person {
-  implicit val validator_Person =
-    // Macro generate a Validator for Family. Implicits methods in
-    // s_mach.validate.CollectionValidatorImplicits automatically handle creating
-    // Validators for Option and any Scala collection that inherits
-    // scala.collection.Traversable (as long as the contained type has an implicit
-    // Validator).
-    // If set to None, Validator[Option[Person]], checks no Validator[Person] rules.
-    // For Validator[M[A]] (where M[AA] <: Traversable[AA]) the rules of
-    // Validator[Person] are checked for each Person in the collection.
-    Validator.forProductType[Family]
-      // Optional builder syntax
-      .ensure("father must be older than children") { family =>
-        family.children.forall(_.age < family.father.age)
-      }
-      .ensure("mother must be older than children") { family =>
-        family.children.forall(_.age < family.mother.age)
-      }
+  implicit val validator_Person = {
+    import Validator._
+
+    // Macro generate a Validator for any product type (i.e. case class / tuple)
+    // that implicitly resolves all validators for declared fields. For Person,
+    // Validator[Int] for the id field, Validator[Name] for the name field and
+    // Validator[Age] for the age field are automatically composed into a
+    // Validator[Person].
+    forProductType[Person] and
+    // Compose the macro generated Validator[Person] with an additional condition
+    ensure(
+      "age plus id must be less than 1000"
+      // p.age is used here as if it was an Int here without any extra code
+    )(p => p.id + p.age < 1000)
+  }
 
   implicit val format_Person = Json.format[Person].withValidator
 }
