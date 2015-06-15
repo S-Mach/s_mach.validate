@@ -60,7 +60,7 @@ lazy val validatePlayJson = Project(
   dependencies = Seq("validate")
 )
   .settings(libraryDependencies ++= Seq(
-    "com.typesafe.play" %% "play-json" % "2.4.0"
+    "com.typesafe.play" %% "play-json" % "2.3.8"
   ))
   .settings(defaultSettings: _*)
   .settings(libraryDependencies ++= test)
