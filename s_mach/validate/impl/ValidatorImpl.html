@@ -1,22 +1,22 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>CollectionValidatorImplicits - s_mach.validate.CollectionValidatorImplicits</title>
-          <meta name="description" content="CollectionValidatorImplicits - s mach.validate.CollectionValidatorImplicits" />
-          <meta name="keywords" content="CollectionValidatorImplicits s mach.validate.CollectionValidatorImplicits" />
+          <title>ValidatorImpl - s_mach.validate.impl.ValidatorImpl</title>
+          <meta name="description" content="ValidatorImpl - s mach.validate.impl.ValidatorImpl" />
+          <meta name="keywords" content="ValidatorImpl s mach.validate.impl.ValidatorImpl" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../lib/template.js"></script>
-      <script type="text/javascript" src="../../lib/tools.tooltip.js"></script>
+      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../lib/tools.tooltip.js"></script>
       
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../index.html';
-            var hash = 's_mach.validate.CollectionValidatorImplicits';
+            var url = '../../../index.html';
+            var hash = 's_mach.validate.impl.ValidatorImpl';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -28,35 +28,33 @@
         </head>
         <body class="type">
       <div id="definition">
-        <a href="CollectionValidatorImplicits$.html" title="See companion object"><img src="../../lib/trait_to_object_big.png" /></a>
-        <p id="owner"><a href="../package.html" class="extype" name="s_mach">s_mach</a>.<a href="package.html" class="extype" name="s_mach.validate">validate</a></p>
-        <h1><a href="CollectionValidatorImplicits$.html" title="See companion object">CollectionValidatorImplicits</a></h1><h3><span class="morelinks"><div>
-            Related Docs:
-            <a href="CollectionValidatorImplicits$.html" title="See companion object">object CollectionValidatorImplicits</a>
-            | <a href="package.html" class="extype" name="s_mach.validate">package validate</a>
+        <img src="../../../lib/class_big.png" />
+        <p id="owner"><a href="../../package.html" class="extype" name="s_mach">s_mach</a>.<a href="../package.html" class="extype" name="s_mach.validate">validate</a>.<a href="package.html" class="extype" name="s_mach.validate.impl">impl</a></p>
+        <h1>ValidatorImpl</h1><h3><span class="morelinks"><div>Related Doc:
+            <a href="package.html" class="extype" name="s_mach.validate.impl">package impl</a>
           </div></span></h3><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
       </a>
     </span>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">trait</span>
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">CollectionValidatorImplicits</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">ValidatorImpl</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="../Validator.html" class="extype" name="s_mach.validate.Validator">Validator</a>[<span class="extype" name="s_mach.validate.impl.ValidatorImpl.A">A</span>]</span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../Validator.html" class="extype" name="s_mach.validate.Validator">Validator</a>[<span class="extype" name="s_mach.validate.impl.ValidatorImpl.A">A</span>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
             <span class="toggle">Known Subclasses</span>
-            <div class="subClasses hiddenContent"><a href="CollectionValidatorImplicits$.html" class="extype" name="s_mach.validate.CollectionValidatorImplicits">CollectionValidatorImplicits</a></div>
+            <div class="subClasses hiddenContent"><a href="CollectionValidator.html" class="extype" name="s_mach.validate.impl.CollectionValidator">CollectionValidator</a>, <a href="CompositeValidator.html" class="extype" name="s_mach.validate.impl.CompositeValidator">CompositeValidator</a>, <a href="EnsureValidator.html" class="extype" name="s_mach.validate.impl.EnsureValidator">EnsureValidator</a>, <a href="ExplainValidator.html" class="extype" name="s_mach.validate.impl.ExplainValidator">ExplainValidator</a>, <a href="FieldValidator.html" class="extype" name="s_mach.validate.impl.FieldValidator">FieldValidator</a>, <a href="OptionValidator.html" class="extype" name="s_mach.validate.impl.OptionValidator">OptionValidator</a>, <a href="ValueClassValidator.html" class="extype" name="s_mach.validate.impl.ValueClassValidator">ValueClassValidator</a></div>
           </div></div>
         
 
@@ -74,7 +72,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="s_mach.validate.CollectionValidatorImplicits"><span>CollectionValidatorImplicits</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="s_mach.validate.impl.ValidatorImpl"><span>ValidatorImpl</span></li><li class="in" name="s_mach.validate.Validator"><span>Validator</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -92,14 +90,90 @@
 
       <div id="template">
         <div id="allMembers">
-        
-
-        
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="s_mach.validate.impl.ValidatorImpl#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;()(implicitca:scala.reflect.ClassTag[A]):s_mach.validate.impl.ValidatorImpl[A]"></a>
+      <a id="&lt;init&gt;:ValidatorImpl[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ValidatorImpl</span><span class="params">()</span><span class="params">(<span class="implicit">implicit </span><span name="ca">ca: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="s_mach.validate.impl.ValidatorImpl.A">A</span>]</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@&lt;init&gt;()(implicitca:scala.reflect.ClassTag[A]):s_mach.validate.impl.ValidatorImpl[A]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
 
         
 
         <div id="values" class="values members">
-              <h3>Value Members</h3>
+              <h3>Abstract Value Members</h3>
+              <ol><li name="s_mach.validate.Validator#apply" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="apply(a:A):List[s_mach.validate.Rule]"></a>
+      <a id="apply(A):List[Rule]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="a">a: <span class="extype" name="s_mach.validate.impl.ValidatorImpl.A">A</span></span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="../Rule.html" class="extype" name="s_mach.validate.Rule">Rule</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@apply(a:A):List[s_mach.validate.Rule]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Validate an instance</p><div class="fullcomment"><div class="comment cmt"><p>Validate an instance</p></div><dl class="paramcmts block"><dt class="param">a</dt><dd class="cmt"><p>instance to validate</p></dd><dt>returns</dt><dd class="cmt"><p>list of rules that failed to validate or
+        Nil if the instance passes all validation
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Validator.html" class="extype" name="s_mach.validate.Validator">Validator</a></dd></dl></div>
+    </li><li name="s_mach.validate.Validator#descendantSchema" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="descendantSchema:List[s_mach.validate.Schema]"></a>
+      <a id="descendantSchema:List[Schema]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">descendantSchema</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="../Schema.html" class="extype" name="s_mach.validate.Schema">Schema</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@descendantSchema:List[s_mach.validate.Schema]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>list of schema for child fields and their descendants</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Validator.html" class="extype" name="s_mach.validate.Validator">Validator</a></dd></dl></div>
+    </li><li name="s_mach.validate.Validator#rules" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="rules:List[s_mach.validate.Rule]"></a>
+      <a id="rules:List[Rule]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">rules</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="../Rule.html" class="extype" name="s_mach.validate.Rule">Rule</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@rules:List[s_mach.validate.Rule]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>list of rules that this validator tests</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Validator.html" class="extype" name="s_mach.validate.Validator">Validator</a></dd></dl></div>
+    </li></ol>
+            </div>
+
+        <div id="values" class="values members">
+              <h3>Concrete Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
@@ -112,8 +186,8 @@
         <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@!=(x$1:Any):Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -129,8 +203,8 @@
         <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@##():Int" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@##():Int" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -146,11 +220,29 @@
         <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@==(x$1:Any):Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@==(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="s_mach.validate.impl.ValidatorImpl#and" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="and(other:s_mach.validate.Validator[A]):s_mach.validate.Validator[A]"></a>
+      <a id="and(Validator[A]):Validator[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">and</span><span class="params">(<span name="other">other: <a href="../Validator.html" class="extype" name="s_mach.validate.Validator">Validator</a>[<span class="extype" name="s_mach.validate.impl.ValidatorImpl.A">A</span>]</span>)</span><span class="result">: <a href="../Validator.html" class="extype" name="s_mach.validate.Validator">Validator</a>[<span class="extype" name="s_mach.validate.impl.ValidatorImpl.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@and(other:s_mach.validate.Validator[A]):s_mach.validate.Validator[A]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Compose two validators</p><div class="fullcomment"><div class="comment cmt"><p>Compose two validators</p></div><dl class="paramcmts block"><dt class="param">other</dt><dd class="cmt"><p>validtor to compose with this</p></dd><dt>returns</dt><dd class="cmt"><p>a new validator composed of this and other
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="s_mach.validate.impl.ValidatorImpl">ValidatorImpl</a> → <a href="../Validator.html" class="extype" name="s_mach.validate.Validator">Validator</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -163,8 +255,8 @@
         <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@asInstanceOf[T0]:T0" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -180,11 +272,11 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@clone():Object" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@clone():Object" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
@@ -203,8 +295,8 @@
         <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -220,11 +312,28 @@
         <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@equals(x$1:Any):Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@equals(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="s_mach.validate.Validator#explain" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="explain:List[s_mach.validate.Explain]"></a>
+      <a id="explain:List[Explain]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">explain</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="../Explain.html" class="extype" name="s_mach.validate.Explain">Explain</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@explain:List[s_mach.validate.Explain]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>list of rules and all schema for type A</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Validator.html" class="extype" name="s_mach.validate.Validator">Validator</a></dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -237,11 +346,11 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@finalize():Unit" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@finalize():Unit" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -260,8 +369,8 @@
         <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@getClass():Class[_]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@getClass():Class[_]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -277,8 +386,8 @@
         <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@hashCode():Int" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@hashCode():Int" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -294,8 +403,8 @@
         <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -311,8 +420,8 @@
         <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -328,8 +437,8 @@
         <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@notify():Unit" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@notify():Unit" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -345,11 +454,28 @@
         <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@notifyAll():Unit" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@notifyAll():Unit" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="s_mach.validate.impl.ValidatorImpl#schema" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="schema:s_mach.validate.Schema"></a>
+      <a id="schema:Schema"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">schema</span><span class="result">: <a href="../Schema.html" class="extype" name="s_mach.validate.Schema">Schema</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@schema:s_mach.validate.Schema" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>schema for type A</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="s_mach.validate.impl.ValidatorImpl">ValidatorImpl</a> → <a href="../Validator.html" class="extype" name="s_mach.validate.Validator">Validator</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -362,8 +488,8 @@
         <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -379,47 +505,11 @@
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@toString():String" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@toString():String" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="s_mach.validate.CollectionValidatorImplicits#validator_Option" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="validator_Option[A](implicitva:s_mach.validate.Validator[A],implicitca:scala.reflect.ClassTag[A]):s_mach.validate.impl.OptionValidator[A]"></a>
-      <a id="validator_Option[A](Validator[A],ClassTag[A]):OptionValidator[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">validator_Option</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="va">va: <a href="Validator.html" class="extype" name="s_mach.validate.Validator">Validator</a>[<span class="extype" name="s_mach.validate.CollectionValidatorImplicits.validator_Option.A">A</span>]</span>, <span name="ca">ca: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="s_mach.validate.CollectionValidatorImplicits.validator_Option.A">A</span>]</span>)</span><span class="result">: <a href="impl/OptionValidator.html" class="extype" name="s_mach.validate.impl.OptionValidator">OptionValidator</a>[<span class="extype" name="s_mach.validate.CollectionValidatorImplicits.validator_Option.A">A</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@validator_Option[A](implicitva:s_mach.validate.Validator[A],implicitca:scala.reflect.ClassTag[A]):s_mach.validate.impl.OptionValidator[A]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>an optional validator wrapper for any type that implicitly defines
-        a validator</p></dd></dl></div>
-    </li><li name="s_mach.validate.CollectionValidatorImplicits#validator_Traversable" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="validator_Traversable[M[AA]&lt;:Traversable[AA],A](implicitva:s_mach.validate.Validator[A],implicitca:scala.reflect.ClassTag[A],implicitcm:scala.reflect.ClassTag[M[A]]):s_mach.validate.impl.CollectionValidator[M,A]"></a>
-      <a id="validator_Traversable[M[AA]&lt;:Traversable[AA],A](Validator[A],ClassTag[A],ClassTag[M[A]]):CollectionValidator[M,A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">validator_Traversable</span><span class="tparams">[<span name="M">M<span class="tparams">[<span name="AA">AA</span>]</span> &lt;: <span class="extype" name="scala.Traversable">Traversable</span>[<span class="extype" name="s_mach.validate.CollectionValidatorImplicits.validator_Traversable.M.AA">AA</span>]</span>, <span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="va">va: <a href="Validator.html" class="extype" name="s_mach.validate.Validator">Validator</a>[<span class="extype" name="s_mach.validate.CollectionValidatorImplicits.validator_Traversable.A">A</span>]</span>, <span name="ca">ca: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="s_mach.validate.CollectionValidatorImplicits.validator_Traversable.A">A</span>]</span>, <span name="cm">cm: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="s_mach.validate.CollectionValidatorImplicits.validator_Traversable.M">M</span>[<span class="extype" name="s_mach.validate.CollectionValidatorImplicits.validator_Traversable.A">A</span>]]</span>)</span><span class="result">: <a href="impl/CollectionValidator.html" class="extype" name="s_mach.validate.impl.CollectionValidator">CollectionValidator</a>[<span class="extype" name="s_mach.validate.CollectionValidatorImplicits.validator_Traversable.M">M</span>, <span class="extype" name="s_mach.validate.CollectionValidatorImplicits.validator_Traversable.A">A</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@validator_Traversable[M[AA]&lt;:Traversable[AA],A](implicitva:s_mach.validate.Validator[A],implicitca:scala.reflect.ClassTag[A],implicitcm:scala.reflect.ClassTag[M[A]]):s_mach.validate.impl.CollectionValidator[M,A]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a collection validator wrapper for any type that implicitly defines
-        a validator</p></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -432,8 +522,8 @@
         <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@wait():Unit" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@wait():Unit" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -455,8 +545,8 @@
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -478,8 +568,8 @@
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#s_mach.validate.CollectionValidatorImplicits@wait(x$1:Long):Unit" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
+      <a href="../../../index.html#s_mach.validate.impl.ValidatorImpl@wait(x$1:Long):Unit" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -498,7 +588,9 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="s_mach.validate.Validator">
+              <h3>Inherited from <a href="../Validator.html" class="extype" name="s_mach.validate.Validator">Validator</a>[<span class="extype" name="s_mach.validate.impl.ValidatorImpl.A">A</span>]</h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
