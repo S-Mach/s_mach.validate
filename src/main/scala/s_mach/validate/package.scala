@@ -28,6 +28,7 @@ package object validate extends
   DataTypeValidatorImplicits with
   CollectionValidatorImplicits
 {
+  /* Prefix added to implicits to prevent shadowing: FvWhDLaDRG */
 
   @inline implicit def valueClassToA[A](v: IsValueClass[A]) : A =
     v.underlying
@@ -35,12 +36,12 @@ package object validate extends
   /** @return the Validator for the type */
   def validator[A](implicit v:Validator[A]) = v
 
-  implicit class Net_SMach_PimpEverything[A](val self: A) extends AnyVal {
+  implicit class FvWhDLaDRG_PML[A](val self: A) extends AnyVal {
     /** @return list of rules that did not pass OR Nil if valid */
     def validate(implicit v:Validator[A]) : List[Rule] = v(self)
   }
 
-  implicit class Net_SMach_PimpMyValidator[A](val self: Validator[A]) extends AnyVal {
+  implicit class FvWhDLaDRG_ValidatorPML[A](val self: Validator[A]) extends AnyVal {
     /** @return composite Validator of self and Validator.ensure */
     def ensure(
       message: String
