@@ -4,6 +4,8 @@ v1,8-Jun-2015
 :blogpost-status: unpublished
 :blogpost-categories: s_mach, scala
 
+image:https://travis-ci.org/S-Mach/s_mach.validate.svg[Build Status, link="https://travis-ci.org/S-Mach/s_mach.validate"]  image:https://coveralls.io/repos/S-Mach/s_mach.validate/badge.png?branch=master[Test Coverage,link="https://coveralls.io/r/S-Mach/s_mach.validate"] https://github.com/S-Mach/s_mach.validate[Code] http://s-mach.github.io/s_mach.validate/#s_mach.validate.package[Scaladoc]
+
 == Include in SBT
 
 1. Add to +build.sbt+
