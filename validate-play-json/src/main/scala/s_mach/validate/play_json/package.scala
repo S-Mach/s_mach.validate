@@ -6,7 +6,7 @@ import play_json.PlayJsonUtils._
 package object play_json {
   /* Prefix added to implicits to prevent shadowing: VJNoCcdSFL */
 
-  object ValueTypeJson {
+  object ValueClassJson {
     def writes[V <: IsValueClass[A],A](implicit
       aWrites:Writes[A]
     ) : Writes[V] =
@@ -26,7 +26,7 @@ package object play_json {
   }
 
   implicit class VJNoCcdSFL_JsonTypePML(val self: Json.type) extends AnyVal {
-    def forValueClass = ValueTypeJson
+    def forValueClass = ValueClassJson
   }
 
   implicit class VJNoCcdSFL_ListExplainPML(val self: List[Explain]) extends AnyVal {

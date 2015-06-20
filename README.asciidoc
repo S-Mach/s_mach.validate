@@ -17,7 +17,7 @@ libraryDependencies += "net.s_mach" %% "validate" % "1.0.0"
 2. For Play JSON support, add to +build.sbt+
 +
 [source,sbt,numbered]
-----
+----`
 libraryDependencies ++= Seq(
   "net.s_mach" %% "validate" % "1.0.0",
   "net.s_mach" %% "validate-play-json" % "1.0.0"
