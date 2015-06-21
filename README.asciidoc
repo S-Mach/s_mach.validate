@@ -17,7 +17,7 @@ libraryDependencies += "net.s_mach" %% "validate" % "1.0.0"
 2. For Play JSON support, add to +build.sbt+
 +
 [source,sbt,numbered]
-----`
+----
 libraryDependencies ++= Seq(
   "net.s_mach" %% "validate" % "1.0.0",
   "net.s_mach" %% "validate-play-json" % "1.0.0"
@@ -38,6 +38,7 @@ serialization format agnostic data validators.
 * You want to be able to display a light-weight human-readable schema derived from the validation code.
 
 == Features
+
 * Create validators that test validation rules using a light-weight and terse DSL.
 * Write DRY validation code, exactly once, that can be re-used, composed and can be applied to all serialization formats.
 * Validate an instance against a validator to produce a human-readable list of validation failures (+List[Rule]+).
@@ -61,6 +62,7 @@ code in the +s_mach.validate.impl+ package between versions.
 == Example
 
 ----
+
 $ sbt
 [info] Set current project to validate (in build file:/Users/lancegatlin/Code/s_mach.validate/)
 > project validate-play-json
