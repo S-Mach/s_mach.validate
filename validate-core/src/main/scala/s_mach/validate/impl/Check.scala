@@ -14,26 +14,13 @@
          .t1i .,::;;; ;1tt        Copyright (c) 2015 S-Mach, Inc.
          Lft11ii;::;ii1tfL:       Author: lance.gatlin@gmail.com
           .L1 1tt1ttt,,Li
-            ...1LLLL..
+            ...1LLLL...
 */
-package s_mach.validate
+package s_mach.validate.impl
 
-import scala.language.higherKinds
+import s_mach.validate._
 
-object CollectionValidatorImplicits extends CollectionValidatorImplicits
-trait CollectionValidatorImplicits {
-  /** @return an optional validator wrapper for any type that implicitly defines
-    *         a validator */
-  implicit def validator_Option[A](implicit
-    va:Validator[A]
-  ) : Validator[Option[A]] = Validator.forOption(va)
-
-  /** @return a collection validator wrapper for any type that implicitly defines
-    *         a validator */
-  implicit def validator_Traversable[
-    M[AA] <: Traversable[AA],
-    A
-  ](implicit
-    va:Validator[A]
-  ) : Validator[M[A]] = Validator.forTraversable(va)
+case class Check[A](rule: Rule)(check: A => Boolean) {
+  def apply(a: A) : List[Rule] =
+    if(check(a)) Nil else rule :: Nil
 }

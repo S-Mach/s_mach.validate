@@ -18,72 +18,47 @@
 */
 package s_mach.validate
 
-import scala.language.higherKinds
+
+
 import scala.language.experimental.macros
+import scala.language.higherKinds
 import scala.reflect.macros.blackbox
-import scala.reflect.ClassTag
+import s_mach.codetools.IsValueClass
+import s_mach.metadata._
 import s_mach.validate.impl._
 
 /**
- * A type-class for validating instances of a type
- * @tparam A type validated
+ * Base trait for a type-class validator that can check an instance of data
+ * against a set of rules
+ * @tparam A type of data
  */
 trait Validator[A] {
-  /**
-   * Validate an instance
-   * @param a instance to validate
-   * @return list of rules that failed to validate or
-   *         Nil if the instance passes all validation
-   */
-  def apply(a: A) : List[Rule]
+  def thisRules : List[Rule]
+  def rules : TypeMetadata[List[Rule]]
+  def apply(a: A) : Metadata[List[Rule]]
 
-  /** @return list of rules that this validator tests */
-  def rules : List[Rule]
-
-  /** @return schema for type A */
-  def schema: Schema
-
-  /** @return list of schema for child fields and their descendants */
-  def descendantSchema: List[Schema]
-
-  /** @return list of rules and all schema for type A */
-  final def explain: List[Explain] =
-    // Order here is important
-    schema :: (descendantSchema ::: rules)
-
-  /**
-   * Compose two validators
-   * @param other validtor to compose with this
-   * @return a new validator composed of this and other
-   */
   def and(other: Validator[A]) : Validator[A]
 }
 
 object Validator {
-  // Note: have
-  /**
-   * @return a Validator that has no rules or descendant schema
-   * with a default schema for the type
-   */
-  def empty[A](implicit ca:ClassTag[A]) = new Validator[A] {
-    def apply(a: A) = Nil
-    def and(other: Validator[A]) = other
-    def rules = Nil
-    def descendantSchema = Nil
-    val schema = Schema(Nil,ca.toString(),(1,1))
-  }
+  /** @return a Validator for a value that has no rules */
+  def empty[A] = ValidatorOps.empty[A]
 
   /**
-   * Alias for empty to support builder syntax
-   * @return an empty Validator
-   * */
-  @inline def builder[A](implicit ca:ClassTag[A]) : Validator[A] =
-    empty[A]
-
-  /**
-   * Generate a DataDiff implementation for a product type
+   * Create an empty Validator for a product type that can
+   * be used to manually build a validator that uses no macro
+   * generated code.
+   * Note: not generally needed. Use forProductType macro.
    * @tparam A the product type
-   * @return the DataDiff implementation
+   * @return
+   */
+  def builder[A] : ProductBuilder[Validator,A] =
+    ValidatorForProduct[A](Map.empty)
+
+  /**
+   * Generate a Validator implementation for a product type
+   * @tparam A the product type
+   * @return the Validator implementation
    */
   def forProductType[A <: Product] : Validator[A] =
     macro macroForProductType[A]
@@ -92,96 +67,79 @@ object Validator {
   def macroForProductType[A:c.WeakTypeTag](
     c: blackbox.Context
   ) : c.Expr[Validator[A]] = {
-    val builder = new impl.ValidateMacroBuilderImpl(c)
+    val builder = new ValidatorMacroBuilder(c)
     builder.build[A]().asInstanceOf[c.Expr[Validator[A]]]
   }
 
   /**
-   * A validator for a user-defined value class that constrains
+   * Generate a validator for a user-defined value class that constrains
    * the value space of the underlying type
-   * @param other validators that constrain the value space of the
-   *              underlying type
    * @return
    */
-  def forValueClass[V <: IsValueClass[A],A](other: Validator[A])(implicit
-    va:Validator[A],
-    ca: ClassTag[A],
-    cv: ClassTag[V]
-  ) : Validator[V] = ValueClassValidator[V,A](
-    va and other
-  )
+  def forValueClass[V <: IsValueClass[A],A](
+    f: Validator[A] => Validator[A]
+  )(implicit va: Validator[A]) : Validator[V] =
+    ValidatorOps.forValueClass[V,A](f)
 
   /**
-   * A validator that is composed of zero or more validators
-   * @param validators composed validators
-   * @tparam A type validated
+   * Generate a validator for a user-defined value class that constrains
+   * the value space of the underlying type
+   * @return
    */
-  def apply[A](
-    validators: Validator[A]*
-  )(implicit
-    ca:ClassTag[A]
-  ) : Validator[A] =
-    CompositeValidator[A](validators.toList)
+  def forDistinctTypeAlias[V <: A,A](
+    f: Validator[A] => Validator[A]
+  )(implicit va: Validator[A]) : Validator[V] =
+    ValidatorOps.forDistinctTypeAlias[V,A](f)
 
   /**
    * A validator that tests a constraint
-   * @param message text to explain what the constraint tests
-   * @param f tests the constraint
+   * @param rule rule description
+   * @param check tests the constraint
    * @tparam A type validated
    */
   def ensure[A](
-    message: String
+    rule: Rule
   )(
-    f: A => Boolean
-  )(implicit
-    ca:ClassTag[A]
-  ) : Validator[A] =
-    EnsureValidator[A](message,f)
+    check: A => Boolean
+  ) : Validator[A] = ValidatorOps.ensure(rule)(check)
+
+//  /**
+//   * A validator that tests a constraint
+//   * @param message rule description
+//   * @param check tests the constraint
+//   * @tparam A type validated
+//   */
+//  def ensure[A](
+//    message: String
+//  )(
+//    check: A => Boolean
+//  ) : Validator[A] = ValidatorOps.ensure(Rule(message))(check)
 
   /**
-   * A validator that adds a comment to rules
-   * @param message comment
+   * A validator that adds an unchecked rule that is only displayed
+   * @param rule rule description
    * @tparam A type validated
    */
-  def comment[A](message: String)(implicit ca:ClassTag[A]) : Validator[A] =
-    ExplainValidator[A](Rule(Nil,message))
-
-  def field[A,B](
-    fieldName: String,
-    unapply: A => B
-  )(
-    vb: Validator[B]
-  )(implicit
-    ca: ClassTag[A]
-  ) : Validator[A] =
-    FieldValidator(fieldName,unapply,vb)
+  def comment[A](rule: Rule) : Validator[A] =
+    ValidatorOps.comment(rule)
 
   /**
    * A validator for an Option[A] that always passes if set to None
    * @param va the validator for A
-   * @param ca class tag for A
    * @tparam A type validated
    */
-  def optional[A](
+  def forOption[A](implicit
     va: Validator[A]
-  )(implicit
-    ca:ClassTag[A]
-  ) : Validator[Option[A]] = OptionValidator[A](va)
+  ) : Validator[Option[A]] = ValidatorOps.forOption[A](va)
 
   /**
    * A validator for a collection of A
    * @param va the validator for A
-   * @param ca the class tag for A
    * @tparam M the collection type
    * @tparam A the type validated
    */
-  def zeroOrMore[
+  def forTraversable[
     M[AA] <: Traversable[AA],
     A
-  ](
-    va: Validator[A]
-  )(implicit
-    ca:ClassTag[A],
-    cm:ClassTag[M[A]]
-  ) : Validator[M[A]] = CollectionValidator[M,A](va)
+  ](implicit va: Validator[A]) : Validator[M[A]] = ValidatorOps.forTraversable(va)
 }

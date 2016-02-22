@@ -18,6 +18,8 @@
 */
 package s_mach.validate.codegen
 
+import s_mach.validate.Header.header
+
 object TupleValidatorImplicitsCodeGen {
   def gen(n: Int) = {
     val lcs = ('a' to 'z').map(_.toString).take(n)
@@ -31,7 +33,7 @@ object TupleValidatorImplicitsCodeGen {
 s"""
   implicit def mkValidator_Tuple${n}[$typeParms](implicit
     ${(0 until n).map { i =>
-      s"${lcs(i)}Validator: Validator[${ucs(i)}]"
+      s"v${lcs(i)}: Validator[${ucs(i)}]"
     }.mkString(",\n    ")}
   ) : Validator[$aType] =
     Validator.forProductType[$aType]
@@ -42,8 +44,8 @@ s"""
 
     val contents =
 s"""$header
-package s_mach.validate
-/* WARNING: Generated code. To modify see s_mach.validate.TupleValidatorImplicits */
+package s_mach.validate.validate
+/* WARNING: Generated code. To modify see s_mach.validate.validate.codegen.TupleValidatorImplicitsCodeGen */
 trait TupleValidatorImplicits {
 ${(2 to 22).map(i => gen(i)).mkString("\n")}
 }

@@ -14,26 +14,30 @@
          .t1i .,::;;; ;1tt        Copyright (c) 2015 S-Mach, Inc.
          Lft11ii;::;ii1tfL:       Author: lance.gatlin@gmail.com
           .L1 1tt1ttt,,Li
-            ...1LLLL..
-*/
-package s_mach.validate
+            ...1LLLL...
+*/package s_mach.validate
 
-import scala.language.higherKinds
+import s_mach.validate.impl.MessageForRuleOps
 
-object CollectionValidatorImplicits extends CollectionValidatorImplicits
-trait CollectionValidatorImplicits {
-  /** @return an optional validator wrapper for any type that implicitly defines
-    *         a validator */
-  implicit def validator_Option[A](implicit
-    va:Validator[A]
-  ) : Validator[Option[A]] = Validator.forOption(va)
+/**
+ * Type-class for building a human readable message for a rule. A default
+ * English only implementation is provided. Implementors are free to replace the
+ * default with an implementation that utilizes the localization framework
+ * of their choice.
+ */
+trait MessageForRule {
+  /** @return human readable message for rule */
+  def messageFor(rule: Rule) : String
+}
 
-  /** @return a collection validator wrapper for any type that implicitly defines
-    *         a validator */
-  implicit def validator_Traversable[
-    M[AA] <: Traversable[AA],
-    A
-  ](implicit
-    va:Validator[A]
-  ) : Validator[M[A]] = Validator.forTraversable(va)
+
+object MessageForRule {
+  val default = new MessageForRule {
+    def messageFor(rule: Rule) =
+      MessageForRuleOps.defaultMessageFor(rule)
+  }
+
+  object Implicits {
+    implicit val defaultMessageForRule = MessageForRule.default
+  }
 }

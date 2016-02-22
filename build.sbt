@@ -40,9 +40,9 @@ val publishSettings = Seq(
 )
 
 val defaultSettings = Defaults.coreDefaultSettings ++ publishSettings ++ Seq(
-  scalaVersion := "2.11.6",
+  scalaVersion := "2.11.7",
   organization := "net.s_mach",
-  version := "1.0.0",
+  version := "2.0.0",
   scalacOptions ++= Seq(
     "-feature",
     "-unchecked",
@@ -60,7 +60,8 @@ lazy val validatePlayJson = Project(
   dependencies = Seq("validate")
 )
   .settings(libraryDependencies ++= Seq(
-    "com.typesafe.play" %% "play-json" % "2.3.9"
+    "com.typesafe.play" %% "play-json" % "2.3.9",
+    "com.github.fge" % "json-schema-validator" % "2.2.6" % "test"
   ))
   .settings(defaultSettings: _*)
   .settings(libraryDependencies ++= test)
@@ -85,5 +86,6 @@ lazy val validateCore = Project(
 )
   .settings(defaultSettings: _*)
   .settings(libraryDependencies ++= Seq(
-    "net.s_mach" %% "codetools" % "1.0.5"
-  ))
+    "net.s_mach" %% "metadata" % "1.0.0",
+    "net.s_mach" %% "codetools" % "1.1.0"
+  ) ++ test)

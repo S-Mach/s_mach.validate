@@ -18,38 +18,31 @@
 */
 package s_mach.validate.impl
 
+import s_mach.metadata._
 import s_mach.validate._
 
-case class CompositeValidator[A](
-  validators: List[Validator[A]]
+case class CheckValidator[A](
+  checks : List[Check[A]]
 ) extends ValidatorImpl[A] {
-  require(validators.nonEmpty, "validators must be non empty")
-  val thisRules = validators.flatMap(_.thisRules)
-  val rules =
-    validators
-      .map(_.rules)
-      .reduce { (tm1,tm2) =>
-        tm1.merge(tm2)(_ ::: _)
-      }
-  def apply(a: A) =
-      validators
-        .map(_(a))
-        .reduce { (m1,m2) =>
-          m1.merge(m2)(_ ::: _)
-        }
+  val thisRules = checks.map(_.rule)
+  val rules = TypeMetadata.Val(thisRules)
+  def apply(a: A) = Metadata.Val(checks.flatMap(_(a)))
 
   override def and(other: Validator[A]) = {
     other match {
-      case CompositeValidator(otherValidators) =>
-        // Note: not using distinct here to preserve insert order
-        val builder = List.newBuilder[Validator[A]]
-        builder ++= validators
-        otherValidators.foreach { v =>
-          if(validators.exists(_ eq v) == false) {
-            builder += v
+      case CheckValidator(otherChecks) =>
+        // Note: not using Set directly to preserve insert order
+        val builder = List.newBuilder[Check[A]]
+        builder ++= checks
+        // Using LinkedHashSet here to dedup Checks and preserve insert order
+        val checkSet = checks.toSet
+
+        otherChecks.foreach { c =>
+          if(checkSet.contains(c) == false) {
+            builder += c
           }
         }
-        CompositeValidator(builder.result())
+        CheckValidator(builder.result())
       case _ => super.and(other)
     }
   }

@@ -18,59 +18,78 @@
 */
 package s_mach
 
-import scala.language.higherKinds
+
 import scala.language.implicitConversions
-import s_mach.validate.impl._
-import scala.reflect.ClassTag
+import scala.language.higherKinds
+import s_mach.metadata._
 
 package object validate extends
   TupleValidatorImplicits with
   DataTypeValidatorImplicits with
-  CollectionValidatorImplicits
+  CollectionValidatorImplicits with
+  ValidatorImplicits
 {
   /* Prefix added to implicits to prevent shadowing: FvWhDLaDRG */
 
-  @inline implicit def valueClassToA[A](v: IsValueClass[A]) : A =
-    v.underlying
-
-  /** @return the Validator for the type */
-  def validator[A](implicit v:Validator[A]) = v
+  type TypeRemarks = TypeMetadata[List[String]]
+  type Remarks = Metadata[List[String]]
 
   implicit class FvWhDLaDRG_PML[A](val self: A) extends AnyVal {
     /** @return list of rules that did not pass OR Nil if valid */
-    def validate(implicit v:Validator[A]) : List[Rule] = v(self)
+    def validate(implicit v:Validator[A]) : Metadata[List[Rule]] = v(self)
   }
 
-  implicit class FvWhDLaDRG_ValidatorPML[A](val self: Validator[A]) extends AnyVal {
+  implicit class FvWhDLaDRG_RulePML(val self: Rule) extends AnyVal {
+    def message(implicit mr: MessageForRule) : String =
+      mr.messageFor(self)
+  }
+
+    implicit class FvWhDLaDRG_ValidatorPML[A](val self: Validator[A]) extends AnyVal {
     /** @return composite Validator of self and Validator.ensure */
     def ensure(
-      message: String
+      rule: Rule
     )(
       f: A => Boolean
-    )(implicit
-      ca:ClassTag[A]
     ) : Validator[A] =
-      self and Validator.ensure(message)(f)
+      self and Validator.ensure(rule)(f)
 
     /** @return composite Validator of self and Validator.comment */
-    def comment(message: String)(implicit ca:ClassTag[A]) : Validator[A] =
-      self and Validator.comment(message)
-
-    /** @return composite Validator of self and Validator.field */
-    def field[B](
-      fieldName: String,
-      unapply: A => B
-    )(
-      vb: Validator[B]
-    )(implicit
-      ca: ClassTag[A]
-    ) : Validator[A] = self and Validator.field(fieldName,unapply)(vb)
+    def comment(rule: Rule) : Validator[A] =
+      self and Validator.comment[A](rule)
 
     /** @return an optional validator wrapper of self */
-    def optional(implicit ca:ClassTag[A]) = OptionValidator(self)
+    def optional : Validator[Option[A]] = Validator.forOption(self)
 
     /** @return a collection validator wrapper of self */
-    def zeroOrMore(implicit ca:ClassTag[A]) = CollectionValidator(self)
+    def zeroOrMore[M[AA] <: Traversable[AA]] : Validator[M[A]] =
+      Validator.forTraversable(self)
   }
 
+  implicit class FvWhDLaDRG_TypeMetadataPML(val self: TypeRemarks) {
+    /** @return a list of string messages for the remarks in the for "path: remark" */
+    def print : List[String] =
+      self.nodes.toStream.flatMap { case (path,messages) =>
+        messages.value.map(msg => s"${path.print}: $msg")
+      }.toList
+  }
+
+  implicit class FvWhDLaDRG_MetadataPML(val self: Remarks) {
+    /** @return a list of string messages for the remarks in the for "path: remark" */
+    def print : List[String] =
+      self.nodes.toStream.flatMap { case (path,messages) =>
+        messages.value.map(msg => s"${path.print}: $msg")
+      }.toList
+  }
+
+  implicit class FvWhDLaDRG_TypeMetadataListRule(val self: TypeMetadata[List[Rule]]) extends AnyVal {
+    /** @return TypeRemarks for rule type metadata */
+    def toTypeRemarks(implicit mr:MessageForRule) : TypeRemarks =
+      self.map(_.map(_.message))
+  }
+
+  implicit class FvWhDLaDRG_MetadataListRule(val self: Metadata[List[Rule]]) extends AnyVal {
+    /** @return Remarks for rule metadata */
+    def toRemarks(implicit mr:MessageForRule) : Remarks =
+      self.map(_.map(_.message))
+  }
 }

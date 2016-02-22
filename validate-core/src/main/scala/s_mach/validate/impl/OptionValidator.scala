@@ -1,23 +1,42 @@
+/*
+                    ,i::,
+               :;;;;;;;
+              ;:,,::;.
+            1ft1;::;1tL
+              t1;::;1,
+               :;::;               _____       __  ___              __
+          fCLff ;:: tfLLC         / ___/      /  |/  /____ _ _____ / /_
+         CLft11 :,, i1tffLi       \__ \ ____ / /|_/ // __ `// ___// __ \
+         1t1i   .;;   .1tf       ___/ //___// /  / // /_/ // /__ / / / /
+       CLt1i    :,:    .1tfL.   /____/     /_/  /_/ \__,_/ \___//_/ /_/
+       Lft1,:;:       , 1tfL:
+       ;it1i ,,,:::;;;::1tti      s_mach.validate
+         .t1i .,::;;; ;1tt        Copyright (c) 2015 S-Mach, Inc.
+         Lft11ii;::;ii1tfL:       Author: lance.gatlin@gmail.com
+          .L1 1tt1ttt,,Li
+            ...1LLLL...
+*/
 package s_mach.validate.impl
 
+import s_mach.metadata._
 import s_mach.validate._
 
-import scala.reflect.ClassTag
-
-/**
- * A validator for an Option[A] that always passes if set to None
- * @param va the validator for A
- * @param ca class tag for A
- * @tparam A type validated
- */
 case class OptionValidator[A](
-  va:Validator[A]
-)(implicit
-  ca:ClassTag[A]
+  va: Validator[A]
 ) extends ValidatorImpl[Option[A]] {
-  def apply(oa: Option[A]) = oa.fold(List.empty[Rule])(a => va(a))
-  val rules = va.rules
-  override val schema = va.schema.copy(cardinality = (0,1))
-  val descendantSchema = va.descendantSchema
+  val thisRules = va.thisRules
+  val rules = TypeMetadata.Arr(Nil,Cardinality.ZeroOrOne,va.rules)
+  def apply(oa: Option[A]) = {
+    oa match {
+      case None => Metadata.Arr(Nil,Cardinality.ZeroOrOne,Map.empty)
+      case Some(a) => Metadata.Arr(Nil,Cardinality.ZeroOrOne,Map((0,va(a))))
+    }
+  }
+  override def and(other: Validator[Option[A]]) = {
+    other match {
+      case OptionValidator(otherVa) =>
+        OptionValidator(va and otherVa)
+      case _ => super.and(other)
+    }
+  }
 }
-
