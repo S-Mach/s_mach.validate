@@ -54,25 +54,13 @@ val test = Seq(
   "org.scalatest" % "scalatest_2.11" % "2.2.0" % "test"
 )
 
-lazy val validatePlayJson = Project(
-  id = "validate-play-json",
-  base = file("validate-play-json"),
-  dependencies = Seq("validate")
-)
-  .settings(libraryDependencies ++= Seq(
-    "com.typesafe.play" %% "play-json" % "2.3.9",
-    "com.github.fge" % "json-schema-validator" % "2.2.6" % "test"
-  ))
-  .settings(defaultSettings: _*)
-  .settings(libraryDependencies ++= test)
-
-
+// Note: multi-project build required since can't use macros in same
+// jar as they are declared
 lazy val validate = Project(
   id = "validate",
   base = file("."),
   aggregate = Seq(
-    validateCore,
-    validatePlayJson
+    validateCore
   ),
   dependencies = Seq("validate-core")
 )

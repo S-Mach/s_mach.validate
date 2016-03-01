@@ -31,7 +31,7 @@ object ValidatorForProduct {
 }
 
 case class ValidatorForProduct[A](
-  fields: Map[Field,ValidatorForProduct.FieldValidator[A,_]]
+  fields: Map[MetaField,ValidatorForProduct.FieldValidator[A,_]]
 ) extends ValidatorImpl[A] with ProductBuilder[Validator,A] {
   import ValidatorForProduct._
 
@@ -60,7 +60,7 @@ case class ValidatorForProduct[A](
     val index = if(fields.isEmpty) 0 else fields.maxBy(_._1.index)._1.index + 1
     val fv = FieldValidator(unapply,vb)
     copy(fields =
-      fields.+((Field(name, index), fv))
+      fields.+((MetaField(name, index), fv))
     )
   }
 

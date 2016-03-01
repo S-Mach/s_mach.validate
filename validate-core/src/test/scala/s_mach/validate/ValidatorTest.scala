@@ -87,13 +87,13 @@ class ValidatorTest extends FlatSpec with Matchers {
       TypeMetadata.Rec[List[Rule]](
         Nil,
         Map(
-          (Field("id",0),TypeMetadata.Val(List.empty[Rule])),
-          (Field("name",1),TypeMetadata.Val(
+          (MetaField("id",0),TypeMetadata.Val(List.empty[Rule])),
+          (MetaField("name",1),TypeMetadata.Val(
             stringLengthMin(1).thisRules :::
             stringLengthMax(64).thisRules :::
             allLettersOrSpaces.thisRules
           )),
-          (Field("age",2),TypeMetadata.Val(
+          (MetaField("age",2),TypeMetadata.Val(
             numberRange(0,150).thisRules
           ))
         )
@@ -103,12 +103,12 @@ class ValidatorTest extends FlatSpec with Matchers {
       Metadata.Rec[List[Rule]](
         Nil,
         Map(
-          (Field("id",0),Metadata.Val(List.empty[Rule])),
-          (Field("name",1),Metadata.Val(
+          (MetaField("id",0),Metadata.Val(List.empty[Rule])),
+          (MetaField("name",1),Metadata.Val(
             stringLengthMax(64).thisRules :::
             allLettersOrSpaces.thisRules
           )),
-          (Field("age",2),Metadata.Val(
+          (MetaField("age",2),Metadata.Val(
             numberMaxInclusive(150).thisRules
           ))
         )
@@ -118,20 +118,20 @@ class ValidatorTest extends FlatSpec with Matchers {
       Metadata.Rec[List[Rule]](
         Nil,
         Map(
-          (Field("id",0),Metadata.Val(List.empty[Rule])),
-          (Field("name",1),Metadata.Val(
+          (MetaField("id",0),Metadata.Val(List.empty[Rule])),
+          (MetaField("name",1),Metadata.Val(
             stringNonEmpty.thisRules
           )),
-          (Field("age",2),Metadata.Val(List.empty[Rule]))
+          (MetaField("age",2),Metadata.Val(List.empty[Rule]))
         )
       )
     )
     v(Person(1,"asdf",1)) should equal(Metadata.Rec(
       Nil,
       Map(
-        (Field("id",0),Metadata.Val(Nil)),
-        (Field("name",1),Metadata.Val(Nil)),
-        (Field("age",2),Metadata.Val(Nil))
+        (MetaField("id",0),Metadata.Val(Nil)),
+        (MetaField("name",1),Metadata.Val(Nil)),
+        (MetaField("age",2),Metadata.Val(Nil))
       )
     ))
   }
@@ -145,13 +145,13 @@ class ValidatorTest extends FlatSpec with Matchers {
       TypeMetadata.Rec[List[Rule]](
         Nil,
         Map(
-          (Field("id",0),TypeMetadata.Val(List.empty[Rule])),
-          (Field("name",1),TypeMetadata.Val(
+          (MetaField("id",0),TypeMetadata.Val(List.empty[Rule])),
+          (MetaField("name",1),TypeMetadata.Val(
             stringLengthMin(1).thisRules :::
             stringLengthMax(64).thisRules :::
             allLettersOrSpaces.thisRules
           )),
-          (Field("age",2),TypeMetadata.Val(
+          (MetaField("age",2),TypeMetadata.Val(
             numberRange(0,150).thisRules
           ))
         )
@@ -161,12 +161,12 @@ class ValidatorTest extends FlatSpec with Matchers {
       Metadata.Rec[List[Rule]](
         Nil,
         Map(
-          (Field("id",0),Metadata.Val(List.empty[Rule])),
-          (Field("name",1),Metadata.Val(
+          (MetaField("id",0),Metadata.Val(List.empty[Rule])),
+          (MetaField("name",1),Metadata.Val(
             stringLengthMax(64).thisRules :::
             allLettersOrSpaces.thisRules
           )),
-          (Field("age",2),Metadata.Val(
+          (MetaField("age",2),Metadata.Val(
             numberMaxInclusive(150).thisRules
           ))
         )
@@ -176,20 +176,20 @@ class ValidatorTest extends FlatSpec with Matchers {
       Metadata.Rec[List[Rule]](
         Nil,
         Map(
-          (Field("id",0),Metadata.Val(List.empty[Rule])),
-          (Field("name",1),Metadata.Val(
+          (MetaField("id",0),Metadata.Val(List.empty[Rule])),
+          (MetaField("name",1),Metadata.Val(
             stringNonEmpty.thisRules
           )),
-          (Field("age",2),Metadata.Val(List.empty[Rule]))
+          (MetaField("age",2),Metadata.Val(List.empty[Rule]))
         )
       )
     )
     v(Person(1,"asdf",1)) should equal(Metadata.Rec(
       Nil,
       Map(
-        (Field("id",0),Metadata.Val(Nil)),
-        (Field("name",1),Metadata.Val(Nil)),
-        (Field("age",2),Metadata.Val(Nil))
+        (MetaField("id",0),Metadata.Val(Nil)),
+        (MetaField("name",1),Metadata.Val(Nil)),
+        (MetaField("age",2),Metadata.Val(Nil))
       )
     ))
   }

@@ -71,7 +71,7 @@ new s_mach.validate.impl.ValidatorImpl[$aType] {
       Map(..${
         fields.map { field =>
           import field._
-          q"(Field($name,$index),$validatorTermName.rules)".asInstanceOf[c.Tree]
+          q"(MetaField($name,$index),$validatorTermName.rules)".asInstanceOf[c.Tree]
         }
       })
     )
@@ -82,7 +82,7 @@ new s_mach.validate.impl.ValidatorImpl[$aType] {
       Map(..${
         fields.map { field =>
           import field._
-          q"(Field($name,$index),$validatorTermName(a.$termName))".asInstanceOf[c.Tree]
+          q"(MetaField($name,$index),$validatorTermName(a.$termName))".asInstanceOf[c.Tree]
         }
       })
     )
