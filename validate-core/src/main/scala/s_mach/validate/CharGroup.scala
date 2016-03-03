@@ -105,11 +105,7 @@ object CharGroupRegex {
 
 /**
  * Convenience object for building and extracting full string validators
- * based on simple CharGroup regex expressions like
- * <pre>{@code
- * '^[ A-Za-z]*$'
- * }</pre> (ensure string has all letters or spaces)
- *
+ * based on simple CharGroup regex expressions
  */
 object CharGroupPattern {
   def apply(groups: CharGroup*) : String =
