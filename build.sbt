@@ -74,6 +74,7 @@ lazy val validateCore = Project(
 )
   .settings(defaultSettings: _*)
   .settings(libraryDependencies ++= Seq(
+    "net.s_mach" %% "string" % "1.1.0",
     "net.s_mach" %% "metadata" % "1.0.0",
     "net.s_mach" %% "codetools" % "1.1.0"
   ) ++ test)

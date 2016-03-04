@@ -19,36 +19,9 @@
 package s_mach.validate.impl
 
 import s_mach.validate._
+import s_mach.string._
 
 object MessageForRuleOps {
-  def maybeExplainStringPattern(pattern: String) : Option[String] = {
-    pattern match {
-      case CharGroupPattern(groups@_*) =>
-        import CharGroup._
-        val printGroups =
-          groups
-            .map {
-              case UnicodeLetter => (0,"unicode letters")
-              case UppercaseLetter => (1, "uppercase letters")
-              case LowercaseLetter => (2, "lowercase letters")
-              case Letter => (3,"letters")
-              case WordLetter => (4,"word letters")
-              case Digit => (5,"digits")
-              case Underscore => (6,"underscores")
-              case Hyphen => (7,"hyphens")
-              case Space => (8,"spaces")
-              case Whitespace => (9,"whitespace")
-            }
-            .sortBy(_._1)
-            .map(_._2)
-
-        val csmiddle = printGroups.init.mkString(", ")
-        val last = if(printGroups.size > 1) s" or ${printGroups.last}" else printGroups.last
-        Some(s"must contain only $csmiddle$last")
-      case _ => None
-    }
-  }
-
 
   val pfDefaultMessageFor : PartialFunction[Rule,String] = {
     case Rule(Validators.stringLengthMin.key,params) =>
@@ -61,7 +34,7 @@ object MessageForRuleOps {
     case Rule(Validators.stringLengthMax.key,params) =>
       s"must not be longer than ${params.head} characters"
     case Rule(Validators.stringPattern.key,params) =>
-      maybeExplainStringPattern(params.head).getOrElse {
+      CharGroupPattern.maybeExplainPattern(params.head).getOrElse {
         s"must match regex pattern '${params.head}'"
       }
     case Rule(Validators.numberMinInclusive.key,params) =>

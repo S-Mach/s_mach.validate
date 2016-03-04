@@ -18,6 +18,8 @@
 */
 package s_mach.validate
 
+import s_mach.string._
+
 object Validators {
 
   object stringLengthMin {
