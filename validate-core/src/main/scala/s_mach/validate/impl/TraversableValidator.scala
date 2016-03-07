@@ -29,15 +29,7 @@ case class TraversableValidator[M[AA] <: Traversable[AA],A](
   val thisRules = va.thisRules
   val rules = TypeMetadata.Arr(Nil,Cardinality.ZeroOrMore,va.rules)
   def apply(ma: M[A]) = {
-    // Note: no zipWithIndex available on Traversable so using
-    // imperative style
-    val builder = Map.newBuilder[Int,Metadata[List[Rule]]]
-    var i = 0
-    ma.foreach { a =>
-      builder += ((i,va(a)))
-      i = i + 1
-    }
-    Metadata.Arr(Nil,Cardinality.ZeroOrMore,builder.result())
+    Metadata.Arr(Nil,Cardinality.ZeroOrMore,ma.map(va.apply).toSeq)
   }
 
   override def and(other: Validator[M[A]]) = {

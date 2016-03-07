@@ -61,7 +61,7 @@ object Validators {
 
   object stringCharGroupPattern {
     def apply(groups: CharGroup*) =
-      stringPattern(CharGroupPattern(groups:_*))
+      stringPattern(CharGroupPattern(groups:_*).pattern.pattern)
   }
 
   val allLetters = stringCharGroupPattern(CharGroup.Letter)

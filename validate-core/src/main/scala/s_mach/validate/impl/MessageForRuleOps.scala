@@ -34,7 +34,7 @@ object MessageForRuleOps {
     case Rule(Validators.stringLengthMax.key,params) =>
       s"must not be longer than ${params.head} characters"
     case Rule(Validators.stringPattern.key,params) =>
-      CharGroupPattern.maybeExplainPattern(params.head).getOrElse {
+      CharGroupPattern.maybeExplain(params.head).getOrElse {
         s"must match regex pattern '${params.head}'"
       }
     case Rule(Validators.numberMinInclusive.key,params) =>

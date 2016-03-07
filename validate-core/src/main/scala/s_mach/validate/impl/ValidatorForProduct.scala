@@ -31,7 +31,7 @@ object ValidatorForProduct {
 }
 
 case class ValidatorForProduct[A](
-  fields: Map[MetaField,ValidatorForProduct.FieldValidator[A,_]]
+  fields: List[(String,ValidatorForProduct.FieldValidator[A,_])] = Nil
 ) extends ValidatorImpl[A] with ProductBuilder[Validator,A] {
   import ValidatorForProduct._
 
@@ -40,14 +40,14 @@ case class ValidatorForProduct[A](
     Nil,
     fields.map { case (f,fieldValidator) =>
       (f,fieldValidator.vb.rules)
-    }
+    }.reverse
   )
 
   def apply(a: A) = Metadata.Rec(
     Nil,
     fields.map { case (f,fv) =>
       (f,fv(a))
-    }
+    }.reverse
   )
 
   def field[B](
@@ -57,10 +57,9 @@ case class ValidatorForProduct[A](
     f: Validator[B] => Validator[B]
   )(implicit baseVb: Validator[B]) = {
     val vb = f(baseVb)
-    val index = if(fields.isEmpty) 0 else fields.maxBy(_._1.index)._1.index + 1
     val fv = FieldValidator(unapply,vb)
     copy(fields =
-      fields.+((MetaField(name, index), fv))
+      name -> fv :: fields
     )
   }
 

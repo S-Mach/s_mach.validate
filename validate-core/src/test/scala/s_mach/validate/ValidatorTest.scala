@@ -19,7 +19,6 @@
 package s_mach.validate
 
 import org.scalatest.{FlatSpec, Matchers}
-import s_mach.validate.impl._
 import Validators._
 import scala.util.Random
 import s_mach.codetools._
@@ -86,52 +85,52 @@ class ValidatorTest extends FlatSpec with Matchers {
     v.rules should equal(
       TypeMetadata.Rec[List[Rule]](
         Nil,
-        Map(
-          (MetaField("id",0),TypeMetadata.Val(List.empty[Rule])),
-          (MetaField("name",1),TypeMetadata.Val(
+        Seq(
+          "id" -> TypeMetadata.Val(List.empty[Rule]),
+          "name" -> TypeMetadata.Val(
             stringLengthMin(1).thisRules :::
             stringLengthMax(64).thisRules :::
             allLettersOrSpaces.thisRules
-          )),
-          (MetaField("age",2),TypeMetadata.Val(
+          ),
+          "age" -> TypeMetadata.Val(
             numberRange(0,150).thisRules
-          ))
+          )
         )
       )
     )
     v(Person(1,"1" * 65,151)) should equal(
       Metadata.Rec[List[Rule]](
         Nil,
-        Map(
-          (MetaField("id",0),Metadata.Val(List.empty[Rule])),
-          (MetaField("name",1),Metadata.Val(
+        Seq(
+          "id" -> Metadata.Val(List.empty[Rule]),
+          "name" -> Metadata.Val(
             stringLengthMax(64).thisRules :::
             allLettersOrSpaces.thisRules
-          )),
-          (MetaField("age",2),Metadata.Val(
+          ),
+          "age" -> Metadata.Val(
             numberMaxInclusive(150).thisRules
-          ))
+          )
         )
       )
     )
     v(Person(1,"",1)) should equal(
       Metadata.Rec[List[Rule]](
         Nil,
-        Map(
-          (MetaField("id",0),Metadata.Val(List.empty[Rule])),
-          (MetaField("name",1),Metadata.Val(
+        Seq(
+          "id" -> Metadata.Val(List.empty[Rule]),
+          "name" -> Metadata.Val(
             stringNonEmpty.thisRules
-          )),
-          (MetaField("age",2),Metadata.Val(List.empty[Rule]))
+          ),
+          "age" ->Metadata.Val(List.empty[Rule])
         )
       )
     )
     v(Person(1,"asdf",1)) should equal(Metadata.Rec(
       Nil,
-      Map(
-        (MetaField("id",0),Metadata.Val(Nil)),
-        (MetaField("name",1),Metadata.Val(Nil)),
-        (MetaField("age",2),Metadata.Val(Nil))
+      Seq(
+        "id" -> Metadata.Val(Nil),
+        "name" -> Metadata.Val(Nil),
+        "age" -> Metadata.Val(Nil)
       )
     ))
   }
@@ -144,52 +143,52 @@ class ValidatorTest extends FlatSpec with Matchers {
     v.rules should equal(
       TypeMetadata.Rec[List[Rule]](
         Nil,
-        Map(
-          (MetaField("id",0),TypeMetadata.Val(List.empty[Rule])),
-          (MetaField("name",1),TypeMetadata.Val(
+        Seq(
+          "id" ->TypeMetadata.Val(List.empty[Rule]),
+          "name" -> TypeMetadata.Val(
             stringLengthMin(1).thisRules :::
             stringLengthMax(64).thisRules :::
             allLettersOrSpaces.thisRules
-          )),
-          (MetaField("age",2),TypeMetadata.Val(
+          ),
+          "age" -> TypeMetadata.Val(
             numberRange(0,150).thisRules
-          ))
+          )
         )
       )
     )
     v(Person(1,"1" * 65,151)) should equal(
       Metadata.Rec[List[Rule]](
         Nil,
-        Map(
-          (MetaField("id",0),Metadata.Val(List.empty[Rule])),
-          (MetaField("name",1),Metadata.Val(
+        Seq(
+          "id" -> Metadata.Val(List.empty[Rule]),
+          "name" -> Metadata.Val(
             stringLengthMax(64).thisRules :::
             allLettersOrSpaces.thisRules
-          )),
-          (MetaField("age",2),Metadata.Val(
+          ),
+          "age" -> Metadata.Val(
             numberMaxInclusive(150).thisRules
-          ))
+          )
         )
       )
     )
     v(Person(1,"",1)) should equal(
       Metadata.Rec[List[Rule]](
         Nil,
-        Map(
-          (MetaField("id",0),Metadata.Val(List.empty[Rule])),
-          (MetaField("name",1),Metadata.Val(
+        Seq(
+          "id" -> Metadata.Val(List.empty[Rule]),
+          "name" -> Metadata.Val(
             stringNonEmpty.thisRules
-          )),
-          (MetaField("age",2),Metadata.Val(List.empty[Rule]))
+          ),
+          "age" ->Metadata.Val(List.empty[Rule])
         )
       )
     )
     v(Person(1,"asdf",1)) should equal(Metadata.Rec(
       Nil,
-      Map(
-        (MetaField("id",0),Metadata.Val(Nil)),
-        (MetaField("name",1),Metadata.Val(Nil)),
-        (MetaField("age",2),Metadata.Val(Nil))
+      Seq(
+        "id" ->Metadata.Val(Nil),
+        "name" ->Metadata.Val(Nil),
+        "age" ->Metadata.Val(Nil)
       )
     ))
   }
@@ -255,29 +254,35 @@ class ValidatorTest extends FlatSpec with Matchers {
     v(Some("1" * 65)) should equal(Metadata.Arr(
       Nil,
       Cardinality.ZeroOrOne,
-      indexToMember = Map((0,Metadata.Val(
-        stringLengthMax(64).thisRules :::
-        allLettersOrSpaces.thisRules
-      )))
+      members = Seq(
+        Metadata.Val(
+          stringLengthMax(64).thisRules :::
+          allLettersOrSpaces.thisRules
+        )
+      )
     ))
     v(Some("")) should equal(Metadata.Arr(
       Nil,
       Cardinality.ZeroOrOne,
-      indexToMember = Map((0,Metadata.Val(
-        stringNonEmpty.thisRules
-      )))
+      members = Seq(
+        Metadata.Val(
+          stringNonEmpty.thisRules
+        )
+      )
     ))
     v(Some("asdf")) should equal(Metadata.Arr(
       Nil,
       Cardinality.ZeroOrOne,
-      indexToMember = Map((0,Metadata.Val(
-        Nil
-      )))
+      members = Seq(
+        Metadata.Val(
+          Nil
+        )
+    )
     ))
     v(None) should equal(Metadata.Arr(
       Nil,
       Cardinality.ZeroOrOne,
-      indexToMember = Map.empty
+      members = Seq.empty
     ))
   }
 
@@ -299,39 +304,39 @@ class ValidatorTest extends FlatSpec with Matchers {
     v(Seq("1" * 65,"","asdf")) should equal(Metadata.Arr[List[Rule]](
       Nil,
       Cardinality.ZeroOrMore,
-      indexToMember = Map(
-        (0,Metadata.Val(
+      members = Seq(
+        Metadata.Val(
           stringLengthMax(64).thisRules :::
           allLettersOrSpaces.thisRules
-        )),
-        (1,Metadata.Val(
+        ),
+        Metadata.Val(
           stringNonEmpty.thisRules
-        )),
-        (2,Metadata.Val[List[Rule]](
+        ),
+        Metadata.Val[List[Rule]](
           Nil
-        ))
+        )
       )
     ))
     v(Seq("")) should equal(Metadata.Arr(
       Nil,
       Cardinality.ZeroOrMore,
-      indexToMember = Map(
-        (0,Metadata.Val(
+      members = Seq(
+        Metadata.Val(
           stringNonEmpty.thisRules
-        ))
+        )
       )
     ))
     v(Seq("asdf")) should equal(Metadata.Arr(
       Nil,
       Cardinality.ZeroOrMore,
-      indexToMember = Map((0,Metadata.Val(
+      members = Seq(Metadata.Val(
         Nil
-      )))
+      ))
     ))
     v(Seq.empty) should equal(Metadata.Arr(
       Nil,
       Cardinality.ZeroOrMore,
-      indexToMember = Map.empty
+      members = Seq.empty
     ))
   }
 }

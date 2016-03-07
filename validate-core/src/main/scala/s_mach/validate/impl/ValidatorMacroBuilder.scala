@@ -20,7 +20,7 @@ package s_mach.validate.impl
 
 import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
-import s_mach.codetools.{BlackboxHelper, Result}
+import s_mach.codetools.macros.{BlackboxHelper, Result}
 import s_mach.validate._
 
 class ValidatorMacroBuilder(
@@ -68,10 +68,10 @@ new s_mach.validate.impl.ValidatorImpl[$aType] {
   val rules = {
     TypeMetadata.Rec(
       thisRules,
-      Map(..${
+      Seq(..${
         fields.map { field =>
           import field._
-          q"(MetaField($name,$index),$validatorTermName.rules)".asInstanceOf[c.Tree]
+          q"($name,$validatorTermName.rules)".asInstanceOf[c.Tree]
         }
       })
     )
@@ -79,10 +79,10 @@ new s_mach.validate.impl.ValidatorImpl[$aType] {
   def apply(a: $aType) = {
     Metadata.Rec(
       thisRules,
-      Map(..${
+      Seq(..${
         fields.map { field =>
           import field._
-          q"(MetaField($name,$index),$validatorTermName(a.$termName))".asInstanceOf[c.Tree]
+          q"($name,$validatorTermName(a.$termName))".asInstanceOf[c.Tree]
         }
       })
     )

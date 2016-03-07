@@ -53,7 +53,7 @@ object Validator {
    * @return
    */
   def builder[A] : ProductBuilder[Validator,A] =
-    ValidatorForProduct[A](Map.empty)
+    ValidatorForProduct[A]()
 
   /**
    * Generate a Validator implementation for a product type

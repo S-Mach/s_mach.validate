@@ -28,8 +28,8 @@ case class OptionValidator[A](
   val rules = TypeMetadata.Arr(Nil,Cardinality.ZeroOrOne,va.rules)
   def apply(oa: Option[A]) = {
     oa match {
-      case None => Metadata.Arr(Nil,Cardinality.ZeroOrOne,Map.empty)
-      case Some(a) => Metadata.Arr(Nil,Cardinality.ZeroOrOne,Map((0,va(a))))
+      case None => Metadata.Arr(Nil,Cardinality.ZeroOrOne,Seq.empty)
+      case Some(a) => Metadata.Arr(Nil,Cardinality.ZeroOrOne,Seq(va(a)))
     }
   }
   override def and(other: Validator[Option[A]]) = {
