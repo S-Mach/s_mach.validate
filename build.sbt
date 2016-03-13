@@ -66,7 +66,11 @@ lazy val validate = Project(
 )
   .settings(defaultSettings: _*)
   .settings(unidocSettings: _*)
-  .settings(libraryDependencies ++= test)
+  .settings(libraryDependencies ++= Seq(
+    "net.s_mach" %% "codetools-play_json" % "2.0.0" % "test",
+    "net.s_mach" %% "explain_play_json" % "1.0.0" % "test",
+    "net.s_mach" %% "validate-play_json" % "2.0.0" % "test"
+  ) ++ test)
 
 lazy val validateCore = Project(
   id = "validate-core",
