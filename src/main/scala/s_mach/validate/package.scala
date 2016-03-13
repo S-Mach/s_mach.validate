@@ -32,8 +32,9 @@ package object validate extends
   /* Prefix added to implicits to prevent shadowing: FvWhDLaDRG */
 
   implicit class FvWhDLaDRG_PML[A](val self: A) extends AnyVal {
-    /** @return list of rules that did not pass OR Nil if valid */
-    def validate(implicit v:Validator[A]) : Metadata[List[Rule]] = v(self)
+    /** @return Valid if self is valid otherwise Invalid with specific failures */
+    def validate()(implicit v: Validator[A]) : MaybeValid[A] =
+      v.validate(self)
   }
 
   implicit class FvWhDLaDRG_RulePML(val self: Rule) extends AnyVal {
@@ -60,5 +61,13 @@ package object validate extends
     /** @return a collection validator wrapper of self */
     def zeroOrMore[M[AA] <: Traversable[AA]] : Validator[M[A]] =
       Validator.forTraversable(self)
+
+    /** @return Valid if raw is valid otherwise Invalid with specific failures */
+    def validate(raw: Unvalidated[A]) : MaybeValid[A] =
+      MaybeValid(raw.unsafe, self.apply(raw.unsafe))
+
+    /** @return Valid if value is valid otherwise Invalid with specific failures */
+    def validate(value: A) : MaybeValid[A] =
+      MaybeValid(value, self.apply(value))
   }
 }

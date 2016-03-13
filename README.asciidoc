@@ -29,6 +29,25 @@ NOTE: +s_mach.validate+ is based on blackbox macro support, present only in Scal
 ----
 ...
 
+implicit class Name(val underlying: String) extends AnyVal with IsValueClass[String]
+object Name {
+  implicit val validator_Name = Validator.forValueClass[Name, String] {
+    _ and stringNonEmpty and stringLengthMax(64) and allLettersOrSpaces
+  }
+  implicit val format_Name = Json.forValueClass.format[Name,String].withValidator
+  implicit val explainFormat_Name = ExplainPlayJson.forValueClass[Name,String].withValidator
+}
+
+trait AgeTag
+type Age = AgeTag with Int with IsDistinctTypeAlias[Int] // alternative to value-class
+implicit def Age(value: Int) = value.asInstanceOf[Age]
+
+implicit val validator_Age = Validator.forValueClass[Age, Int] {
+  _ and numberRange(0,150)
+}
+implicit val format_Age = Json.forValueClass.format[Age,Int].withValidator
+implicit val explainFormat_Age = ExplainPlayJson.forValueClass[Age,Int].withValidator
+
 case class Person(id: Int, name: Name, age: Age)
 
 object Person {
@@ -66,16 +85,15 @@ res0: String =
     }
   },
   "additionalProperties" : true,
-  "required" : [ "id", "name", "age" ],
-  "additionalRules" : [ "age plus id must be less than 1000" ]
+  "required" : [ "id", "name", "age" ]
 }
 
-scala> Person(1,"!!!",200).validate.printJs.pretty
+scala> Person(1,"!!!",200).validate.failures.printJs.pretty
 res1: String =
 {
   "name" : [ "must contain only letters or spaces" ],
   "age" : [ "must be less than or equal to 150" ]
-}
+})
 ----
 
 == Overview
