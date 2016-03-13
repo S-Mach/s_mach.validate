@@ -42,7 +42,7 @@ trait AgeTag
 type Age = AgeTag with Int with IsDistinctTypeAlias[Int] // alternative to value-class
 implicit def Age(value: Int) = value.asInstanceOf[Age]
 
-implicit val validator_Age = Validator.forValueClass[Age, Int] {
+implicit val validator_Age = Validator.forDistinctTypeAlias[Age, Int] {
   _ and numberRange(0,150)
 }
 implicit val format_Age = Json.forDistinctTypeAlias.format[Age,Int].withValidator
