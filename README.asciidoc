@@ -99,16 +99,15 @@ Note: this example uses https://github.com/S-Mach/s_mach.validate-play_json[+s_m
 
 == Overview
 * Create validators that test validation rules using a light-weight and terse DSL.
-** Designed to support any serialization format (Play JSON support with +s_mach.validate-play_json+) by
-using generic metadata format (https://github.com/S-Mach/s_mach.metadata[+s_mach.metadata+]) to represent rules and
- rule failures.
-** Constrain value space of value types (e.g. String, Int, etc) using value classes and +Validator.forValueClass+ or
- distinct type aliases and +Validator.forDistinctTypeAlias+.
-** Use built-in rules such as +Validators.stringLengthMin+ or +Validators.numberMinInclusive+ that are mapped to
-supported output schema rules (e.g. JSON Schema checks such as "minLength").
-** Macro-generate a +Validator[A]+ for any case class* with +Validator.forProductType[A]+
+** Designed to support any serialization format by using generic metadata format
+(https://github.com/S-Mach/s_mach.metadata[+s_mach.metadata+]) to represent rules and rule failures
+(Play JSON support with +s_mach.validate-play_json+).
+** Constrain value space of value types (e.g. String, Int, etc) using value classes or distinct type aliases.
+** Use built-in rules such as +Validators.stringLengthMin+ or +Validators.numberRange+ that are mapped to
+supported output schema rules (e.g. +Validators.stringLengthMin+ maps to JSONSchema "minLength").
+** Macro-generate a validator for any case class* with +Validator.forProductType[A]+
 * Print rule failures as JSON or human-readable remarks
-* Print JSON Schema (http://json-schema.org) that maps supported validator rules to JSONSchema rules
+* Print JSONSchema (http://json-schema.org) from validator rules and a JSON explanation (https://github.com/S-Mach/s_mach.validate-play_json[+s_mach.explain_play_json+]).
 * i8n support for +Rule+ messages by overriding the default +MessageForRule+ type-class.
 
 NOTE: *Macro requires all fields to have a +Validator[A]+ for the field's type in scope when
@@ -126,7 +125,7 @@ libraries. However, no guarantees are made as to the stability or interface of
 code in the +s_mach.validate.impl+ package between versions.
 
 == Example
-
+Note: this example uses https://github.com/S-Mach/s_mach.validate-play_json[+s_mach.validate-play_json+] for JSON support
 ----
 
 $ sbt
