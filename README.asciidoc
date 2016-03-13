@@ -98,54 +98,23 @@ res1: String =
 ----
 
 == Overview
-* Light-weight, composable, and DRY data validation DSL.
-* Does not use constructor validation or exceptions to communicate failure.
-* Reusable for any serialization format.
-* Auto-generate JSON Schema (http://json-schema.org) or human-readable explanation for the output of any
-JSON (de)serializer, including any validation rules (support for Play JSON using +s_mach.validate-play_json+).
-* Utilizes generic metadata (+s_mach.metadata+) for representing metadata about data instances and data types.
-
-NOTE: See Example section below for full example
-
-== Features
-* Create +Validator[A]+ type-classes to test instances of A against a set of rules.
-* Print JSON Schema (http://json-schema.org) for any Play +Format[A]+ and +Validator[A]+ rules using the
-+ExplainFormat[A]+ type-class.
-* Use built-in rules such as +Validators.stringLengthMin+ or +Validators.numberMinInclusive+ that are rendered in
-printed JSON Schema as JSON Schema checks ( +{ ... "minLength" -> 1 ... }+ or +{ ... "minimum" -> 1 ... }+ )
+* Create validators that test validation rules using a light-weight and terse DSL.
+** Designed to support any serialization format (Play JSON support with +s_mach.validate-play_json+) by
+using generic metadata format (https://github.com/S-Mach/s_mach.metadata[+s_mach.metadata+]) to represent rules and
+ rule failures.
+** Constrain value space of value types (e.g. String, Int, etc) using value classes and +Validator.forValueClass+ or
+ distinct type aliases and +Validator.forDistinctTypeAlias+.
+** Use built-in rules such as +Validators.stringLengthMin+ or +Validators.numberMinInclusive+ that are mapped to
+supported output schema rules (e.g. JSON Schema checks such as "minLength").
+** Macro-generate a +Validator[A]+ for any case class* with +Validator.forProductType[A]+
+* Print rule failures as JSON or human-readable remarks
+* Print JSON Schema (http://json-schema.org) that maps supported validator rules to JSONSchema rules
 * i8n support for +Rule+ messages by overriding the default +MessageForRule+ type-class.
-* Includes support for _distinct type aliases_, an alternative to value-classes that avoids the boxing
-problems experienced when using value-classes (especially in generics such as collections).
-* Use +Validator.forValueClass[V,A]+ or +Validator.forDistinctAliasType[V,A]+, to specify rules that constrain
- the values of a built-in type such as Int or String.
-* Macro-generate a +Validator[A]+ for case classes* with +Validator.forProductType[A]+ that automatically resolves
-and composes the +Validator[A]+ for the type of each field in the case classes.
-* Wrap Play +Format[A]+ using +.withValidator+ to automatically check all +Validator[A]+ rules after successfully
-deserializing an instance of A from JSON (+Validator[A]+ rule failures are converted to Play +JsError+).
-* Print a generic human readable explanation (+TypeRemarks+/+Remarks+) for any Play +Format[A]+ or +Validator[A]+.
-* Create trees of generic metadata for any data instance or data type using +Metadata[A]+ or +TypeMetadata[A]+.
 
 NOTE: *Macro requires all fields to have a +Validator[A]+ for the field's type in scope when
 +Validator.forProductType[A]+ is invoked. Case classes with self-recursive field types (fields of the same type as
 the containing case class) are not supported. Implementations of +Validator[A]+ for all Scala collections,
 Scala Option and Scala tuple classes are provided.
-
-
-== Why do I need this?
-
-* You want a validation DSL that is light-weight, terse, composable, reuseable and DRY, written exactly once.
-* You want to write validation code that doesn't require first converting to a specific serialization format.
-* You want to write validation code that can be re-used for any serialization format.
-* You want to be able to display a light-weight human-readable schema derived from the validation code.
-
-== Features
-
-* Create validators that test validation rules using a light-weight and terse DSL.
-* Write DRY validation code, exactly once, that can be re-used, composed and can be applied to any serialization format.
-* Validate an instance against a validator to produce a list of validation failures (+List[Rule]+).
-* Print validation failures as a human-readable list or as JSON (using +s_mach.validate-play_json+).
-* Macro-generate validators for any product type (i.e. case class or tuple) using +Validator.forProductType+.
-* Constrain value space of value types (e.g. String, Int, etc) using value classes and +Validator.forValueClass+.
 
 == Versioning
 +s_mach.validate+ uses semantic versioning (http://semver.org/).
