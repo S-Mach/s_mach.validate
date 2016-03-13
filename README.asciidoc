@@ -102,12 +102,12 @@ Note: this example uses https://github.com/S-Mach/s_mach.validate-play_json[+s_m
 ** Designed to support any serialization format by using generic metadata format
 (https://github.com/S-Mach/s_mach.metadata[+s_mach.metadata+]) to represent rules and rule failures
 (Play JSON support with +s_mach.validate-play_json+).
-** Constrain value space of value types (e.g. String, Int, etc) using value classes or distinct type aliases.
+** Constrain value space of value types (e.g. String, Int, etc) using value classes or distinct type aliases validators.
 ** Use built-in rules such as +Validators.stringLengthMin+ that are mapped to output schema rules (e.g.
 +Validators.stringLengthMin+ maps to JSONSchema "minLength" property).
 ** Macro-generate a validator for any case class* with +Validator.forProductType[A]+
 * Print rule failures as JSON or human-readable remarks
-* Print JSONSchema (http://json-schema.org) from validator rules and a JSON explanation (https://github.com/S-Mach/s_mach.validate-play_json[+s_mach.explain_play_json+]).
+* Print JSON explanation(https://github.com/S-Mach/s_mach.validate-play_json[+s_mach.explain_play_json+]) with validation rules as JSONSchema (http://json-schema.org).
 * i8n support for +Rule+ messages by overriding the default +MessageForRule+ type-class.
 
 NOTE: *Macro requires all fields to have a +Validator[A]+ for the field's type in scope when
