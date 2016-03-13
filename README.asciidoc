@@ -35,7 +35,7 @@ object Name {
     _ and stringNonEmpty and stringLengthMax(64) and allLettersOrSpaces
   }
   implicit val format_Name = Json.forValueClass.format[Name,String].withValidator
-  implicit val explainFormat_Name = ExplainPlayJson.forValueClass[Name,String].withValidator
+  implicit val explainPlayJson_Name = ExplainPlayJson.forValueClass[Name,String].withValidator
 }
 
 trait AgeTag
@@ -46,14 +46,14 @@ implicit val validator_Age = Validator.forDistinctTypeAlias[Age, Int] {
   _ and numberRange(0,150)
 }
 implicit val format_Age = Json.forDistinctTypeAlias.format[Age,Int].withValidator
-implicit val explainFormat_Age = ExplainPlayJson.forDistinctTypeAlias[Age,Int].withValidator
+implicit val explainPlayJson_Age = ExplainPlayJson.forDistinctTypeAlias[Age,Int].withValidator
 
 case class Person(id: Int, name: Name, age: Age)
 
 object Person {
   implicit val validator_Person = Validator.forProductType[Person]
   implicit val format_Person = Json.format[Person].withValidator
-  implicit val explainFormat_Person = ExplainFormat.forProductType[Person].withValidator
+  implicit val explainPlayJson_Person = ExplainPlayJson.forProductType[Person].withValidator
 }
 
 ...
