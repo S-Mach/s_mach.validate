@@ -26,7 +26,6 @@ libraryDependencies ++= Seq(
 NOTE: +s_mach.validate+ is based on blackbox macro support, present only in Scala 2.11+
 
 == Quicklook
-Note: this example uses https://github.com/S-Mach/s_mach.validate-play_json[+s_mach.validate-play_json+] for JSON support
 ----
 ...
 
@@ -96,6 +95,7 @@ res1: String =
   "age" : [ "must be less than or equal to 150" ]
 })
 ----
+Note: this example uses https://github.com/S-Mach/s_mach.validate-play_json[+s_mach.validate-play_json+] for JSON support
 
 == Overview
 * Create validators that test validation rules using a light-weight and terse DSL.
