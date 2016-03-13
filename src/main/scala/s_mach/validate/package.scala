@@ -31,18 +31,25 @@ package object validate extends
 {
   /* Prefix added to implicits to prevent shadowing: FvWhDLaDRG */
 
-  implicit class FvWhDLaDRG_PML[A](val self: A) extends AnyVal {
+  implicit class EverythingPML_FvWhDLaDRG_[A](val self: A) extends AnyVal {
     /** @return Valid if self is valid otherwise Invalid with specific failures */
     def validate()(implicit v: Validator[A]) : MaybeValid[A] =
       v.validate(self)
   }
 
-  implicit class FvWhDLaDRG_RulePML(val self: Rule) extends AnyVal {
+
+  implicit class UnvalidatedPML_FvWhDLaDRG[A](val self: Unvalidated[A]) extends AnyVal {
+    /** @return Valid if self is valid otherwise Invalid with specific failures */
+    def validate()(implicit v: Validator[A]) : MaybeValid[A] =
+      v.validate(self.unsafe)
+  }
+
+  implicit class RulePML_FvWhDLaDRG(val self: Rule) extends AnyVal {
     def message(implicit mr: MessageForRule) : String =
       mr.messageFor(self)
   }
 
-    implicit class FvWhDLaDRG_ValidatorPML[A](val self: Validator[A]) extends AnyVal {
+    implicit class ValidatorPML_FvWhDLaDRG[A](val self: Validator[A]) extends AnyVal {
     /** @return composite Validator of self and Validator.ensure */
     def ensure(
       rule: Rule

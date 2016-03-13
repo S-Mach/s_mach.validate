@@ -45,8 +45,8 @@ implicit def Age(value: Int) = value.asInstanceOf[Age]
 implicit val validator_Age = Validator.forValueClass[Age, Int] {
   _ and numberRange(0,150)
 }
-implicit val format_Age = Json.forValueClass.format[Age,Int].withValidator
-implicit val explainFormat_Age = ExplainPlayJson.forValueClass[Age,Int].withValidator
+implicit val format_Age = Json.forDistinctTypeAlias.format[Age,Int].withValidator
+implicit val explainFormat_Age = ExplainPlayJson.forDistinctTypeAlias[Age,Int].withValidator
 
 case class Person(id: Int, name: Name, age: Age)
 
@@ -58,11 +58,11 @@ object Person {
 
 ...
 
-scala> explainFormat[Person].printJsonSchema("http://s_mach.net").pretty
+scala> explainFormat[Person].printJsonSchema("http://test.org").pretty
 res0: String =
 {
   "$schema" : "http://json-schema.org/draft-04/schema#",
-  "id" : "http://s_mach.net",
+  "id" : "http://test.org",
   "type" : "object",
   "properties" : {
     "id" : {
@@ -100,10 +100,9 @@ res1: String =
 * Light-weight, composable, and DRY data validation DSL.
 * Does not use constructor validation or exceptions to communicate failure.
 * Reusable for any serialization format.
-* Auto-generate JSON Schema (http://json-schema.org) or human-readable explanation for any Play JSON
-serializer, including any validation rules.
-* Generic metadata framework for generating human-readable or machine-readable schema for any serializer or
-specific schema type.
+* Auto-generate JSON Schema (http://json-schema.org) or human-readable explanation for the output of any
+JSON (de)serializer, including any validation rules (support for Play JSON using +s_mach.validate-play_json+).
+* Utilizes generic metadata (+s_mach.metadata+) for representing metadata about data instances and data types.
 
 NOTE: See Example section below for full example
 
