@@ -59,7 +59,7 @@ object Person {
 
 ...
 
-scala> explainFormat[Person].printJsonSchema("http://test.org").pretty
+scala> explainPlayJson[Person].printJsonSchema("http://test.org").pretty
 res0: String =
 {
   "$schema" : "http://json-schema.org/draft-04/schema#",
