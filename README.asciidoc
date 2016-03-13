@@ -1,6 +1,6 @@
 = s_mach.validate: data validators
 Lance Gatlin <lance.gatlin@gmail.com>
-v1,8-Jun-2015
+v1,13-Mar-16
 :blogpost-status: unpublished
 :blogpost-categories: s_mach, scala
 
