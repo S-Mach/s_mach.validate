@@ -12,23 +12,106 @@ image:https://travis-ci.org/S-Mach/s_mach.validate.svg[Build Status, link="https
 +
 [source,sbt,numbered]
 ----
-libraryDependencies += "net.s_mach" %% "validate" % "1.0.0"
+libraryDependencies += "net.s_mach" %% "validate" % "2.0.0"
 ----
 2. For Play JSON support, add to +build.sbt+
 +
 [source,sbt,numbered]
 ----
 libraryDependencies ++= Seq(
-  "net.s_mach" %% "validate" % "1.0.0",
-  "net.s_mach" %% "validate-play-json" % "1.0.0"
+  "net.s_mach" %% "validate" % "2.0.0",
+  "net.s_mach" %% "validate-play_json" % "2.0.0"
 )
 ----
 NOTE: +s_mach.validate+ is based on blackbox macro support, present only in Scala 2.11+
 
-== Overview
+== Quicklook (with s_mach.validate-play_json)
+----
+...
 
-+s_mach.validate+ is an open-source Scala library that provides methods for easily building reuseable, composable and
-serialization format agnostic data validators.
+case class Person(id: Int, name: Name, age: Age)
+
+object Person {
+  implicit val validator_Person = Validator.forProductType[Person]
+  implicit val format_Person = Json.format[Person].withValidator
+  implicit val explainFormat_Person = ExplainFormat.forProductType[Person].withValidator
+}
+
+...
+
+scala> explainFormat[Person].printJsonSchema("http://s_mach.net").pretty
+res0: String =
+{
+  "$schema" : "http://json-schema.org/draft-04/schema#",
+  "id" : "http://s_mach.net",
+  "type" : "object",
+  "properties" : {
+    "id" : {
+      "id" : "http://test.org/id",
+      "type" : "integer"
+    },
+    "name" : {
+      "id" : "http://test.org/name",
+      "type" : "string",
+      "minLength" : 1,
+      "maxLength" : 64,
+      "pattern" : "^[ A-Za-z]*$",
+      "comments" : [ "must contain only letters or spaces" ]
+    },
+    "age" : {
+      "id" : "http://test.org/age",
+      "type" : "integer",
+      "minimum" : 0,
+      "maximum" : 150
+    }
+  },
+  "additionalProperties" : true,
+  "required" : [ "id", "name", "age" ],
+  "additionalRules" : [ "age plus id must be less than 1000" ]
+}
+
+scala> Person(1,"!!!",200).validate.printJs.pretty
+res1: String =
+{
+  "name" : [ "must contain only letters or spaces" ],
+  "age" : [ "must be less than or equal to 150" ]
+}
+----
+
+== Overview
+* Light-weight, composable, and DRY data validation DSL.
+* Does not use constructor validation or exceptions to communicate failure.
+* Reusable for any serialization format.
+* Auto-generate JSON Schema (http://json-schema.org) or human-readable explanation for any Play JSON
+serializer, including any validation rules.
+* Generic metadata framework for generating human-readable or machine-readable schema for any serializer or
+specific schema type.
+
+NOTE: See Example section below for full example
+
+== Features
+* Create +Validator[A]+ type-classes to test instances of A against a set of rules.
+* Print JSON Schema (http://json-schema.org) for any Play +Format[A]+ and +Validator[A]+ rules using the
++ExplainFormat[A]+ type-class.
+* Use built-in rules such as +Validators.stringLengthMin+ or +Validators.numberMinInclusive+ that are rendered in
+printed JSON Schema as JSON Schema checks ( +{ ... "minLength" -> 1 ... }+ or +{ ... "minimum" -> 1 ... }+ )
+* i8n support for +Rule+ messages by overriding the default +MessageForRule+ type-class.
+* Includes support for _distinct type aliases_, an alternative to value-classes that avoids the boxing
+problems experienced when using value-classes (especially in generics such as collections).
+* Use +Validator.forValueClass[V,A]+ or +Validator.forDistinctAliasType[V,A]+, to specify rules that constrain
+ the values of a built-in type such as Int or String.
+* Macro-generate a +Validator[A]+ for case classes* with +Validator.forProductType[A]+ that automatically resolves
+and composes the +Validator[A]+ for the type of each field in the case classes.
+* Wrap Play +Format[A]+ using +.withValidator+ to automatically check all +Validator[A]+ rules after successfully
+deserializing an instance of A from JSON (+Validator[A]+ rule failures are converted to Play +JsError+).
+* Print a generic human readable explanation (+TypeRemarks+/+Remarks+) for any Play +Format[A]+ or +Validator[A]+.
+* Create trees of generic metadata for any data instance or data type using +Metadata[A]+ or +TypeMetadata[A]+.
+
+NOTE: *Macro requires all fields to have a +Validator[A]+ for the field's type in scope when
++Validator.forProductType[A]+ is invoked. Case classes with self-recursive field types (fields of the same type as
+the containing case class) are not supported. Implementations of +Validator[A]+ for all Scala collections,
+Scala Option and Scala tuple classes are provided.
+
 
 == Why do I need this?
 
@@ -40,15 +123,11 @@ serialization format agnostic data validators.
 == Features
 
 * Create validators that test validation rules using a light-weight and terse DSL.
-* Write DRY validation code, exactly once, that can be re-used, composed and can be applied to all serialization formats.
-* Validate an instance against a validator to produce a human-readable list of validation failures (+List[Rule]+).
-* Output a human-readable "schema" of all rules tested and the expected type of each
-primitive value from any validator using +Validator.explain+.
+* Write DRY validation code, exactly once, that can be re-used, composed and can be applied to any serialization format.
+* Validate an instance against a validator to produce a list of validation failures (+List[Rule]+).
+* Print validation failures as a human-readable list or as JSON (using +s_mach.validate-play_json+).
 * Macro-generate validators for any product type (i.e. case class or tuple) using +Validator.forProductType+.
 * Constrain value space of value types (e.g. String, Int, etc) using value classes and +Validator.forValueClass+.
-* Convert +List[Explain]+ or +List[Rule]+ to human-readable Play JSON using +prettyPrintJson+ method.
-* Compose validators with existing Play Format/Reads by using +Format.withValidator+ or +Reads.withValidator+
-convenience methods.
 
 == Versioning
 +s_mach.validate+ uses semantic versioning (http://semver.org/).
