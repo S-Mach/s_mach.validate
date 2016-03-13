@@ -25,7 +25,8 @@ libraryDependencies ++= Seq(
 ----
 NOTE: +s_mach.validate+ is based on blackbox macro support, present only in Scala 2.11+
 
-== Quicklook (with s_mach.validate-play_json)
+== Quicklook
+Note: this example uses +s_mach.validate-play_json+
 ----
 ...
 
