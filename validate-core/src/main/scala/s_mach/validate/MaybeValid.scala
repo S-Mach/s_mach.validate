@@ -21,13 +21,13 @@ sealed trait MaybeValid[+A] {
 object MaybeValid {
   def apply[A](a: A, maybeFailures: Metadata[List[Rule]]) : MaybeValid[A] =
     if(maybeFailures.values.isEmpty) {
-      Valid(a)
+      Valid(a, maybeFailures)
     } else {
       Invalid(maybeFailures)
     }
 }
 
-case class Invalid(failures: Metadata[List[Rule]]) extends MaybeValid[Nothing] {
+case class Invalid (failures: Metadata[List[Rule]]) extends MaybeValid[Nothing] {
   def fold[X](
     ifInvalid: Invalid => X,
     ifValid: Valid[Nothing] => X
@@ -37,13 +37,14 @@ case class Invalid(failures: Metadata[List[Rule]]) extends MaybeValid[Nothing] {
   def toOption = None
 }
 
-case class Valid[+A](value: A) extends MaybeValid[A] {
+case class Valid[+A] (
+  value: A,
+  failures: Metadata[List[Rule]]
+) extends MaybeValid[A] {
   def fold[X](
     ifInvalid: (Invalid) => X,
     ifValid: (Valid[A]) => X
   ) = ifValid(this)
-  // Note: this does not create Metadata that can be merged for all types (unresolved issue)
-  def failures = Metadata.Val(Nil)
   def get = value
   def toOption = Some(value)
 }
