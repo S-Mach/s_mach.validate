@@ -74,7 +74,7 @@ res0: String =
       "type" : "string",
       "minLength" : 1,
       "maxLength" : 64,
-      "pattern" : "^[ A-Za-z]*$",
+      "pattern" : "^[A-Za-z ]*$",
       "comments" : [ "must contain only letters or spaces" ]
     },
     "age" : {
