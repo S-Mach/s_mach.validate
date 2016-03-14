@@ -88,7 +88,7 @@ res0: String =
   "required" : [ "id", "name", "age" ]
 }
 
-scala> Person(1,"!!!",200).validate.failures.printJs.pretty
+scala> Person(1,"!!!",200).validate.failures.printRemarksJson.pretty
 res1: String =
 {
   "name" : [ "must contain only letters or spaces" ],

@@ -67,7 +67,7 @@ object Validators {
   val allLetters = stringCharGroupPattern(CharGroup.Letter)
   val allDigits = stringCharGroupPattern(CharGroup.Digit)
   val allLettersOrDigits = stringCharGroupPattern(CharGroup.Digit,CharGroup.Letter)
-  val allLettersOrSpaces = stringCharGroupPattern(CharGroup.Space,CharGroup.Letter)
+  val allLettersOrSpaces = stringCharGroupPattern(CharGroup.Letter,CharGroup.Space)
   val allLettersDigitsOrSpaces = stringCharGroupPattern(CharGroup.Space,CharGroup.Digit,CharGroup.Letter)
 
   object numberMinInclusive {
