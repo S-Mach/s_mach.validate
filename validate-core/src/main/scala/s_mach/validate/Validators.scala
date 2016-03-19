@@ -24,7 +24,7 @@ object Validators {
 
   object stringLengthMin {
     val key = Symbol("string.length.min.inclusive")
-    def rule(min: Int) = {
+    def rule(min: Int) : Rule = {
       require(min > 0,"min must be greater than 0")
       Rule(key,min.toString)
     }
@@ -33,7 +33,7 @@ object Validators {
   }
   object stringLengthMax {
     val key = Symbol("string.length.max.inclusive")
-    def rule(max: Int) = {
+    def rule(max: Int) : Rule = {
       require(max > 0,"max must be greater than 0")
       Rule(key,max.toString)
     }
@@ -41,11 +41,19 @@ object Validators {
       Validator.ensure(rule(max))(_.length <= max)
   }
   object stringLengthRange {
+    def rule(min: Int, max: Int) : List[Rule] = {
+      stringLengthMin.rule(min) :: stringLengthMax.rule(max) :: Nil
+    }
     def apply(min: Int, max: Int) : Validator[String] = {
       stringLengthMin(min) and stringLengthMax(max)
     }
   }
-  val stringNonEmpty = stringLengthMin(1)
+  object stringNonEmpty {
+    val key = stringLengthMin.key
+    def rule() : Rule = stringLengthMin.rule(1)
+    def apply() : Validator[String] =
+      stringLengthMin(1)
+  }
 
   // Note: JSONSchema specifies Ecma262 for pattern (http://json-schema.org/latest/json-schema-validation.html#anchor33)
   // Note: XML Schema specifies Unicode Regular Expressions level 1 (http://www.unicode.org/reports/tr18/#Basic_Unicode_Support)
@@ -59,16 +67,27 @@ object Validators {
     }
   }
 
+  class StringCharGroupPattern(groups: CharGroup*) {
+    private[this] def getPattern(groups: Seq[CharGroup]) : String =
+      CharGroupPattern(groups:_*).pattern.pattern
+    def rule() =
+      stringPattern.rule(getPattern(groups))
+    def apply() =
+      stringPattern(getPattern(groups))
+  }
   object stringCharGroupPattern {
+    def rule(groups: CharGroup*) =
+      new StringCharGroupPattern(groups:_*).rule()
     def apply(groups: CharGroup*) =
-      stringPattern(CharGroupPattern(groups:_*).pattern.pattern)
+      new StringCharGroupPattern(groups:_*).apply()
+
   }
 
-  val allLetters = stringCharGroupPattern(CharGroup.Letter)
-  val allDigits = stringCharGroupPattern(CharGroup.Digit)
-  val allLettersOrDigits = stringCharGroupPattern(CharGroup.Digit,CharGroup.Letter)
-  val allLettersOrSpaces = stringCharGroupPattern(CharGroup.Letter,CharGroup.Space)
-  val allLettersDigitsOrSpaces = stringCharGroupPattern(CharGroup.Space,CharGroup.Digit,CharGroup.Letter)
+  val allLetters = new StringCharGroupPattern(CharGroup.Letter)
+  val allDigits = new StringCharGroupPattern(CharGroup.Digit)
+  val allLettersOrDigits = new StringCharGroupPattern(CharGroup.Digit,CharGroup.Letter)
+  val allLettersOrSpaces = new StringCharGroupPattern(CharGroup.Letter,CharGroup.Space)
+  val allLettersDigitsOrSpaces = new StringCharGroupPattern(CharGroup.Space,CharGroup.Digit,CharGroup.Letter)
 
   object numberMinInclusive {
     val key = Symbol("number.min.inclusive")

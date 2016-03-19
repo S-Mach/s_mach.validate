@@ -109,7 +109,7 @@ class ValidatorsTest extends FlatSpec with Matchers {
   }
 
   "stringNonEmpty" should "test the same rules as stringLengthMin(1)" in {
-    stringNonEmpty.thisRules == stringLengthMin(1).thisRules
+    stringNonEmpty().thisRules == stringLengthMin(1).thisRules
   }
 
   def mkStringGen(length: Range, chars: Array[Char]) : () => String = {
@@ -167,23 +167,23 @@ class ValidatorsTest extends FlatSpec with Matchers {
   }
 
   "allLetters" should "accept strings of all letters" in {
-    testPatternValidator(allLetters,10 to 24,'A' to 'Z','a' to 'z')
+    testPatternValidator(allLetters(),10 to 24,'A' to 'Z','a' to 'z')
   }
 
   "allDigits" should "accept strings of all digits" in {
-    testPatternValidator(allDigits,10 to 24,'0' to '9')
+    testPatternValidator(allDigits(),10 to 24,'0' to '9')
   }
 
   "allLettersOrDigits" should "accept strings of all letters or digits" in {
-    testPatternValidator(allLettersOrDigits,10 to 24,'A' to 'Z','a' to 'z','0' to '9')
+    testPatternValidator(allLettersOrDigits(),10 to 24,'A' to 'Z','a' to 'z','0' to '9')
   }
 
   "allLettersOrSpaces" should "accept strings of all letters or spaces" in {
-    testPatternValidator(allLettersOrSpaces,10 to 24,'A' to 'Z',' ' to ' ')
+    testPatternValidator(allLettersOrSpaces(),10 to 24,'A' to 'Z',' ' to ' ')
   }
 
   "allLettersDigitsOrSpaces" should "accept strings of all letters, digits or spaces" in {
-    testPatternValidator(allLettersDigitsOrSpaces,10 to 24,'A' to 'Z','0' to '9',' ' to ' ')
+    testPatternValidator(allLettersDigitsOrSpaces(),10 to 24,'A' to 'Z','0' to '9',' ' to ' ')
   }
 
   "numberMinInclusive" should "reject numbers less than a certain value" in {

@@ -20,7 +20,7 @@ sealed trait MaybeValid[+A] {
 
 object MaybeValid {
   def apply[A](a: A, maybeFailures: Metadata[List[Rule]]) : MaybeValid[A] =
-    if(maybeFailures.values.isEmpty) {
+    if(maybeFailures.values.forall(_.isEmpty)) {
       Valid(a, maybeFailures)
     } else {
       Invalid(maybeFailures)

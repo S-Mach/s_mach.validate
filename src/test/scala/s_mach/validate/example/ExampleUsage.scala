@@ -52,7 +52,7 @@ object Name {
     // Create a Validator[Name] based on a Validator[String]
     Validator.forValueClass[Name, String] {
       // Build a Validator[String] by composing some pre-defined validators
-      _ and stringNonEmpty and stringLengthMax(64) and allLettersOrSpaces
+      _ and stringNonEmpty() and stringLengthMax(64) and allLettersOrSpaces()
     }
   implicit val format_Name =
     Json

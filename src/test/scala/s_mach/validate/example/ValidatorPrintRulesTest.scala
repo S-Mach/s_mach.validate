@@ -16,68 +16,77 @@
           .L1 1tt1ttt,,Li
             ...1LLLL...
 */
-package s_mach.validate.example
+package s_mach.validate
 
+import s_mach.validate._
 import org.scalatest.{FlatSpec, Matchers}
+import s_mach.validate.MessageForRule.Implicits._
 
 class ValidatorPrintRulesTest extends FlatSpec with Matchers {
+  import example.ExampleUsage._
+  import example.ExampleUsage2._
 
-  // todo: add printRemarks/printRemarksJson to TypeMetadata[List[Rule]]
 //  "JsonValidatorPrinter.print" should "correctly print JSON for a string validator" in {
-//    validator[Name].rules.printRemarksJson.pretty should equal(
-//"""[ "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ]"""
-//    )
+//    validator[Name].rules.toTypeRemarks.print should equal(List(
+//      "this: must not be empty",
+//      "this: must not be longer than 64 characters",
+//      "this: must contain only letters or spaces"
+//    ))
 //  }
 //
 //  "JsonValidatorPrinter.print" should "correctly print JSON for a number validator" in {
-//    validator[WeightLb].rules.printRemarksJson.pretty should equal(
-//"""[ "must be greater than 0.0", "must be less than 1000.0" ]"""
-//    )
+//    validator[WeightLb].rules.toTypeRemarks.print should equal(List(
+//      "this: must be greater than 0.0",
+//      "this: must be less than 1000.0"
+//    ))
 //  }
 //
 //  "JsonValidatorPrinter.print" should "correctly print JSON for a single case class validator" in {
-//    validator[Person].rules.printRemarksJson.pretty should equal(
-//"""{
-//  "this" : [ "age plus id must be less than 1000" ],
-//  "name" : [ "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ],
-//  "age" : [ "must be greater than or equal to 0", "must be less than or equal to 150" ]
-//}"""
-//    )
+//    validator[Person].rules.toTypeRemarks.print should equal(List(
+//      "this: age plus id must be less than 1000",
+//      "name: must not be empty",
+//      "name: must not be longer than 64 characters",
+//      "name: must contain only letters or spaces",
+//      "age: must be greater than or equal to 0",
+//      "age: must be less than or equal to 150"
+//    ))
 //  }
 //
 //  "JsonValidatorPrinter.print" should "correctly print JSON for a nested case class validator" in {
-//    validator[Family].rules.printRemarksJson.pretty should equal(
-//"""{
-//  "this" : [ "father must be older than children", "mother must be older than children" ],
-//  "father" : {
-//    "this" : [ "age plus id must be less than 1000" ],
-//    "name" : [ "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ],
-//    "age" : [ "must be greater than or equal to 0", "must be less than or equal to 150" ]
-//  },
-//  "mother" : {
-//    "this" : [ "age plus id must be less than 1000" ],
-//    "name" : [ "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ],
-//    "age" : [ "must be greater than or equal to 0", "must be less than or equal to 150" ]
-//  },
-//  "children" : {
-//    "*" : {
-//      "this" : [ "age plus id must be less than 1000" ],
-//      "name" : [ "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ],
-//      "age" : [ "must be greater than or equal to 0", "must be less than or equal to 150" ]
-//    }
-//  },
-//  "grandMother" : {
-//    "this" : [ "age plus id must be less than 1000" ],
-//    "name" : [ "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ],
-//    "age" : [ "must be greater than or equal to 0", "must be less than or equal to 150" ]
-//  },
-//  "grandFather" : {
-//    "this" : [ "age plus id must be less than 1000" ],
-//    "name" : [ "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ],
-//    "age" : [ "must be greater than or equal to 0", "must be less than or equal to 150" ]
-//  }
-//}"""
-//    )
+//    validator[Family].rules.toTypeRemarks.print should equal(List(
+//      "this: father must be older than children",
+//      "this: mother must be older than children",
+//      "father: age plus id must be less than 1000",
+//      "father.name: must not be empty",
+//      "father.name: must not be longer than 64 characters",
+//      "father.name: must contain only letters or spaces",
+//      "father.age: must be greater than or equal to 0",
+//      "father.age: must be less than or equal to 150",
+//      "mother: age plus id must be less than 1000",
+//      "mother.name: must not be empty",
+//      "mother.name: must not be longer than 64 characters",
+//      "mother.name: must contain only letters or spaces",
+//      "mother.age: must be greater than or equal to 0",
+//      "mother.age: must be less than or equal to 150",
+//      "children[*]: age plus id must be less than 1000",
+//      "children[*]: must not be empty",
+//      "children[*]: must not be longer than 64 characters",
+//      "children[*]: must contain only letters or spaces",
+//      "children[*]: must be greater than or equal to 0",
+//      "children[*]: must be less than or equal to 150",
+//      "grandMother: age plus id must be less than 1000",
+//      "grandMother.name: must not be empty",
+//      "grandMother.name: must not be longer than 64 characters",
+//      "grandMother.name: must contain only letters or spaces",
+//      "grandMother.age: must be greater than or equal to 0",
+//      "grandMother.age: must be less than or equal to 150",
+//      "grandFather: age plus id must be less than 1000",
+//      "grandFather.name: must not be empty",
+//      "grandFather.name: must not be longer than 64 characters",
+//      "grandFather.name: must contain only letters or spaces",
+//      "grandFather.age: must be greater than or equal to 0",
+//      "grandFather.age: must be less than or equal to 150"
+//    ))
 //  }
 
 }
