@@ -33,10 +33,14 @@ import s_mach.validate.impl._
  * @tparam A type of data
  */
 trait Validator[A] {
+  /** @return list of validation rules for only this type (no child rules) */
   def thisRules : List[Rule]
+  /** @return all rules for this type, including child rules */
   def rules : TypeMetadata[List[Rule]]
+  /** @return test all rules against an instance */
   def apply(a: A) : Metadata[List[Rule]]
 
+  /** @return a new Validator that tests rules this and other */
   def and(other: Validator[A]) : Validator[A]
 }
 

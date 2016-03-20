@@ -31,6 +31,9 @@ package object validate extends
 {
   /* Prefix added to implicits to prevent shadowing: FvWhDLaDRG */
 
+  type ValidatorRules = TypeMetadata[List[Rule]]
+  type ValidatorResult = Metadata[List[Rule]]
+
   implicit class EverythingPML_FvWhDLaDRG_[A](val self: A) extends AnyVal {
     /** @return Valid if self is valid otherwise Invalid with specific failures */
     def validate()(implicit v: Validator[A]) : MaybeValid[A] =
@@ -49,7 +52,7 @@ package object validate extends
       mr.messageFor(self)
   }
 
-    implicit class ValidatorPML_FvWhDLaDRG[A](val self: Validator[A]) extends AnyVal {
+  implicit class ValidatorPML_FvWhDLaDRG[A](val self: Validator[A]) extends AnyVal {
     /** @return composite Validator of self and Validator.ensure */
     def ensure(
       rule: Rule
@@ -77,4 +80,21 @@ package object validate extends
     def validate(value: A) : MaybeValid[A] =
       MaybeValid(value, self.apply(value))
   }
+
+  implicit class ValidatorRulesPML_FvWhDLaDRG(val self: ValidatorRules) extends AnyVal {
+    def toTypeRemarks(implicit mr:MessageForRule) : TypeRemarks =
+      self.map(rules => rules.map(rule => mr.messageFor(rule)))
+
+    def printRemarks(implicit mr:MessageForRule) : List[String] =
+      toTypeRemarks.print
+  }
+
+  implicit class ValidatorResultPML_FvWhDLaDRG(val self: ValidatorResult) extends AnyVal {
+    def toRemarks(implicit mr:MessageForRule) : Remarks =
+      self.map(rules => rules.map(rule => mr.messageFor(rule)))
+
+    def printRemarks(implicit mr:MessageForRule) : List[String] =
+      toRemarks.print
+  }
+
 }
