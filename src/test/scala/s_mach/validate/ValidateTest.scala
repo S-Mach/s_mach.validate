@@ -19,14 +19,8 @@
 package s_mach.validate
 
 import org.scalatest.{FlatSpec, Matchers}
-import s_mach.codetools.play_json._
-import s_mach.explain_json._
-import s_mach.explain_play_json._
-import s_mach.explain_play_json.PlayJsonWriter.Implicits._
-import s_mach.metadata.Metadata
+import s_mach.metadata.{Cardinality, Metadata}
 import s_mach.string.CharGroup
-import s_mach.validate.play_json._
-import s_mach.validate.MessageForRule.Implicits._
 import example.ExampleUsage._
 import example.ExampleUsage2._
 import Validators._
@@ -56,121 +50,125 @@ class ValidateTest extends FlatSpec with Matchers {
   }
 
   val invalidPerson1 = Person(1001,Name("*" * 65),151)
+  val expectedInvalidPerson1 = Metadata.Rec(
+    Rule("age plus id must be less than 1000") :: Nil,
+    Seq(
+      "id" -> Metadata.Val(Nil),
+      "name" -> Metadata.Val(
+        stringLengthMax.rule(64) :: stringCharGroupPattern.rule(CharGroup.Letter,CharGroup.Space) :: Nil
+      ),
+      "age" -> Metadata.Val(
+        numberMaxInclusive.rule(150) :: Nil
+      )
+    )
+  )
   val invalidPerson2 = Person(1,Name(""),1)
+  val expectedInvalidPerson2 = Metadata.Rec(
+    Nil,
+    Seq(
+      "id" -> Metadata.Val(Nil),
+      "name" -> Metadata.Val(
+        stringNonEmpty.rule() :: Nil
+      ),
+      "age" -> Metadata.Val(Nil)
+    )
+  )
+  val validPerson = Person(1,Name("abc"),30)
+  val expectedValidPerson = Metadata.Rec(
+    Nil,
+    Seq(
+      "id" -> Metadata.Val(Nil),
+      "name" -> Metadata.Val(Nil),
+      "age" -> Metadata.Val(Nil)
+    )
+  )
 
-  "Validator.validate" should "return invalid for an incorrect case class" in {
-    invalidPerson1.validate should equal(Invalid(Metadata.Rec(
-      Rule("age plus id must be less than 1000") :: Nil,
+  "Validator.validate" should "return invalid for an incorrect case class (1)" in {
+    invalidPerson1.validate should equal(Invalid(
+      expectedInvalidPerson1
+    ))
+  }
+
+  "Validator.validate" should "return invalid for an incorrect case class (2)" in {
+    invalidPerson2.validate should equal(Invalid(
+      expectedInvalidPerson2
+    ))
+  }
+
+  "Validator.validate" should "return valid for a correct case class" in {
+    val v = validPerson
+    v.validate should equal(Valid(v,expectedValidPerson))
+  }
+
+  "Validator.validate" should "return invalid for an incorrect case class (with nested case classes)" in {
+    Family(
+      invalidPerson1,
+      invalidPerson2,
+      Seq(invalidPerson1,invalidPerson2),
+      Some(invalidPerson1),
+      None
+    ).validate should equal(Invalid(Metadata.Rec(
+      Rule("father must be older than children") :: Rule("mother must be older than children") :: Nil,
       Seq(
-        "id" -> Metadata.Val(Nil),
-        "name" -> Metadata.Val(
-          stringLengthMax.rule(64) :: stringCharGroupPattern.rule(CharGroup.Letter,CharGroup.Space) :: Nil
+        "father" -> expectedInvalidPerson1,
+        "mother" -> expectedInvalidPerson2,
+        "children" -> Metadata.Arr(
+          Nil,
+          Cardinality.ZeroOrMore,
+          Seq(
+            expectedInvalidPerson1,
+            expectedInvalidPerson2
+          )
         ),
-        "age" -> Metadata.Val(
-          numberMaxInclusive.rule(150) :: Nil
+        "grandMother" -> Metadata.Arr(
+          Nil,
+          Cardinality.ZeroOrOne,
+          Seq(expectedInvalidPerson1)
+        ),
+        "grandFather" -> Metadata.Arr(
+          Nil,
+          Cardinality.ZeroOrOne,
+          Nil
         )
       )
     )))
   }
 
-  "Validator.validate" should "return valid for a correct case class" in {
-    val v = Person(1,Name("abc"),30)
+  "Validator.validate" should "return valid for a correct case class (with nested case classes)" in {
+    val v = Family(
+      // father & mother must be older than children
+      validPerson.copy(age = 60),
+      validPerson.copy(age = 60),
+      Seq(validPerson,validPerson),
+      Some(validPerson),
+      None
+    )
+
     v.validate should equal(Valid(v,Metadata.Rec(
       Nil,
       Seq(
-        "id" -> Metadata.Val(Nil),
-        "name" -> Metadata.Val(Nil),
-        "age" -> Metadata.Val(Nil)
+        "father" -> expectedValidPerson,
+        "mother" -> expectedValidPerson,
+        "children" -> Metadata.Arr(
+          Nil,
+          Cardinality.ZeroOrMore,
+          Seq(
+            expectedValidPerson,
+            expectedValidPerson
+          )
+        ),
+        "grandMother" -> Metadata.Arr(
+          Nil,
+          Cardinality.ZeroOrOne,
+          Seq(expectedValidPerson)
+        ),
+        "grandFather" -> Metadata.Arr(
+          Nil,
+          Cardinality.ZeroOrOne,
+          Nil
+        )
       )
     )))
   }
-
-  //  "Validator.validate" should "return invalid for an incorrect case class (with nested case classes)" in {
-//    Family(
-//      invalidPerson1,
-//      invalidPerson2,
-//      Seq(invalidPerson1,invalidPerson2),
-//      Some(invalidPerson1),
-//      None
-//    ).validate should equal(Invalid(Metadata.Rec(
-//      Rule("father must be older than children") :: Rule("mother must be older than children") :: Nil,
-//      Seq(
-//        "father" -> Metadata.Rec(
-//          Rule("age plus id must be less than 1000") :: Nil,
-//          Seq(
-//            "id" -> Metadata.Val(Nil),
-//            "name" -> Metadata.Val(
-//              stringLengthMax.rule(64) :: stringCharGroupPattern.rule(CharGroup.Letter,CharGroup.Space) :: Nil
-//            ),
-//            "age" -> Metadata.Val(
-//              numberMaxInclusive.rule(150) :: Nil
-//            )
-//          )
-//        ),
-//        "mother" -> Metadata.Rec(
-//          Rule("age plus id must be less than 1000") :: Nil,
-//          Seq(
-//            "name" -> Metadata.Val(
-//              stringNonEmpty.rule() :: Nil
-//            )
-//          )
-//        ),
-//        "children" -> Metadata.Rec(
-//          Rule("age plus id must be less than 1000") :: Nil,
-//          Seq(
-//            "id" -> Metadata.Val(Nil),
-//            "name" -> Metadata.Val(
-//              stringLengthMax.rule(64) :: stringCharGroupPattern.rule(CharGroup.Letter,CharGroup.Space) :: Nil
-//            ),
-//            "age" -> Metadata.Val(
-//              numberMaxInclusive.rule(150) :: Nil
-//            )
-//          )
-//        ),
-//        "grandMother" -> Metadata.Rec(
-//          Rule("age plus id must be less than 1000") :: Nil,
-//          Seq(
-//            "id" -> Metadata.Val(Nil),
-//            "name" -> Metadata.Val(
-//              stringLengthMax.rule(64) :: stringCharGroupPattern.rule(CharGroup.Letter,CharGroup.Space) :: Nil
-//            ),
-//            "age" -> Metadata.Val(
-//              numberMaxInclusive.rule(150) :: Nil
-//            )
-//          )
-//        )
-//      )
-//    )))
-//  }
-
-//  "Validator.validate.printJs" should "correctly print JSON for a nested case class validator" in {
-//"""{
-//  "this" : [ "father must be older than children", "mother must be older than children" ],
-//  "father" : {
-//    "this" : [ "age plus id must be less than 1000" ],
-//    "name" : [ "must not be longer than 64 characters", "must contain only letters or spaces" ],
-//    "age" : [ "must be less than or equal to 150" ]
-//  },
-//  "mother" : {
-//    "name" : [ "must not be empty" ]
-//  },
-//  "children" : {
-//    "0" : {
-//      "this" : [ "age plus id must be less than 1000" ],
-//      "name" : [ "must not be longer than 64 characters", "must contain only letters or spaces" ],
-//      "age" : [ "must be less than or equal to 150" ]
-//    },
-//    "1" : {
-//      "name" : [ "must not be empty" ]
-//    }
-//  },
-//  "grandMother" : {
-//    "this" : [ "age plus id must be less than 1000" ],
-//    "name" : [ "must not be longer than 64 characters", "must contain only letters or spaces" ],
-//    "age" : [ "must be less than or equal to 150" ]
-//  }
-//}"""
-//    )
-//  }
 
 }

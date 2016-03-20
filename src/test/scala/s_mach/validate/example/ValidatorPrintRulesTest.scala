@@ -16,7 +16,7 @@
           .L1 1tt1ttt,,Li
             ...1LLLL...
 */
-package s_mach.validate
+package s_mach.validate.example
 
 import s_mach.validate._
 import org.scalatest.{FlatSpec, Matchers}
