@@ -47,8 +47,8 @@ object ValidatorAndTest {
 class ValidatorAndTest extends FlatSpec with Matchers {
   import ValidatorAndTest._
 
-  "Validator.empty and some other validator" should "be the other validator" in {
-    val v1 = Validator.empty[Int]
+  "Empty Val Validator and some other validator" should "be the other validator" in {
+    val v1 = Validator.forVal[Int]()
     val v2 = Validator.ensure[Int](testRule1)(_ > 100)
     v1 and v2 should equal(v2)
   }
@@ -77,7 +77,7 @@ class ValidatorAndTest extends FlatSpec with Matchers {
   "DistinctTypeAliasValidator and DistinctTypeAliasValidator" should "combine into a single DistinctTypeAliasValidator" in {
     import DTA._
 
-    implicit val validator_Int = Validator.empty[Int]
+    implicit val validator_Int = Validator.forVal[Int]()
     val v1 = Validator.forDistinctTypeAlias[Age,Int](_ and c1).asInstanceOf[DistinctTypeAliasValidator[Age,Int]]
     val v2 = Validator.forDistinctTypeAlias[Age,Int](_ and c2).asInstanceOf[DistinctTypeAliasValidator[Age,Int]]
 
@@ -88,7 +88,7 @@ class ValidatorAndTest extends FlatSpec with Matchers {
   "ValueClassValidator and ValueClassValidator" should "combine into a single ValueClassValidator" in {
     import ValueClass._
 
-    implicit val validator_Int = Validator.empty[Int]
+    implicit val validator_Int = Validator.forVal[Int]()
     val v1 = Validator.forValueClass[Age,Int](_ and c1).asInstanceOf[ValueClassValidator[Age,Int]]
     val v2 = Validator.forValueClass[Age,Int](_ and c2).asInstanceOf[ValueClassValidator[Age,Int]]
 

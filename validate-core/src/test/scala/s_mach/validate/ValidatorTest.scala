@@ -32,7 +32,7 @@ object ValidatorTest {
 
   object Implicits {
 
-    implicit val validator_Int = Validator.empty[Int]
+    implicit val validator_Int = Validator.forVal[Int]()
     // Note: not using Validator.forValueClass here for testing
     implicit val validator_Age = new Validator[Age] {
       val inner = numberRange(0,150)
@@ -60,13 +60,13 @@ object ValidatorTest {
 class ValidatorTest extends FlatSpec with Matchers {
   import ValidatorTest._
 
-  "Validator.empty" should "create an empty validator" in {
-    val v = Validator.empty[Int]
+  "Empty Val Validator" should "create an empty validator" in {
+    val v = Validator.forVal[Int]()
     v.rules should equal(TypeMetadata.Val(Nil))
   }
 
-  "Validator.empty.and" should "always return the other validator" in {
-    val v = Validator.empty[Int]
+  "Empty Val Validator.and" should "always return the other validator" in {
+    val v = Validator.forVal[Int]()
     val v2 = Validator.ensure[Int](Rule("test"))(_ < 100)
 
     (v and v2) eq v2 should equal(true)
@@ -198,7 +198,7 @@ class ValidatorTest extends FlatSpec with Matchers {
   }
 
   "Validator.forValueClass" should "create a validator for the underlying type" in {
-    implicit val validator_String = Validator.empty[String]
+    implicit val validator_String = Validator.forVal[String]()
 
     val v = Validator.forValueClass[Name,String](
       _ and stringNonEmpty() and

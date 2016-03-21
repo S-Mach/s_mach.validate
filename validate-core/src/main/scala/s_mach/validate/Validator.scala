@@ -33,20 +33,22 @@ import s_mach.validate.impl._
  * @tparam A type of data
  */
 trait Validator[A] {
-  /** @return list of validation rules for only this type (no child rules) */
+  /** @return list of rules tested for only the metadata node for this type
+    *         (excluding child fields and members)  */
   def thisRules : List[Rule]
-  /** @return all rules for this type, including child rules */
+  /** @return a list of rules tested for each metadata node in this type */
   def rules : TypeMetadata[List[Rule]]
-  /** @return test all rules against an instance */
+  /** @return test all rules against an instance returning a list of failures or
+    *         if valid Nil for each metadata node */
   def apply(a: A) : Metadata[List[Rule]]
 
-  /** @return a new Validator that tests rules this and other */
+  /** @return a new Validator that tests all rules in this validator and other */
   def and(other: Validator[A]) : Validator[A]
 }
 
 object Validator {
-  /** @return a Validator for a value that has no rules */
-  def empty[A] = ValidatorOps.empty[A]
+  /** @return a Validator for a data value */
+  def forVal[A](checks: Check[A]*) = ValidatorOps.forVal[A](checks:_*)
 
   /**
    * Create an empty Validator for a product type that can

@@ -30,7 +30,14 @@ object ValidatorOps {
     def apply(a: Any) = Metadata.Val(Nil)
     def and(other: Validator[Any]) = other
   }
-  def empty[A] = _empty.asInstanceOf[Validator[A]]
+  def forVal[A](checks: Check[A]*) : Validator[A] = {
+    if(checks.isEmpty) {
+      _empty.asInstanceOf[Validator[A]]
+    } else {
+      CheckValidator[A](checks.toList)
+    }
+
+  }
 
   def ensure[A](rule: Rule)(check: A => Boolean) : Validator[A] =
     CheckValidator(Check(rule)(check) :: Nil)

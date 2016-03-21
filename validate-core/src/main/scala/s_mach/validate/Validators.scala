@@ -21,9 +21,8 @@ package s_mach.validate
 import s_mach.string._
 
 object Validators {
-
   object stringLengthMin {
-    val key = Symbol("string.length.min.inclusive")
+    val key = 'string_length_min_inclusive
     def rule(min: Int) : Rule = {
       require(min > 0,"min must be greater than 0")
       Rule(key,min.toString)

@@ -16,9 +16,7 @@
           .L1 1tt1ttt,,Li
             ...1LLLL...
 */
-package s_mach.validate.impl
-
-import s_mach.validate._
+package s_mach.validate
 
 case class Check[A](rule: Rule)(check: A => Boolean) {
   def apply(a: A) : List[Rule] =
