@@ -1,0 +1,3 @@
+m_mother_must_be_older_than_children=mother must be older than children
+m_father_must_be_older_than_children=father must be older than children
+age_plus_id_must_be_less_than_$n=age plus id must be less than {0}

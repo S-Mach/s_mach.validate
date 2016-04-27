@@ -18,14 +18,17 @@
 */
 package s_mach.validate.example
 
+import java.util.Locale
+
 import org.scalatest.{FlatSpec, Matchers}
 import s_mach.explain_json._
 import s_mach.explain_play_json._
+import s_mach.i18n.{I18NConfig, UTF8Messages}
 import s_mach.validate.example.ExampleUsage._
 import s_mach.validate.example.ExampleUsage2._
+import ExampleI18N._
 
 class ExplainPlayJsonRemarksPrinterTest extends FlatSpec with Matchers {
-
   "ExplainPlayJson.printRemarks.print" should "correctly print remarks for a string validator" in {
     explainPlayJson[Name].printRemarks.print should equal(List(
       "this: must be string",
@@ -38,8 +41,8 @@ class ExplainPlayJsonRemarksPrinterTest extends FlatSpec with Matchers {
   "ExplainPlayJson.printRemarks.print" should "correctly print remarks for a number validator" in {
     explainPlayJson[WeightLb].printRemarks.print should equal(List(
       "this: must be number",
-      "this: must be greater than 0.0",
-      "this: must be less than 1000.0"
+      "this: must be greater than 0",
+      "this: must be less than 1,000"
     ))
   }
 

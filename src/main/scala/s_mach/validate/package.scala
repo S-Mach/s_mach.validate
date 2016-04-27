@@ -21,7 +21,9 @@ package s_mach
 
 import scala.language.implicitConversions
 import scala.language.higherKinds
+import s_mach.i18n._
 import s_mach.metadata._
+import s_mach.validate.impl.PrintRemarksOps
 
 package object validate extends
   TupleValidatorImplicits with
@@ -47,9 +49,9 @@ package object validate extends
       v.validate(self.unsafe)
   }
 
-  implicit class RulePML_FvWhDLaDRG(val self: Rule) extends AnyVal {
-    def message(implicit mr: MessageForRule) : String =
-      mr.messageFor(self)
+  implicit val i18n_Rule = new I18N[Rule] {
+    override def apply(rule: Rule)(implicit cfg: I18NConfig): I18NString =
+      PrintRemarksOps.rulePrintRemarks(rule)
   }
 
   implicit class ValidatorPML_FvWhDLaDRG[A](val self: Validator[A]) extends AnyVal {
@@ -82,18 +84,18 @@ package object validate extends
   }
 
   implicit class ValidatorRulesPML_FvWhDLaDRG(val self: ValidatorRules) extends AnyVal {
-    def toTypeRemarks(implicit mr:MessageForRule) : TypeRemarks =
-      self.map(rules => rules.map(rule => mr.messageFor(rule)))
+    def toTypeRemarks(implicit i18ncfg:I18NConfig) : TypeRemarks =
+      self.map(_.map(_.i18n))
 
-    def printRemarks(implicit mr:MessageForRule) : List[String] =
+    def printRemarks(implicit i18ncfg: I18NConfig) : List[String] =
       toTypeRemarks.print
   }
 
   implicit class ValidatorResultPML_FvWhDLaDRG(val self: ValidatorResult) extends AnyVal {
-    def toRemarks(implicit mr:MessageForRule) : Remarks =
-      self.map(rules => rules.map(rule => mr.messageFor(rule)))
+    def toRemarks(implicit i18ncfg:I18NConfig) : Remarks =
+      self.map(_.map(_.i18n))
 
-    def printRemarks(implicit mr:MessageForRule) : List[String] =
+    def printRemarks(implicit i18ncfg:I18NConfig) : List[String] =
       toRemarks.print
   }
 

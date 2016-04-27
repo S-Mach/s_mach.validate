@@ -8,9 +8,9 @@ import s_mach.codetools._
 import s_mach.codetools.play_json._
 import s_mach.explain_play_json.ExplainPlayJson
 import s_mach.validate._
-import s_mach.validate.Validators._
-import s_mach.validate.MessageForRule.Implicits._
+import s_mach.i18n._
 import s_mach.validate.play_json._
+import ExampleI18N._
 
 implicit class WeightLb(
   val underlying: Double
@@ -20,8 +20,9 @@ object WeightLb {
   implicit val validator_WeightLb =
     // Create a Validator[WeightLb] based on a Validator[String]
     Validator.forValueClass[WeightLb, Double] {
+      import s_mach.validate.Validators._
       // Build a Validator[String] by composing some pre-defined validators
-      _ and numberRangeExclusive(0.0,1000.0)
+      _ and NumberRangeExclusive(0.0,1000.0)
     }
   implicit val format_WeightLb =
     Json

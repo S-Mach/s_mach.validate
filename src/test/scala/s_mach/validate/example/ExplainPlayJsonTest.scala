@@ -24,10 +24,9 @@ import s_mach.explain_json._
 import s_mach.explain_play_json._
 import s_mach.explain_play_json.PlayJsonWriter.Implicits._
 import s_mach.validate.play_json._
-import s_mach.validate.MessageForRule.Implicits._
 import ExampleUsage._
 import ExampleUsage2._
-
+import ExampleI18N._
 
 class ExplainPlayJsonTest extends FlatSpec with Matchers {
 
@@ -45,7 +44,7 @@ class ExplainPlayJsonTest extends FlatSpec with Matchers {
 
   "JsonValidatorPrinter.print" should "correctly print JSON for a number validator" in {
     explainPlayJson[WeightLb].printRemarksJson.pretty should equal(
-"""[ "must be number", "must be greater than 0.0", "must be less than 1000.0" ]"""
+"""[ "must be number", "must be greater than 0", "must be less than 1,000" ]"""
     )
   }
 

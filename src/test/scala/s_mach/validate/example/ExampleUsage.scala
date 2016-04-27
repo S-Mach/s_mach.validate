@@ -28,9 +28,10 @@ import s_mach.codetools.play_json._
 import s_mach.explain_play_json.ExplainPlayJson
 import s_mach.validate._
 import s_mach.validate.play_json._
-import s_mach.validate.Validators._
-import s_mach.validate.MessageForRule.Implicits._
+import s_mach.i18n._
 import s_mach.validate.play_json._
+import ExampleI18N._
+  import s_mach.validate.Validators
 
 /*
   Use Scala value-class (http://docs.scala-lang.org/overviews/core/value-classes.html)
@@ -51,8 +52,9 @@ object Name {
   implicit val validator_Name =
     // Create a Validator[Name] based on a Validator[String]
     Validator.forValueClass[Name, String] {
+      import Validators._
       // Build a Validator[String] by composing some pre-defined validators
-      _ and stringNonEmpty() and stringLengthMax(64) and allLettersOrSpaces()
+      _ and StringNonEmpty and StringLengthMax(64) and AllLettersOrSpaces
     }
   implicit val format_Name =
     Json
@@ -89,9 +91,10 @@ import scala.language.implicitConversions
 @inline implicit def Age(i: Int) = i.asInstanceOf[Age]
 
 implicit val validator_Age = {
-  Validator.forDistinctTypeAlias[Age,Int](
-    _ and numberRange(0,150)
-  )
+  Validator.forDistinctTypeAlias[Age,Int] {
+    import Validators._
+    _ and NumberRange(0, 150)
+  }
 }
 implicit val format_Age =
   Json.forDistinctTypeAlias.format[Age,Int].withValidator
@@ -113,7 +116,7 @@ object Person {
     Validator.forProductType[Person]
       // Compose the macro generated Validator[Person] with an additional condition
       .ensure(
-        Rule("age plus id must be less than 1000")
+        Rule('age_plus_id_must_be_less_than_$n,1000.toString)
         // p.age is used here as if it was an Int here without any extra code
       )(p => p.id + p.age < 1000)
   }
@@ -140,10 +143,10 @@ object Family {
    */
     Validator.forProductType[Family]
       // Add some extra constaints
-      .ensure(Rule("father must be older than children")) { family =>
+      .ensure(Rule(m_father_must_be_older_than_children.key)) { family =>
         family.children.forall(_.age < family.father.age)
       }
-      .ensure(Rule("mother must be older than children")) { family =>
+      .ensure(Rule(m_mother_must_be_older_than_children.key)) { family =>
         family.children.forall(_.age < family.mother.age)
       }
 

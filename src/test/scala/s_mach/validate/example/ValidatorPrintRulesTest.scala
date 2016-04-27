@@ -20,7 +20,7 @@ package s_mach.validate.example
 
 import s_mach.validate._
 import org.scalatest.{FlatSpec, Matchers}
-import s_mach.validate.MessageForRule.Implicits._
+import ExampleI18N._
 
 class ValidatorPrintRulesTest extends FlatSpec with Matchers {
   import example.ExampleUsage._
@@ -36,8 +36,8 @@ class ValidatorPrintRulesTest extends FlatSpec with Matchers {
 
   "Validator.rules.printRemarks" should "correctly print type remarks for a number validator" in {
     validator[WeightLb].rules.toTypeRemarks.print should equal(List(
-      "this: must be greater than 0.0",
-      "this: must be less than 1000.0"
+      "this: must be greater than 0",
+      "this: must be less than 1,000"
     ))
   }
 

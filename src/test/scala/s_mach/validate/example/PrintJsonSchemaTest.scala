@@ -30,9 +30,9 @@ import s_mach.explain_json._
 import s_mach.explain_play_json._
 import s_mach.explain_play_json.PlayJsonWriter.Implicits._
 import s_mach.validate.play_json._
-import s_mach.validate.MessageForRule.Implicits._
 import ExampleUsage._
 import ExampleUsage2._
+import ExampleI18N._
 
 import scala.collection.JavaConverters._
 
