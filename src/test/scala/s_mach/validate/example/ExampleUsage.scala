@@ -28,10 +28,8 @@ import s_mach.codetools.play_json._
 import s_mach.explain_play_json.ExplainPlayJson
 import s_mach.validate._
 import s_mach.validate.play_json._
-import s_mach.i18n._
-import s_mach.validate.play_json._
 import ExampleI18N._
-  import s_mach.validate.Validators
+import s_mach.validate.Validators
 
 /*
   Use Scala value-class (http://docs.scala-lang.org/overviews/core/value-classes.html)

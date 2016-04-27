@@ -1,7 +1,7 @@
 name := "validate"
 
 libraryDependencies ++= Seq(
-  "net.s_mach" %% "validate-core" % "2.0.0",
+  "net.s_mach" %% "validate-main" % "2.0.0",
   "net.s_mach" %% "codetools-play_json" % "2.0.0" % "test",
   "net.s_mach" %% "explain_play_json" % "1.0.0" % "test",
   "net.s_mach" %% "validate-play_json" % "2.0.0" % "test",

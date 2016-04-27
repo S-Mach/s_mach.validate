@@ -18,12 +18,10 @@
 */
 package s_mach.validate.example
 
-import java.util.Locale
-
 import org.scalatest.{FlatSpec, Matchers}
 import s_mach.explain_json._
 import s_mach.explain_play_json._
-import s_mach.i18n.{I18NConfig, UTF8Messages}
+import s_mach.i18n._
 import s_mach.validate.example.ExampleUsage._
 import s_mach.validate.example.ExampleUsage2._
 import ExampleI18N._
