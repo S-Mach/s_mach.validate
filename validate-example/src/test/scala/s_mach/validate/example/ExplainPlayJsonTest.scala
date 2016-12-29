@@ -22,34 +22,34 @@ import org.scalatest.{FlatSpec, Matchers}
 import s_mach.codetools.play_json._
 import s_mach.explain_json._
 import s_mach.explain_play_json._
-import s_mach.explain_play_json.PlayJsonWriter.Implicits._
 import s_mach.validate.play_json._
 import ExampleUsage._
 import ExampleUsage2._
 import ExampleI18N._
+import play.api.libs.json.JsValue
 
 class ExplainPlayJsonTest extends FlatSpec with Matchers {
 
   "JsonValidatorPrinter.print" should "correctly print JSON for a value-class validator" in {
-    explainPlayJson[Name].printRemarksJson.pretty should equal(
+    explainPlayJson[Name].printRemarks.printJson[JsValue].pretty should equal(
 """[ "must be string", "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ]"""
     )
   }
 
   "JsonValidatorPrinter.print" should "correctly print JSON for a distinct type alias validator" in {
-    explainPlayJson[Age].printRemarksJson.pretty should equal(
+    explainPlayJson[Age].printRemarks.printJson[JsValue].pretty should equal(
 """[ "must be integer", "must be greater than or equal to 0", "must be less than or equal to 150" ]"""
     )
   }
 
   "JsonValidatorPrinter.print" should "correctly print JSON for a number validator" in {
-    explainPlayJson[WeightLb].printRemarksJson.pretty should equal(
+    explainPlayJson[WeightLb].printRemarks.printJson[JsValue].pretty should equal(
 """[ "must be number", "must be greater than 0", "must be less than 1,000" ]"""
     )
   }
 
   "JsonValidatorPrinter.print" should "correctly print JSON for a single case class validator" in {
-    explainPlayJson[Person].printRemarksJson.pretty should equal(
+    explainPlayJson[Person].printRemarks.printJson[JsValue].pretty should equal(
 """{
   "this" : [ "age plus id must be less than 1000" ],
   "id" : [ "must be integer" ],
@@ -69,7 +69,7 @@ class ExplainPlayJsonTest extends FlatSpec with Matchers {
         .build()
         .withValidator
 
-    epj.explain.printRemarksJson.pretty should equal(
+    epj.explain.printRemarks.printJson[JsValue].pretty should equal(
 """{
   "this" : [ "age plus id must be less than 1000" ],
   "id" : [ "must be integer" ],

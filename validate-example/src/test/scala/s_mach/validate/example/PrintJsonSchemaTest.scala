@@ -24,11 +24,10 @@ import com.github.fge.jsonschema.core.report.{LogLevel, ProcessingMessage}
 import com.github.fge.jsonschema.main.{JsonSchema => FgeJsonSchema, JsonSchemaFactory => FgeJsonSchemaFactory}
 import com.github.fge.jsonschema.processors.syntax.SyntaxValidator
 import org.scalatest.{FlatSpec, Matchers}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import s_mach.codetools.play_json._
 import s_mach.explain_json._
 import s_mach.explain_play_json._
-import s_mach.explain_play_json.PlayJsonWriter.Implicits._
 import s_mach.validate.play_json._
 import ExampleUsage._
 import ExampleUsage2._
@@ -54,7 +53,7 @@ class PrintJsonSchemaTest extends FlatSpec with Matchers {
 //  }
 
   "ExplainJsonSchema[Name]" should "correctly print JSON for a number validator" in {
-    explainPlayJson[WeightLb].printJsonSchema("http://test.org").pretty should equal(
+    explainPlayJson[WeightLb].printJsonSchema[JsValue]("http://test.org").pretty should equal(
 """{
   "$schema" : "http://json-schema.org/draft-04/schema#",
   "id" : "http://test.org",
@@ -269,7 +268,7 @@ class PrintJsonSchemaTest extends FlatSpec with Matchers {
   }
 
   "ExplainJsonSchema[Person]" should "validate as a JsonSchema and validate good and bad json" in {
-    val jsonString = explainPlayJson[Person].printJsonSchema("http://test.org").pretty
+    val jsonString = explainPlayJson[Person].printJsonSchema[JsValue]("http://test.org").pretty
     val mapper = new ObjectMapper()
     val schemaJsonNode = mapper.readTree(jsonString)
 
@@ -299,7 +298,7 @@ class PrintJsonSchemaTest extends FlatSpec with Matchers {
   }
 
   "ExplainJsonSchema[Family]" should "validate as a JsonSchema and validate good and bad json" in {
-    val jsonString = explainPlayJson[Family].printJsonSchema("http://test.org").pretty
+    val jsonString = explainPlayJson[Family].printJsonSchema[JsValue]("http://test.org").pretty
     val mapper = new ObjectMapper()
     val schemaJsonNode = mapper.readTree(jsonString)
 

@@ -1,0 +1,9 @@
+m_must_not_be_empty=must not be empty
+m_must_contain_only_$string=must contain only {0}
+m_must_have_at_least_$int_characters=must have at least {0} characters
+m_must_not_be_longer_than_$int_characters=must not be longer than {0} characters
+m_must_match_regex_pattern_$pattern=must match regex pattern {0}
+m_must_be_greater_than_or_equal_to_$number=must be greater than or equal to {0}
+m_must_be_greater_than_$number=must be greater than {0}
+m_must_be_less_than_or_equal_to_$number=must be less than or equal to {0}
+m_must_be_less_than_$number=must be less than {0}
