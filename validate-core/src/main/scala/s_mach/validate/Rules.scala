@@ -88,9 +88,7 @@ object Rules {
   val AllLettersOrSpaces = StringCharGroupPattern(CharGroup.Letter,CharGroup.Space)
   val AllLettersDigitsOrSpaces = StringCharGroupPattern(CharGroup.Letter,CharGroup.Digit,CharGroup.Space)
 
-  case class NumberMinInclusive[N:Numeric](minInclusive: N) extends Rule {
-    def _minInclusive: BigDecimal = BigDecimal(minInclusive.toString)
-
+  case class NumberMinInclusive(minInclusive: BigDecimal) extends Rule {
     def key = NumberMinInclusive.key
     def args = minInclusive.toString :: Nil
   }
@@ -98,9 +96,7 @@ object Rules {
     val key = 'number_min_inclusive
   }
 
-  case class NumberMinExclusive[N:Numeric](minExclusive: N) extends Rule {
-    def _minExclusive: BigDecimal = BigDecimal(minExclusive.toString)
-
+  case class NumberMinExclusive(minExclusive: BigDecimal) extends Rule {
     def key = NumberMinExclusive.key
     def args = minExclusive.toString :: Nil
   }
@@ -108,9 +104,7 @@ object Rules {
     val key = 'number_min_exclusive
   }
 
-  case class NumberMaxInclusive[N:Numeric](maxInclusive: N) extends Rule {
-    def _maxInclusive: BigDecimal = BigDecimal(maxInclusive.toString)
-
+  case class NumberMaxInclusive(maxInclusive: BigDecimal) extends Rule {
     def key = NumberMaxInclusive.key
     def args = maxInclusive.toString :: Nil
   }
@@ -118,9 +112,7 @@ object Rules {
     val key = 'number_max_inclusive
   }
 
-  case class NumberMaxExclusive[N:Numeric](maxExclusive: N) extends Rule {
-    def _maxExclusive: BigDecimal = BigDecimal(maxExclusive.toString)
-
+  case class NumberMaxExclusive(maxExclusive: BigDecimal) extends Rule {
     def key = NumberMaxExclusive.key
     def args = maxExclusive.toString :: Nil
   }
@@ -129,9 +121,9 @@ object Rules {
   }
 
   object NumberRangeInclusive {
-    def apply[N:Numeric](
-      minInclusive: N,
-      maxInclusive: N
+    def apply(
+      minInclusive: BigDecimal,
+      maxInclusive: BigDecimal
     ) : List[Rule] =
       NumberMinInclusive(minInclusive) ::
       NumberMaxInclusive(maxInclusive) ::
@@ -139,9 +131,9 @@ object Rules {
   }
 
   object NumberRangeExclusive {
-    def apply[N:Numeric](
-      minExclusive: N,
-      maxExclusive: N
+    def apply(
+      minExclusive: BigDecimal,
+      maxExclusive: BigDecimal
     ) : List[Rule] =
       NumberMinExclusive(minExclusive) ::
       NumberMaxExclusive(maxExclusive) ::
@@ -149,9 +141,9 @@ object Rules {
   }
 
   object NumberRange {
-    def apply[N:Numeric](
-      minInclusive: N,
-      maxInclusive: N
+    def apply(
+      minInclusive: BigDecimal,
+      maxInclusive: BigDecimal
     ) : List[Rule] =
       NumberRangeInclusive(minInclusive,maxInclusive)
   }

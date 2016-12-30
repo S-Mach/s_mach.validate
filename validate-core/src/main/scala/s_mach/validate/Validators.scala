@@ -66,58 +66,86 @@ object Validators {
   val AllLettersOrSpaces = StringCharGroupPattern(CharGroup.Letter,CharGroup.Space)
   val AllLettersDigitsOrSpaces = StringCharGroupPattern(CharGroup.Letter,CharGroup.Digit,CharGroup.Space)
 
+  // todo: cleanup move some where common?
+  trait ToBigDecimal[N] {
+    def toBigDecimal(n: N) : BigDecimal
+  }
+  
+  implicit object toBigDecimal_Byte extends ToBigDecimal[Byte] {
+    def toBigDecimal(n: Byte) = BigDecimal(n.toInt)
+  }
+  implicit object toBigDecimal_Short extends ToBigDecimal[Short] {
+    def toBigDecimal(n: Short) = BigDecimal(n.toInt)
+  }
+  implicit object toBigDecimal_Int extends ToBigDecimal[Int] {
+    def toBigDecimal(n: Int) = BigDecimal(n)
+  }
+  implicit object toBigDecimal_Long extends ToBigDecimal[Long] {
+    def toBigDecimal(n: Long) = BigDecimal(n)
+  }
+  implicit object toBigDecimal_Float extends ToBigDecimal[Float] {
+    def toBigDecimal(n: Float) = BigDecimal(n.toDouble)
+  }
+  implicit object toBigDecimal_Double extends ToBigDecimal[Double] {
+    def toBigDecimal(n: Double) = BigDecimal(n)
+  }
+
+  implicit class S_Mach_Validate_EverythingPML[A](val self:A) extends AnyVal {
+    def toBigDecimal(implicit toBigDecimal: ToBigDecimal[A]) : BigDecimal =
+      toBigDecimal.toBigDecimal(self)
+  }
   object NumberMinInclusive {
-    def apply[N:Numeric](minInclusive: N) : Validator[N] = {
+    def apply[N:Numeric:ToBigDecimal](minInclusive: N) : Validator[N] = {
       import Ordering.Implicits._
       Validator.ensure[N](
-        Rules.NumberMinInclusive(minInclusive)
+        Rules.NumberMinInclusive(minInclusive.toBigDecimal)
       )(_ >= minInclusive)
     }
   }
 
   object NumberMinExclusive {
-    def apply[N:Numeric](minExclusive: N) : Validator[N] = {
+    def apply[N:Numeric:ToBigDecimal](minExclusive: N) : Validator[N] = {
       import Ordering.Implicits._
       Validator.ensure[N](
-        Rules.NumberMinExclusive(minExclusive)
+        Rules.NumberMinExclusive(minExclusive.toBigDecimal)
       )(_ > minExclusive)
     }
   }
 
   object NumberMaxInclusive {
-    def apply[N:Numeric](maxInclusive: N) : Validator[N] = {
+    def apply[N:Numeric:ToBigDecimal](maxInclusive: N) : Validator[N] = {
       import Ordering.Implicits._
       Validator.ensure[N](
-        Rules.NumberMaxInclusive(maxInclusive)
+        Rules.NumberMaxInclusive(maxInclusive.toBigDecimal)
       )(_ <= maxInclusive)
     }
   }
 
   object NumberMaxExclusive {
-    def apply[N:Numeric](maxExclusive: N) : Validator[N] = {
+    def apply[N:Numeric:ToBigDecimal](maxExclusive: N) : Validator[N] = {
       import Ordering.Implicits._
       Validator.ensure[N](
-        Rules.NumberMaxExclusive(maxExclusive)
+        Rules.NumberMaxExclusive(maxExclusive.toBigDecimal)
       )(_ < maxExclusive)
     }
   }
 
   object NumberRangeInclusive {
-    def apply[N:Numeric](minInclusive: N,maxInclusive: N) : Validator[N] = {
+    def apply[N:Numeric:ToBigDecimal](minInclusive: N,maxInclusive: N) : Validator[N] = {
       NumberMinInclusive(minInclusive) and
       NumberMaxInclusive(maxInclusive)
     }
   }
 
   object NumberRangeExclusive {
-    def apply[N:Numeric](minExclusive: N,maxExclusive: N) : Validator[N] = {
+    def apply[N:Numeric:ToBigDecimal](minExclusive: N,maxExclusive: N) : Validator[N] = {
       NumberMinExclusive(minExclusive) and
       NumberMaxExclusive(maxExclusive)
     }
   }
 
   object NumberRange {
-    def apply[N:Numeric](
+    def apply[N:Numeric:ToBigDecimal](
       minInclusive: N,
       maxInclusive: N
     ) : Validator[N] =

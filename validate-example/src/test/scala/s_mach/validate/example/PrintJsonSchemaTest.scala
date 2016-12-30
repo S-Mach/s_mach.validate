@@ -58,9 +58,9 @@ class PrintJsonSchemaTest extends FlatSpec with Matchers {
   "$schema" : "http://json-schema.org/draft-04/schema#",
   "id" : "http://test.org",
   "type" : "number",
-  "minimum" : 0.0,
+  "minimum" : 0,
   "exclusiveMinimum" : true,
-  "maximum" : 1000.0,
+  "maximum" : 1000,
   "exclusiveMaximum" : true
 }"""
     )

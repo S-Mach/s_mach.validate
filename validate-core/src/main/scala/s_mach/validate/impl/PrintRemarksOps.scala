@@ -29,6 +29,14 @@ import s_mach.explain_json.impl.JsonExplanationOps.explainCharGroups
 object PrintRemarksOps {
 
   def rulePrintRemarks(rule: Rule)(implicit i18ncfg: I18NConfig) : I18NString = rule match {
+      /*
+        Note: java.text.NumberFormat is used by default for I18N for number types
+        which doesn't always preserve significant digits for BigDecimal
+        Example:
+
+        scala> java.text.NumberFormat.getNumberInstance(java.util.Locale.getDefault).format(BigDecimal("0.0"))
+        res0: String = 0
+       */
     case StringLengthMin(minInclusive) =>
       minInclusive match {
         case 1 =>
@@ -43,13 +51,13 @@ object PrintRemarksOps {
         m_must_match_regex_pattern_$pattern(pattern.asI18N)
       }
     case rule@NumberMinInclusive(_) =>
-      m_must_be_greater_than_or_equal_to_$number(rule._minInclusive)
+      m_must_be_greater_than_or_equal_to_$number(rule.minInclusive)
     case rule@NumberMinExclusive(_) =>
-      m_must_be_greater_than_$number(rule._minExclusive)
+      m_must_be_greater_than_$number(rule.minExclusive)
     case rule@NumberMaxInclusive(_) =>
-      m_must_be_less_than_or_equal_to_$number(rule._maxInclusive)
+      m_must_be_less_than_or_equal_to_$number(rule.maxInclusive)
     case rule@NumberMaxExclusive(_) =>
-      m_must_be_less_than_$number(rule._maxExclusive)
+      m_must_be_less_than_$number(rule.maxExclusive)
     case _ =>
       if(rule.args.nonEmpty) {
         i18ncfg.resolver.resolveInterpolation(rule.key,rule.args:_*)
