@@ -54,16 +54,16 @@ object ValidatePlayJsonOps {
   def wrapExplainPlayJsonWithValidator[A](
     efa: ExplainPlayJson[A],
     va: Validator[A]
-  )(implicit
-    i18ncfg: I18NConfig
-  ) : ExplainPlayJson[A] = ExplainPlayJson { implicit i18ncfg =>
+  ) : ExplainPlayJson[A] = ExplainPlayJson {
 
     val _rules =
       va.thisRules
         .map(rule => (rule,ruleToMaybeJsonRule(rule)))
 
     val moreRules = _rules.collect { case (_,Some(rule)) => rule }
-    val moreAdditionalRules = _rules.collect { case (rule,None) => rule.i18n }
+    val moreAdditionalRules = _rules.collect { case (rule,None) =>
+      { implicit cfg:I18NConfig => rule.i18n }
+    }
 
     val newNode = {
       efa.explain.value match {

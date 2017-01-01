@@ -55,8 +55,7 @@ package object play_json {
     /** @return a ExplainFormat that wraps self with an ExplainFormat
       *         for the implicit Validator rules */
     def withValidator(implicit
-      va: Validator[A],
-      i18ncfg: I18NConfig
+      va: Validator[A]
     ) : ExplainPlayJson[A] =
       ValidatePlayJsonOps.wrapExplainPlayJsonWithValidator(self,va)
   }

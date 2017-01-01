@@ -189,19 +189,19 @@ class ExplainPlayJsonWithValidatorTest extends FlatSpec with Matchers {
   }
 
   "ExplainPlayJson.withValidator" should "add unsupported validation rules to the JSON explanation as additional rules" in {
-    jsonExplanationNode_StringVC.additionalRules should be(List(
+    jsonExplanationNode_StringVC.additionalRules.map(_.apply(i18ncfg)) should be(List(
       "custom_rule1",
       "custom_rule2"
     ))
-    jsonExplanationNode_DoubleVC.additionalRules should be(List(
+    jsonExplanationNode_DoubleVC.additionalRules.map(_.apply(i18ncfg)) should be(List(
       "custom_rule1",
       "custom_rule2"
     ))
-    jsonExplanationNode_IntVC.additionalRules should be(List(
+    jsonExplanationNode_IntVC.additionalRules.map(_.apply(i18ncfg)) should be(List(
       "custom_rule1",
       "custom_rule2"
     ))
-    jsonExplanationNode_BooleanVC.additionalRules should be(List(
+    jsonExplanationNode_BooleanVC.additionalRules.map(_.apply(i18ncfg)) should be(List(
       "custom_rule1",
       "custom_rule2"
     ))
