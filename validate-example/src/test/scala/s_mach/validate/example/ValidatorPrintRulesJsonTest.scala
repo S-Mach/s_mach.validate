@@ -30,7 +30,6 @@ import s_mach.explain_play_json._
 
 class ValidatorPrintRulesJsonTest extends FlatSpec with Matchers {
 
-  // todo: add printRemarks/printRemarksJson to TypeMetadata[List[Rule]]
   "JsonValidatorPrinter.print" should "correctly print JSON for a string validator" in {
     validator[Name].rules.toTypeRemarks.printJson[JsValue].pretty should equal(
 """[ "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ]"""
