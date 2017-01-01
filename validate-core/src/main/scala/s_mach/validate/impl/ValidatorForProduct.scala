@@ -18,6 +18,7 @@
 */
 package s_mach.validate.impl
 
+import s_mach.codetools.macros.ProductBuilder
 import s_mach.metadata._
 import s_mach.validate._
 

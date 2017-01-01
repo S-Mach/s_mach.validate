@@ -22,6 +22,7 @@ import scala.language.experimental.macros
 import scala.language.higherKinds
 import scala.reflect.macros.blackbox
 import s_mach.codetools.IsValueClass
+import s_mach.codetools.macros.ProductBuilder
 import s_mach.metadata._
 import s_mach.validate.impl._
 
