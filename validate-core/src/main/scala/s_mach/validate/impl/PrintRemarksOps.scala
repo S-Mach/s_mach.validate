@@ -22,7 +22,7 @@ import s_mach.string._
 import s_mach.i18n._
 import s_mach.validate._
 import ValidatorMessages._
-import Rules._
+import Rule._
 // todo: this should be somewhere common
 import s_mach.explain_json.impl.JsonExplanationOps.explainCharGroups
 
@@ -58,12 +58,7 @@ object PrintRemarksOps {
       m_must_be_less_than_or_equal_to_$number(rule.maxInclusive)
     case rule@NumberMaxExclusive(_) =>
       m_must_be_less_than_$number(rule.maxExclusive)
-    case _ =>
-      if(rule.args.nonEmpty) {
-        i18ncfg.resolver.resolveInterpolation(rule.key,rule.args:_*)
-      } else {
-        i18ncfg.resolver.resolveLiteral(rule.key)
-      }
-
+    case rule:CustomRule =>
+      rule.message()
   }
 }

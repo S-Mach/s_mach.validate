@@ -22,6 +22,7 @@ import s_mach.explain_play_json._
 import s_mach.validate._
 import s_mach.explain_json._
 import s_mach.i18n._
+import s_mach.i18n.messages.BoundMessage
 
 object ValidatePlayJsonOps {
   import JsonExplanationNode._
@@ -32,19 +33,19 @@ object ValidatePlayJsonOps {
     import JsonRule._
 
     {
-      case Rules.StringLengthMin(minInclusive) =>
+      case Rule.StringLengthMin(minInclusive) =>
         StringMinLength(minInclusive)
-      case Rules.StringLengthMax(maxInclusive)=>
+      case Rule.StringLengthMax(maxInclusive)=>
         StringMaxLength(maxInclusive)
-      case Rules.StringPattern(pattern) =>
+      case Rule.StringPattern(pattern) =>
         StringPattern(pattern)
-      case Rules.NumberMinInclusive(minInclusive) =>
+      case Rule.NumberMinInclusive(minInclusive) =>
         Minimum(BigDecimal(minInclusive.toString),false)
-      case Rules.NumberMinExclusive(minExclusive) =>
+      case Rule.NumberMinExclusive(minExclusive) =>
         Minimum(BigDecimal(minExclusive.toString),true)
-      case Rules.NumberMaxInclusive(maxInclusive) =>
+      case Rule.NumberMaxInclusive(maxInclusive) =>
         Maximum(BigDecimal(maxInclusive.toString),false)
-      case r@Rules.NumberMaxExclusive(maxExclusive) =>
+      case r@Rule.NumberMaxExclusive(maxExclusive) =>
         Maximum(BigDecimal(maxExclusive.toString),true)
     }
   }
@@ -60,9 +61,10 @@ object ValidatePlayJsonOps {
       va.thisRules
         .map(rule => (rule,ruleToMaybeJsonRule(rule)))
 
-    val moreRules = _rules.collect { case (_,Some(rule)) => rule }
-    val moreAdditionalRules = _rules.collect { case (rule,None) =>
-      { implicit cfg:I18NConfig => rule.i18n }
+    val moreRules : List[JsonExplanationNode.JsonRule] =
+      _rules.collect { case (_,Some(rule)) => rule }
+    val moreAdditionalRules : List[BoundMessage] = _rules.collect { case (rule,None) =>
+      BoundMessage { implicit cfg:I18NConfig => rule.i18n }
     }
 
     val newNode = {

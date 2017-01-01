@@ -21,6 +21,7 @@ package s_mach.validate
 import org.scalatest.{FlatSpec, Matchers}
 import s_mach.codetools._
 import s_mach.validate.impl._
+import s_mach.i18n.messages._
 
 object ValidatorAndTest {
   object DTA {
@@ -30,17 +31,24 @@ object ValidatorAndTest {
   object ValueClass {
     implicit class Age(val underlying: Int) extends AnyVal with IsValueClass[Int]
   }
-  val testRule1 = Rule('test1)
-  val testRule2 = Rule('test2)
-  val testCommentRule1 = Rule('comment1)
-  val testCommentRule2 = Rule('comment2)
+  val m_test1 = 'test1.literal
+  val m_test2 = 'test2.literal
+  val m_comment1 = 'comment1.literal
+  val m_comment2 = 'comment2.literal
+
+  val testRule1 = Rule(m_test1)
+  val testRule2 = Rule(m_test2)
+  val testCommentRule1 = Rule(m_comment1)
+  val testCommentRule2 = Rule(m_comment2)
+
+  val m_number_between = 'number_between.m[Int,Int]
 
   // Note: don't copy these fake checks for testing only
   val c1 = Validator.ensure[Int](
-    Rule('number_between,0.toString,150.toString)
+    Rule(m_number_between.bind(0,150))
   )(age => 0 <= age && age <= 150).asInstanceOf[CheckValidator[Int]]
   val c2 = Validator.ensure[Int](
-    Rule('number_between,10.toString,70.toString)
+    Rule(m_number_between.bind(10,70))
   )(age => 10 <= age && age <= 70).asInstanceOf[CheckValidator[Int]]
 
 }

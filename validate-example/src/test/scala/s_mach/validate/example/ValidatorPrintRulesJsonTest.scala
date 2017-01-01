@@ -45,7 +45,7 @@ class ValidatorPrintRulesJsonTest extends FlatSpec with Matchers {
   "JsonValidatorPrinter.print" should "correctly print JSON for a single case class validator" in {
     validator[Person].rules.toTypeRemarks.printJson[JsValue].pretty should equal(
 """{
-  "this" : [ "age plus id must be less than 1000" ],
+  "this" : [ "age plus id must be less than 1,000" ],
   "name" : [ "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ],
   "age" : [ "must be greater than or equal to 0", "must be less than or equal to 150" ]
 }"""
@@ -57,29 +57,29 @@ class ValidatorPrintRulesJsonTest extends FlatSpec with Matchers {
 """{
   "this" : [ "father must be older than children", "mother must be older than children" ],
   "father" : {
-    "this" : [ "age plus id must be less than 1000" ],
+    "this" : [ "age plus id must be less than 1,000" ],
     "name" : [ "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ],
     "age" : [ "must be greater than or equal to 0", "must be less than or equal to 150" ]
   },
   "mother" : {
-    "this" : [ "age plus id must be less than 1000" ],
+    "this" : [ "age plus id must be less than 1,000" ],
     "name" : [ "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ],
     "age" : [ "must be greater than or equal to 0", "must be less than or equal to 150" ]
   },
   "children" : {
     "*" : {
-      "this" : [ "age plus id must be less than 1000" ],
+      "this" : [ "age plus id must be less than 1,000" ],
       "name" : [ "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ],
       "age" : [ "must be greater than or equal to 0", "must be less than or equal to 150" ]
     }
   },
   "grandMother" : {
-    "this" : [ "age plus id must be less than 1000" ],
+    "this" : [ "age plus id must be less than 1,000" ],
     "name" : [ "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ],
     "age" : [ "must be greater than or equal to 0", "must be less than or equal to 150" ]
   },
   "grandFather" : {
-    "this" : [ "age plus id must be less than 1000" ],
+    "this" : [ "age plus id must be less than 1,000" ],
     "name" : [ "must not be empty", "must not be longer than 64 characters", "must contain only letters or spaces" ],
     "age" : [ "must be greater than or equal to 0", "must be less than or equal to 150" ]
   }

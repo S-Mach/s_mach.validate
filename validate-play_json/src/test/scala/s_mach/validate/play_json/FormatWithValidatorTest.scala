@@ -25,15 +25,19 @@ import play.api.data.validation.ValidationError
 import play.api.libs.json._
 import s_mach.validate.{Rule, Validator}
 import s_mach.i18n.I18NConfig
-import s_mach.i18n.messages.{MessageFormat, Messages}
+import s_mach.i18n.messages._
 
 object FormatWithValidatorTest {
+  val m_rule1 = 'rule1.literal
+  val m_rule2 = 'rule2.literal
+  val m_rule3 = 'rule3.literal
+  
   implicit val i18ncfg = I18NConfig(
     Messages(
       Locale.US,
-      'rule1 -> MessageFormat.Literal("age must be less than or equal to 150"),
-      'rule2 -> MessageFormat.Literal("name must contain only letters or spaces"),
-      'rule3 -> MessageFormat.Literal("name must not be empty")
+      m_rule1.key -> MessageFormat.Literal("age must be less than or equal to 150"),
+      m_rule2.key -> MessageFormat.Literal("name must contain only letters or spaces"),
+      m_rule3.key -> MessageFormat.Literal("name must not be empty")
     )
   )
 
@@ -44,9 +48,9 @@ object FormatWithValidatorTest {
   )
   implicit val validator_Person =
       Validator.forProductType[Person]
-        .ensure(Rule('rule1))(_.age <= 150)
-        .ensure(Rule('rule2))(_.name.forall(c => c.isLetterOrDigit || c == ' '))
-        .ensure(Rule('rule3))(_.name.nonEmpty)
+        .ensure(Rule(m_rule1))(_.age <= 150)
+        .ensure(Rule(m_rule2))(_.name.forall(c => c.isLetterOrDigit || c == ' '))
+        .ensure(Rule(m_rule3))(_.name.nonEmpty)
 
   implicit val format_Person = Json.format[Person].withValidator
 }

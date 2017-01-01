@@ -93,7 +93,7 @@ class PrintJsonSchemaTest extends FlatSpec with Matchers {
   },
   "additionalProperties" : true,
   "required" : [ "id", "name", "age" ],
-  "additionalRules" : [ "age plus id must be less than 1000" ]
+  "additionalRules" : [ "age plus id must be less than 1,000" ]
 }"""
     )
   }
@@ -130,7 +130,7 @@ class PrintJsonSchemaTest extends FlatSpec with Matchers {
       },
       "additionalProperties" : true,
       "required" : [ "id", "name", "age" ],
-      "additionalRules" : [ "age plus id must be less than 1000" ]
+      "additionalRules" : [ "age plus id must be less than 1,000" ]
     },
     "mother" : {
       "id" : "http://test.org/mother",
@@ -157,7 +157,7 @@ class PrintJsonSchemaTest extends FlatSpec with Matchers {
       },
       "additionalProperties" : true,
       "required" : [ "id", "name", "age" ],
-      "additionalRules" : [ "age plus id must be less than 1000" ]
+      "additionalRules" : [ "age plus id must be less than 1,000" ]
     },
     "children" : {
       "id" : "http://test.org/children",
@@ -190,7 +190,7 @@ class PrintJsonSchemaTest extends FlatSpec with Matchers {
         },
         "additionalProperties" : true,
         "required" : [ "id", "name", "age" ],
-        "additionalRules" : [ "age plus id must be less than 1000" ]
+        "additionalRules" : [ "age plus id must be less than 1,000" ]
       }
     },
     "grandMother" : {
@@ -218,7 +218,7 @@ class PrintJsonSchemaTest extends FlatSpec with Matchers {
       },
       "additionalProperties" : true,
       "required" : [ "id", "name", "age" ],
-      "additionalRules" : [ "age plus id must be less than 1000" ]
+      "additionalRules" : [ "age plus id must be less than 1,000" ]
     },
     "grandFather" : {
       "id" : "http://test.org/grandFather",
@@ -245,7 +245,7 @@ class PrintJsonSchemaTest extends FlatSpec with Matchers {
       },
       "additionalProperties" : true,
       "required" : [ "id", "name", "age" ],
-      "additionalRules" : [ "age plus id must be less than 1000" ]
+      "additionalRules" : [ "age plus id must be less than 1,000" ]
     }
   },
   "additionalProperties" : true,

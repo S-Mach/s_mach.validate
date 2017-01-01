@@ -24,14 +24,14 @@ object Validators {
   object StringLengthMin {
     def apply(minInclusive: Int) : Validator[String] =
       Validator.ensure(
-        Rules.StringLengthMin(minInclusive)
+        Rule.StringLengthMin(minInclusive)
       )(_.length >= minInclusive)
   }
 
   object StringLengthMax {
     def apply(maxInclusive: Int) : Validator[String] =
       Validator.ensure(
-        Rules.StringLengthMax(maxInclusive)
+        Rule.StringLengthMax(maxInclusive)
       )(_.length <= maxInclusive)
   }
 
@@ -50,14 +50,14 @@ object Validators {
     def apply(pattern: String) : Validator[String] = {
       val regex = pattern.r
       Validator.ensure(
-        Rules.StringPattern(pattern)
+        Rule.StringPattern(pattern)
       )(s => regex.findAllMatchIn(s).size == 1)
     }
   }
 
   object StringCharGroupPattern {
     def apply(groups: CharGroup*) : Validator[String] =
-      StringPattern(Rules.StringCharGroupPattern(groups:_*).pattern)
+      StringPattern(Rule.StringCharGroupPattern(groups:_*).pattern)
   }
 
   val AllLetters =  StringCharGroupPattern(CharGroup.Letter)
@@ -98,7 +98,7 @@ object Validators {
     def apply[N:Numeric:ToBigDecimal](minInclusive: N) : Validator[N] = {
       import Ordering.Implicits._
       Validator.ensure[N](
-        Rules.NumberMinInclusive(minInclusive.toBigDecimal)
+        Rule.NumberMinInclusive(minInclusive.toBigDecimal)
       )(_ >= minInclusive)
     }
   }
@@ -107,7 +107,7 @@ object Validators {
     def apply[N:Numeric:ToBigDecimal](minExclusive: N) : Validator[N] = {
       import Ordering.Implicits._
       Validator.ensure[N](
-        Rules.NumberMinExclusive(minExclusive.toBigDecimal)
+        Rule.NumberMinExclusive(minExclusive.toBigDecimal)
       )(_ > minExclusive)
     }
   }
@@ -116,7 +116,7 @@ object Validators {
     def apply[N:Numeric:ToBigDecimal](maxInclusive: N) : Validator[N] = {
       import Ordering.Implicits._
       Validator.ensure[N](
-        Rules.NumberMaxInclusive(maxInclusive.toBigDecimal)
+        Rule.NumberMaxInclusive(maxInclusive.toBigDecimal)
       )(_ <= maxInclusive)
     }
   }
@@ -125,7 +125,7 @@ object Validators {
     def apply[N:Numeric:ToBigDecimal](maxExclusive: N) : Validator[N] = {
       import Ordering.Implicits._
       Validator.ensure[N](
-        Rules.NumberMaxExclusive(maxExclusive.toBigDecimal)
+        Rule.NumberMaxExclusive(maxExclusive.toBigDecimal)
       )(_ < maxExclusive)
     }
   }

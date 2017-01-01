@@ -81,8 +81,8 @@ class ValidatorsTest extends FlatSpec with Matchers {
   "Validators.StringLengthRange" should "should reject strings with that are not between a certain range" in {
     val v = Validators.StringLengthRange(20,64)
 //    val failed = Metadata.Val(Rules.StringLengthRange(20,64))
-    val failMin = Metadata.Val(Rules.StringLengthMin(20) :: Nil)
-    val failMax = Metadata.Val(Rules.StringLengthMax(64) :: Nil)
+    val failMin = Metadata.Val(Rule.StringLengthMin(20) :: Nil)
+    val failMax = Metadata.Val(Rule.StringLengthMax(64) :: Nil)
     // min inclusive seam
     v("1" * 19) should equal(failMin)
     // max inclusive seam
@@ -280,8 +280,8 @@ class ValidatorsTest extends FlatSpec with Matchers {
   "Validators.NumberRangeInclusive" should "should accept numbers between a certain range (inclusive)" in {
     val v = Validators.NumberRangeInclusive(20,64)
 //    val failed = Metadata.Val(Rules.NumberRangeInclusive(20,64) :: Nil)
-    val failMin = Metadata.Val(Rules.NumberMinInclusive(20) :: Nil)
-    val failMax = Metadata.Val(Rules.NumberMaxInclusive(64) :: Nil)
+    val failMin = Metadata.Val(Rule.NumberMinInclusive(20) :: Nil)
+    val failMax = Metadata.Val(Rule.NumberMaxInclusive(64) :: Nil)
     // min inclusive seam
     v(20) should equal(noFail)
     v(19) should equal(failMin)

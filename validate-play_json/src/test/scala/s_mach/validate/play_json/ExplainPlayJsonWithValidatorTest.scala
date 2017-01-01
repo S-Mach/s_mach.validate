@@ -14,17 +14,21 @@ import s_mach.i18n.messages._
 import s_mach.validate.play_json.impl.ValidatePlayJsonOps
 
 object ExplainPlayJsonWithValidatorTest {
+  val m_custom_rule1 = 'custom_rule1.literal
+  val m_custom_rule2 = 'custom_rule2.literal
+
   implicit val i18ncfg = I18NConfig(
     UTF8Messages(Locale.US) orElse
     Messages(
       Locale.US,
-      'custom_rule1 -> MessageFormat.Literal("custom_rule1"),
-      'custom_rule2 -> MessageFormat.Literal("custom_rule2")
+      m_custom_rule1.key -> MessageFormat.Literal("custom_rule1"),
+      m_custom_rule2.key -> MessageFormat.Literal("custom_rule2")
     )
   )
 
-  val customValidator1_String = Validator.ensure[String](Rule('custom_rule1))(_ => true)
-  val customValidator2_String = Validator.ensure[String](Rule('custom_rule2))(_ => true)
+
+  val customValidator1_String = Validator.ensure[String](Rule(m_custom_rule1))(_ => true)
+  val customValidator2_String = Validator.ensure[String](Rule(m_custom_rule2))(_ => true)
 
   implicit class StringVC(
     val underlying: String
@@ -45,8 +49,8 @@ object ExplainPlayJsonWithValidatorTest {
   }
   val jsonExplanationNode_StringVC = explainPlayJson[StringVC].value.asInstanceOf[JsonString]
 
-  val customValidator1_Double = Validator.ensure[Double](Rule('custom_rule1))(_ => true)
-  val customValidator2_Double = Validator.ensure[Double](Rule('custom_rule2))(_ => true)
+  val customValidator1_Double = Validator.ensure[Double](Rule(m_custom_rule1))(_ => true)
+  val customValidator2_Double = Validator.ensure[Double](Rule(m_custom_rule2))(_ => true)
   implicit class DoubleVC(
     val underlying: Double
     ) extends AnyVal with IsValueClass[Double]
@@ -67,8 +71,8 @@ object ExplainPlayJsonWithValidatorTest {
   val jsonExplanationNode_DoubleVC = explainPlayJson[DoubleVC].value.asInstanceOf[JsonNumber]
 
 
-  val customValidator1_Int = Validator.ensure[Int](Rule('custom_rule1))(_ => true)
-  val customValidator2_Int = Validator.ensure[Int](Rule('custom_rule2))(_ => true)
+  val customValidator1_Int = Validator.ensure[Int](Rule(m_custom_rule1))(_ => true)
+  val customValidator2_Int = Validator.ensure[Int](Rule(m_custom_rule2))(_ => true)
   implicit class IntVC(
     val underlying: Int
     ) extends AnyVal with IsValueClass[Int]
@@ -88,8 +92,8 @@ object ExplainPlayJsonWithValidatorTest {
   }
   val jsonExplanationNode_IntVC = explainPlayJson[IntVC].value.asInstanceOf[JsonInteger]
   
-  val customValidator1_Boolean = Validator.ensure[Boolean](Rule('custom_rule1))(_ => true)
-  val customValidator2_Boolean = Validator.ensure[Boolean](Rule('custom_rule2))(_ => true)
+  val customValidator1_Boolean = Validator.ensure[Boolean](Rule(m_custom_rule1))(_ => true)
+  val customValidator2_Boolean = Validator.ensure[Boolean](Rule(m_custom_rule2))(_ => true)
   implicit class BooleanVC(
     val underlying: Boolean
     ) extends AnyVal with IsValueClass[Boolean]
@@ -117,44 +121,44 @@ class ExplainPlayJsonWithValidatorTest extends FlatSpec with Matchers {
     import ValidatePlayJsonOps._
 
     ruleToMaybeJsonRule(
-      Rules.StringLengthMin(1)
+      Rule.StringLengthMin(1)
     ) should be(Some(
       JsonRule.StringMinLength(1)
     ))
 
     ruleToMaybeJsonRule(
-      Rules.StringLengthMax(1)
+      Rule.StringLengthMax(1)
     ) should be(Some(
       JsonRule.StringMaxLength(1)
     ))
 
     val regex = "^[A-Za-z]*$"
     ruleToMaybeJsonRule(
-      Rules.StringPattern(regex)
+      Rule.StringPattern(regex)
     ) should be(Some(
       JsonRule.StringPattern(regex)
     ))
 
     ruleToMaybeJsonRule(
-      Rules.NumberMinInclusive(1)
+      Rule.NumberMinInclusive(1)
     ) should be(Some(
       JsonRule.Minimum(BigDecimal("1"),exclusive = false)
     ))
 
     ruleToMaybeJsonRule(
-      Rules.NumberMinExclusive(1)
+      Rule.NumberMinExclusive(1)
     ) should be(Some(
       JsonRule.Minimum(BigDecimal("1"),exclusive = true)
     ))
 
     ruleToMaybeJsonRule(
-      Rules.NumberMaxInclusive(1)
+      Rule.NumberMaxInclusive(1)
     ) should be(Some(
       JsonRule.Maximum(BigDecimal("1"),exclusive = false)
     ))
 
     ruleToMaybeJsonRule(
-      Rules.NumberMaxExclusive(1)
+      Rule.NumberMaxExclusive(1)
     ) should be(Some(
       JsonRule.Maximum(BigDecimal("1"),exclusive = true)
     ))
@@ -164,7 +168,7 @@ class ExplainPlayJsonWithValidatorTest extends FlatSpec with Matchers {
 
   "ExplainPlayJsonOps.ruleToMaybeJsonRule" should "NOT map unsupported validator rules to JSONSchema rules" in {
     ValidatePlayJsonOps.ruleToMaybeJsonRule(
-      Rule('customer_rule1,"1")
+      Rule(m_custom_rule1)
     ) should be(None)
   }
 
@@ -189,19 +193,19 @@ class ExplainPlayJsonWithValidatorTest extends FlatSpec with Matchers {
   }
 
   "ExplainPlayJson.withValidator" should "add unsupported validation rules to the JSON explanation as additional rules" in {
-    jsonExplanationNode_StringVC.additionalRules.map(_.apply(i18ncfg)) should be(List(
+    jsonExplanationNode_StringVC.additionalRules.map(_()) should be(List(
       "custom_rule1",
       "custom_rule2"
     ))
-    jsonExplanationNode_DoubleVC.additionalRules.map(_.apply(i18ncfg)) should be(List(
+    jsonExplanationNode_DoubleVC.additionalRules.map(_()) should be(List(
       "custom_rule1",
       "custom_rule2"
     ))
-    jsonExplanationNode_IntVC.additionalRules.map(_.apply(i18ncfg)) should be(List(
+    jsonExplanationNode_IntVC.additionalRules.map(_()) should be(List(
       "custom_rule1",
       "custom_rule2"
     ))
-    jsonExplanationNode_BooleanVC.additionalRules.map(_.apply(i18ncfg)) should be(List(
+    jsonExplanationNode_BooleanVC.additionalRules.map(_()) should be(List(
       "custom_rule1",
       "custom_rule2"
     ))

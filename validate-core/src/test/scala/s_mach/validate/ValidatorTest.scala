@@ -23,8 +23,11 @@ import org.scalatest.{FlatSpec, Matchers}
 import scala.util.Random
 import s_mach.codetools._
 import s_mach.metadata._
+import s_mach.i18n.messages._
 
 object ValidatorTest {
+  val m_test = 'test.literal
+
   implicit class Age(val underlying: Int) extends AnyVal with IsValueClass[Int]
   implicit class Name(val underlying: String) extends AnyVal with IsValueClass[String]
 
@@ -66,7 +69,7 @@ class ValidatorTest extends FlatSpec with Matchers {
 
   "Empty Val Validator.and" should "always return the other validator" in {
     val v = Validator.forVal[Int]()
-    val v2 = Validator.ensure[Int](Rule('test))(_ < 100)
+    val v2 = Validator.ensure[Int](Rule(m_test))(_ < 100)
 
     (v and v2) eq v2 should equal(true)
   }
@@ -87,14 +90,14 @@ class ValidatorTest extends FlatSpec with Matchers {
         Seq(
           "id" -> TypeMetadata.Val(List.empty[Rule]),
           "name" -> TypeMetadata.Val(
-            Rules.StringLengthMin(1) ::
-            Rules.StringLengthMax(64) ::
-            Rules.AllLettersOrSpaces ::
+            Rule.StringLengthMin(1) ::
+            Rule.StringLengthMax(64) ::
+            Rule.AllLettersOrSpaces ::
             Nil
           ),
           "age" -> TypeMetadata.Val(
-            Rules.NumberMinInclusive(0) ::
-            Rules.NumberMaxInclusive(150) ::
+            Rule.NumberMinInclusive(0) ::
+            Rule.NumberMaxInclusive(150) ::
             Nil
           )
         )
@@ -106,12 +109,12 @@ class ValidatorTest extends FlatSpec with Matchers {
         Seq(
           "id" -> Metadata.Val(List.empty[Rule]),
           "name" -> Metadata.Val(
-            Rules.StringLengthMax(64) ::
-            Rules.AllLettersOrSpaces ::
+            Rule.StringLengthMax(64) ::
+            Rule.AllLettersOrSpaces ::
             Nil
           ),
           "age" -> Metadata.Val(
-            Rules.NumberMaxInclusive(150) ::
+            Rule.NumberMaxInclusive(150) ::
             Nil
           )
         )
@@ -123,7 +126,7 @@ class ValidatorTest extends FlatSpec with Matchers {
         Seq(
           "id" -> Metadata.Val(List.empty[Rule]),
           "name" -> Metadata.Val(
-            Rules.StringLengthMin(1) ::
+            Rule.StringLengthMin(1) ::
             Nil
           ),
           "age" ->Metadata.Val(List.empty[Rule])
@@ -151,14 +154,14 @@ class ValidatorTest extends FlatSpec with Matchers {
         Seq(
           "id" ->TypeMetadata.Val(List.empty[Rule]),
           "name" -> TypeMetadata.Val(
-            Rules.StringLengthMin(1) ::
-            Rules.StringLengthMax(64) ::
-            Rules.AllLettersOrSpaces ::
+            Rule.StringLengthMin(1) ::
+            Rule.StringLengthMax(64) ::
+            Rule.AllLettersOrSpaces ::
             Nil
           ),
           "age" -> TypeMetadata.Val(
-            Rules.NumberMinInclusive(0) ::
-            Rules.NumberMaxInclusive(150) ::
+            Rule.NumberMinInclusive(0) ::
+            Rule.NumberMaxInclusive(150) ::
             Nil
           )
         )
@@ -170,12 +173,12 @@ class ValidatorTest extends FlatSpec with Matchers {
         Seq(
           "id" -> Metadata.Val(List.empty[Rule]),
           "name" -> Metadata.Val(
-            Rules.StringLengthMax(64) ::
-            Rules.AllLettersOrSpaces ::
+            Rule.StringLengthMax(64) ::
+            Rule.AllLettersOrSpaces ::
             Nil
           ),
           "age" -> Metadata.Val(
-             Rules.NumberMaxInclusive(150) ::
+             Rule.NumberMaxInclusive(150) ::
              Nil
           )
         )
@@ -187,7 +190,7 @@ class ValidatorTest extends FlatSpec with Matchers {
         Seq(
           "id" -> Metadata.Val(List.empty[Rule]),
           "name" -> Metadata.Val(
-            Rules.StringLengthMin(1) ::
+            Rule.StringLengthMin(1) ::
             Nil
           ),
           "age" ->Metadata.Val(List.empty[Rule])
@@ -213,25 +216,25 @@ class ValidatorTest extends FlatSpec with Matchers {
     )
 
     v.rules should equal(TypeMetadata.Val(
-      Rules.StringLengthMin(1) ::
-      Rules.StringLengthMax(64) ::
-      Rules.AllLettersOrSpaces ::
+      Rule.StringLengthMin(1) ::
+      Rule.StringLengthMax(64) ::
+      Rule.AllLettersOrSpaces ::
       Nil
     ))
 
     v("1" * 65) should equal(Metadata.Val(
-      Rules.StringLengthMax(64) ::
-      Rules.AllLettersOrSpaces ::
+      Rule.StringLengthMax(64) ::
+      Rule.AllLettersOrSpaces ::
       Nil
     ))
     v("") should equal(Metadata.Val(
-      Rules.StringLengthMin(1) :: Nil
+      Rule.StringLengthMin(1) :: Nil
     ))
     v("asdf") should equal(Metadata.Val(Nil))
   }
 
   "Validator.ensure" should "create a validator with the check" in {
-    val testRule = Rule('test)
+    val testRule = Rule(m_test)
     val v = Validator.ensure[Int](testRule)(_ < 100)
 
     v.rules should equal(TypeMetadata.Val(testRule :: Nil))
@@ -240,7 +243,7 @@ class ValidatorTest extends FlatSpec with Matchers {
   }
 
   "Validator.comment" should "create a validator with the comment as a rule" in {
-    val testRule = Rule('test)
+    val testRule = Rule(m_test)
     val v = Validator.comment[String](testRule)
 
     v.rules should equal(TypeMetadata.Val(testRule :: Nil))
@@ -256,9 +259,9 @@ class ValidatorTest extends FlatSpec with Matchers {
       Nil,
       Cardinality.ZeroOrOne,
       TypeMetadata.Val(
-        Rules.StringLengthMin(1) ::
-        Rules.StringLengthMax(64) ::
-        Rules.AllLettersOrSpaces ::
+        Rule.StringLengthMin(1) ::
+        Rule.StringLengthMax(64) ::
+        Rule.AllLettersOrSpaces ::
         Nil
       )
     ))
@@ -268,8 +271,8 @@ class ValidatorTest extends FlatSpec with Matchers {
       Cardinality.ZeroOrOne,
       members = Seq(
         Metadata.Val(
-          Rules.StringLengthMax(64) ::
-          Rules.AllLettersOrSpaces ::
+          Rule.StringLengthMax(64) ::
+          Rule.AllLettersOrSpaces ::
           Nil
         )
       )
@@ -279,7 +282,7 @@ class ValidatorTest extends FlatSpec with Matchers {
       Cardinality.ZeroOrOne,
       members = Seq(
         Metadata.Val(
-          Rules.StringLengthMin(1) :: Nil
+          Rule.StringLengthMin(1) :: Nil
         )
       )
     ))
@@ -308,9 +311,9 @@ class ValidatorTest extends FlatSpec with Matchers {
       Nil,
       Cardinality.ZeroOrMore,
       TypeMetadata.Val(
-        Rules.StringLengthMin(1) ::
-        Rules.StringLengthMax(64) ::
-        Rules.AllLettersOrSpaces ::
+        Rule.StringLengthMin(1) ::
+        Rule.StringLengthMax(64) ::
+        Rule.AllLettersOrSpaces ::
         Nil
       )
     ))
@@ -320,12 +323,12 @@ class ValidatorTest extends FlatSpec with Matchers {
       Cardinality.ZeroOrMore,
       members = Seq(
         Metadata.Val(
-          Rules.StringLengthMax(64) ::
-          Rules.AllLettersOrSpaces ::
+          Rule.StringLengthMax(64) ::
+          Rule.AllLettersOrSpaces ::
           Nil
         ),
         Metadata.Val(
-          Rules.StringLengthMin(1) ::
+          Rule.StringLengthMin(1) ::
           Nil
         ),
         Metadata.Val[List[Rule]](
@@ -338,7 +341,7 @@ class ValidatorTest extends FlatSpec with Matchers {
       Cardinality.ZeroOrMore,
       members = Seq(
         Metadata.Val(
-          Rules.StringLengthMin(1) :: Nil
+          Rule.StringLengthMin(1) :: Nil
         )
       )
     ))

@@ -46,7 +46,7 @@ class ExplainPlayJsonRemarksPrinterTest extends FlatSpec with Matchers {
 
   "ExplainPlayJson.printRemarks.print" should "correctly print remarks for a single case class validator" in {
     explainPlayJson[Person].printRemarks.print should equal(List(
-      "this: age plus id must be less than 1000",
+      "this: age plus id must be less than 1,000",
       "id: must be integer",
       "name: must be string",
       "name: must not be empty",
@@ -62,7 +62,7 @@ class ExplainPlayJsonRemarksPrinterTest extends FlatSpec with Matchers {
     explainPlayJson[Family].printRemarks.print should equal(List(
       "this: father must be older than children",
       "this: mother must be older than children",
-      "father: age plus id must be less than 1000",
+      "father: age plus id must be less than 1,000",
       "father.id: must be integer",
       "father.name: must be string",
       "father.name: must not be empty",
@@ -71,7 +71,7 @@ class ExplainPlayJsonRemarksPrinterTest extends FlatSpec with Matchers {
       "father.age: must be integer",
       "father.age: must be greater than or equal to 0",
       "father.age: must be less than or equal to 150",
-      "mother: age plus id must be less than 1000",
+      "mother: age plus id must be less than 1,000",
       "mother.id: must be integer",
       "mother.name: must be string",
       "mother.name: must not be empty",
@@ -81,7 +81,7 @@ class ExplainPlayJsonRemarksPrinterTest extends FlatSpec with Matchers {
       "mother.age: must be greater than or equal to 0",
       "mother.age: must be less than or equal to 150",
       "children: must be array",
-      "children[*]: age plus id must be less than 1000",
+      "children[*]: age plus id must be less than 1,000",
       "children[*]: must be integer",
       "children[*]: must be string",
       "children[*]: must not be empty",
@@ -91,7 +91,7 @@ class ExplainPlayJsonRemarksPrinterTest extends FlatSpec with Matchers {
       "children[*]: must be greater than or equal to 0",
       "children[*]: must be less than or equal to 150",
       "grandMother: optional",
-      "grandMother: age plus id must be less than 1000",
+      "grandMother: age plus id must be less than 1,000",
       "grandMother.id: must be integer",
       "grandMother.name: must be string",
       "grandMother.name: must not be empty",
@@ -101,7 +101,7 @@ class ExplainPlayJsonRemarksPrinterTest extends FlatSpec with Matchers {
       "grandMother.age: must be greater than or equal to 0",
       "grandMother.age: must be less than or equal to 150",
       "grandFather: optional",
-      "grandFather: age plus id must be less than 1000",
+      "grandFather: age plus id must be less than 1,000",
       "grandFather.id: must be integer",
       "grandFather.name: must be string",
       "grandFather.name: must not be empty",

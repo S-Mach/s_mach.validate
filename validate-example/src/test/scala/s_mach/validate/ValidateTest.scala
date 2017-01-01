@@ -24,12 +24,13 @@ import s_mach.string.CharGroup
 import example.ExampleUsage._
 import example.ExampleUsage2._
 import s_mach.validate.example.ExampleI18N._
+import s_mach.i18n.messages._
 
 class ValidateTest extends FlatSpec with Matchers {
 
   "Validator.validate" should "return invalid for a incorrect string" in {
     Name("*" * 65).validate should equal(Invalid(Metadata.Val(
-        Rules.StringLengthMax(64) :: Rules.StringCharGroupPattern(CharGroup.Letter,CharGroup.Space) :: Nil
+        Rule.StringLengthMax(64) :: Rule.StringCharGroupPattern(CharGroup.Letter,CharGroup.Space) :: Nil
     )))
   }
 
@@ -40,7 +41,7 @@ class ValidateTest extends FlatSpec with Matchers {
 
   "Validator.validate" should "return invalid for an incorrect number" in {
     WeightLb(1001).validate should equal(Invalid(Metadata.Val(
-      Rules.NumberMaxExclusive(1000.0) :: Nil
+      Rule.NumberMaxExclusive(1000.0) :: Nil
     )))
   }
 
@@ -50,15 +51,16 @@ class ValidateTest extends FlatSpec with Matchers {
   }
 
   val invalidPerson1 = Person(1001,Name("*" * 65),151)
+
   val expectedInvalidPerson1 = Metadata.Rec(
-    Rule('age_plus_id_must_be_less_than_$n,1000.toString) :: Nil,
+    Rule(m_age_plus_id_must_be_less_than_$n.bind(1000)) :: Nil,
     Seq(
       "id" -> Metadata.Val(Nil),
       "name" -> Metadata.Val(
-        Rules.StringLengthMax(64) :: Rules.StringCharGroupPattern(CharGroup.Letter,CharGroup.Space) :: Nil
+        Rule.StringLengthMax(64) :: Rule.StringCharGroupPattern(CharGroup.Letter,CharGroup.Space) :: Nil
       ),
       "age" -> Metadata.Val(
-        Rules.NumberMaxInclusive(150) :: Nil
+        Rule.NumberMaxInclusive(150) :: Nil
       )
     )
   )
@@ -68,7 +70,7 @@ class ValidateTest extends FlatSpec with Matchers {
     Seq(
       "id" -> Metadata.Val(Nil),
       "name" -> Metadata.Val(
-        Rules.StringNonEmpty :: Nil
+        Rule.StringNonEmpty :: Nil
       ),
       "age" -> Metadata.Val(Nil)
     )
@@ -108,8 +110,8 @@ class ValidateTest extends FlatSpec with Matchers {
       Some(invalidPerson1),
       None
     ).validate should equal(Invalid(Metadata.Rec(
-      Rule(m_father_must_be_older_than_children.key) ::
-      Rule(m_mother_must_be_older_than_children.key) ::
+      Rule(m_father_must_be_older_than_children) ::
+      Rule(m_mother_must_be_older_than_children) ::
       Nil,
       Seq(
         "father" -> expectedInvalidPerson1,

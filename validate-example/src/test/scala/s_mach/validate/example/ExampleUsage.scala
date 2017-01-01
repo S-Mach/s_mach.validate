@@ -114,7 +114,7 @@ object Person {
     Validator.forProductType[Person]
       // Compose the macro generated Validator[Person] with an additional condition
       .ensure(
-        Rule('age_plus_id_must_be_less_than_$n,1000.toString)
+        Rule(m_age_plus_id_must_be_less_than_$n.bind(1000))
         // p.age is used here as if it was an Int here without any extra code
       )(p => p.id + p.age < 1000)
   }
@@ -141,10 +141,10 @@ object Family {
    */
     Validator.forProductType[Family]
       // Add some extra constaints
-      .ensure(Rule(m_father_must_be_older_than_children.key)) { family =>
+      .ensure(Rule(m_father_must_be_older_than_children)) { family =>
         family.children.forall(_.age < family.father.age)
       }
-      .ensure(Rule(m_mother_must_be_older_than_children.key)) { family =>
+      .ensure(Rule(m_mother_must_be_older_than_children)) { family =>
         family.children.forall(_.age < family.mother.age)
       }
 

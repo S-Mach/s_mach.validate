@@ -10,4 +10,5 @@ object ExampleI18N {
 
   val m_mother_must_be_older_than_children = 'm_mother_must_be_older_than_children.m0
   val m_father_must_be_older_than_children = 'm_father_must_be_older_than_children.m0
+  val m_age_plus_id_must_be_less_than_$n = 'age_plus_id_must_be_less_than_$n.m[Int]
 }
