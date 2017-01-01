@@ -37,7 +37,6 @@ import scala.collection.JavaConverters._
 
 class PrintJsonSchemaTest extends FlatSpec with Matchers {
 
-  // todo: missing comments
   "ExplainJsonSchema[Name]" should "correctly print JSON for a string validator" in {
     explainPlayJson[Name].printJsonSchema[JsValue]("http://test.org").pretty should equal(
 """{
