@@ -18,12 +18,14 @@
 */
 package s_mach.validate.impl
 
+import s_mach.metadata.Metadata
 import s_mach.validate._
 
 case class CompositeValidator[A](
   validators: List[Validator[A]]
 ) extends ValidatorImpl[A] {
   require(validators.nonEmpty, "validators must be non empty")
+  val _validators = validators.toStream
   val thisRules = validators.flatMap(_.thisRules)
   val rules =
     validators
@@ -31,12 +33,15 @@ case class CompositeValidator[A](
       .reduce { (tm1,tm2) =>
         tm1.merge(tm2)(_ ::: _)
       }
-  def apply(a: A) =
-      validators
-        .map(_(a))
-        .reduce { (m1,m2) =>
-          m1.merge(m2)(_ ::: _)
-        }
+  def validate(basePath: Metadata.Path)(a: A) =
+    _validators.flatMap(_.validate(basePath)(a))
+
+  //  def apply(a: A) =
+//      validators
+//        .map(_(a))
+//        .reduce { (m1,m2) =>
+//          m1.merge(m2)(_ ::: _)
+//        }
 
   override def and(other: Validator[A]) = {
     other match {

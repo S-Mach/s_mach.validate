@@ -33,7 +33,7 @@ package object validate extends
   /* Prefix added to implicits to prevent shadowing: FvWhDLaDRG */
 
   type ValidatorRules = TypeMetadata[List[Rule]]
-  type ValidatorResult = Metadata[List[Rule]]
+  type ValidatorResult = Stream[(Metadata.Path,Rule)]
 
   implicit class EverythingPML_FvWhDLaDRG_[A](val self: A) extends AnyVal {
     /** @return Valid if self is valid otherwise Invalid with specific failures */
@@ -91,11 +91,11 @@ package object validate extends
   }
 
   implicit class ValidatorResultPML_FvWhDLaDRG(val self: ValidatorResult) extends AnyVal {
-    def toRemarks(implicit i18ncfg:I18NConfig) : Remarks =
-      self.map(_.map(_.i18n))
-
-    def printRemarks(implicit i18ncfg:I18NConfig) : List[String] =
-      toRemarks.print
+//    def toRemarks(implicit i18ncfg:I18NConfig) : Remarks =
+//      self.map(_.map(_.i18n))
+//
+//    def printRemarks(implicit i18ncfg:I18NConfig) : List[String] =
+//      toRemarks.print
   }
 
 }

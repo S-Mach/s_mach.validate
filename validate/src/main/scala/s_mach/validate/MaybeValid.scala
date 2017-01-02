@@ -21,7 +21,7 @@ sealed trait MaybeValid[+A] {
 
 object MaybeValid {
   def apply[A](a: A, result: ValidatorResult) : MaybeValid[A] =
-    if(result.values.forall(_.isEmpty)) {
+    if(result.isEmpty) {
       Valid(a, result)
     } else {
       Invalid(result)

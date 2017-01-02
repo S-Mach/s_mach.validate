@@ -19,6 +19,7 @@
 package s_mach.validate.impl
 
 import s_mach.codetools.IsValueClass
+import s_mach.metadata.Metadata.Path
 import s_mach.metadata._
 import s_mach.validate._
 
@@ -27,7 +28,8 @@ case class ValueClassValidator[V <: IsValueClass[A],A](
 ) extends ValidatorImpl[V] {
   val thisRules = va.thisRules
   val rules = TypeMetadata.Val(thisRules)
-  def apply(v: V) = va(v.underlying)
+  def validate(basePath: Path)(a: V) =
+    va.validate(basePath)(a)
 
   override def and(other: Validator[V]) = {
     other match {

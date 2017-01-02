@@ -20,6 +20,7 @@ package s_mach.validate.impl
 
 import scala.language.higherKinds
 import s_mach.codetools.IsValueClass
+import s_mach.metadata.Metadata.Path
 import s_mach.metadata._
 import s_mach.validate._
 
@@ -27,7 +28,8 @@ object ValidatorOps {
   private val _empty = new Validator[Any] {
     val thisRules = Nil
     val rules = TypeMetadata.Val[List[Rule]](Nil)
-    def apply(a: Any) = Metadata.Val(Nil)
+    def validate(basePath: Path)(a: Any) = Stream.empty
+
     def and(other: Validator[Any]) = other
   }
   def forVal[A](checks: Check[A]*) : Validator[A] = {

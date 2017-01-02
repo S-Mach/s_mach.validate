@@ -18,6 +18,7 @@
 */
 package s_mach.validate.impl
 
+import s_mach.metadata.Metadata.Path
 import s_mach.metadata._
 import s_mach.validate._
 
@@ -26,12 +27,21 @@ case class OptionValidator[A](
 ) extends ValidatorImpl[Option[A]] {
   val thisRules = va.thisRules
   val rules = TypeMetadata.Arr(Nil,Cardinality.ZeroOrOne,va.rules)
-  def apply(oa: Option[A]) = {
+  def validate(basePath: Path)(oa: Option[A]) = {
     oa match {
-      case None => Metadata.Arr(Nil,Cardinality.ZeroOrOne,Seq.empty)
-      case Some(a) => Metadata.Arr(Nil,Cardinality.ZeroOrOne,Seq(va(a)))
+      case None => Stream.empty
+      case Some(a) =>
+        va.validate(Metadata.PathNode.SelectMember(Cardinality.ZeroOrOne,0) :: basePath)(a)
+//        Metadata.Arr(Nil,Cardinality.ZeroOrOne,Seq(va(a)))
     }
   }
+
+  //  def apply(oa: Option[A]) = {
+//    oa match {
+//      case None => Metadata.Arr(Nil,Cardinality.ZeroOrOne,Seq.empty)
+//      case Some(a) => Metadata.Arr(Nil,Cardinality.ZeroOrOne,Seq(va(a)))
+//    }
+//  }
   override def and(other: Validator[Option[A]]) = {
     other match {
       case OptionValidator(otherVa) =>

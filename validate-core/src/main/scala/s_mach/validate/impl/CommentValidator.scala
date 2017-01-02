@@ -24,5 +24,5 @@ import s_mach.validate._
 case class CommentValidator[A](rule: Rule) extends ValidatorImpl[A] {
   val thisRules = rule :: Nil
   val rules = TypeMetadata.Val(thisRules)
-  def apply(a: A) = Metadata.Val(Nil)
+  def validate(basePath: Metadata.Path)(a: A) = Stream.empty
 }

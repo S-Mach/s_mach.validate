@@ -19,7 +19,6 @@
 package s_mach.validate
 
 import org.scalatest.{Matchers, FlatSpec}
-import s_mach.metadata._
 
 import scala.collection.immutable.NumericRange
 import scala.util.Random
@@ -28,11 +27,11 @@ class ValidatorsTest extends FlatSpec with Matchers {
   val TEST_COUNT = 1000
 
 
-  val noFail = Metadata.Val(Nil)
+  val noFail = Stream.empty
 
   "Validators.StringLengthMin" should "should reject strings with length less than a certain length" in {
     val v = Validators.StringLengthMin(64)
-    val failed = Metadata.Val(v.thisRules)
+    val failed = v.thisRules.toStream.map((Nil,_))
     // inclusive seam
     v("1" * 63) should equal(failed)
     for(i <- 0 until TEST_COUNT) {
@@ -56,7 +55,7 @@ class ValidatorsTest extends FlatSpec with Matchers {
 
   "Validators.StringLengthMax" should "should reject strings with length longer than a certain length" in {
     val v = Validators.StringLengthMax(64)
-    val failed = Metadata.Val(v.thisRules)
+    val failed = v.thisRules.toStream.map((Nil,_))
     // inclusive seam
     v("1" * 65) should equal(failed)
     for(i <- 0 until TEST_COUNT) {
@@ -80,9 +79,8 @@ class ValidatorsTest extends FlatSpec with Matchers {
 
   "Validators.StringLengthRange" should "should reject strings with that are not between a certain range" in {
     val v = Validators.StringLengthRange(20,64)
-//    val failed = Metadata.Val(Rules.StringLengthRange(20,64))
-    val failMin = Metadata.Val(Rule.StringLengthMin(20) :: Nil)
-    val failMax = Metadata.Val(Rule.StringLengthMax(64) :: Nil)
+    val failMin = Stream((Nil,Rule.StringLengthMin(20)))
+    val failMax = Stream((Nil,Rule.StringLengthMax(64)))
     // min inclusive seam
     v("1" * 19) should equal(failMin)
     // max inclusive seam
@@ -154,7 +152,7 @@ class ValidatorsTest extends FlatSpec with Matchers {
       val s = passStringGen()
       (s,v(s)) should equal((s,noFail))
     }
-    val failed = Metadata.Val(v.thisRules)
+    val failed = v.thisRules.toStream.map((Nil,_))
     for(i <- 0 until TEST_COUNT) {
       val s = failStringGen()
       (s,v(s)) should equal((s,failed))
@@ -188,7 +186,7 @@ class ValidatorsTest extends FlatSpec with Matchers {
 
   "Validators.NumberMinInclusive" should "reject numbers less than a certain value" in {
     val v = Validators.NumberMinInclusive(64)
-    val failed = Metadata.Val(v.thisRules)
+    val failed = v.thisRules.toStream.map((Nil,_))
     // inclusive seam
     v(63) should equal(failed)
     for(i <- 0 until TEST_COUNT) {
@@ -210,7 +208,7 @@ class ValidatorsTest extends FlatSpec with Matchers {
 
   "Validators.NmberMaxInclusive" should "reject numbers greater than a certain value" in {
     val v = Validators.NumberMaxInclusive(64)
-    val failed = Metadata.Val(v.thisRules)
+    val failed = v.thisRules.toStream.map((Nil,_))
     // inclusive seam
     v(65) should equal(failed)
     for(i <- 0 until TEST_COUNT) {
@@ -233,7 +231,7 @@ class ValidatorsTest extends FlatSpec with Matchers {
 
   "Validators.NumberMinExclusive" should "reject numbers below or equal to a certain value" in {
     val v = Validators.NumberMinExclusive(64)
-    val failed = Metadata.Val(v.thisRules)
+    val failed = v.thisRules.toStream.map((Nil,_))
     // Exclusive seam
     v(64) should equal(failed)
     for(i <- 0 until TEST_COUNT) {
@@ -256,7 +254,7 @@ class ValidatorsTest extends FlatSpec with Matchers {
 
   "Validators.NumberMaxExclusive" should "reject numbers greater than or equal to a certain value" in {
     val v = Validators.NumberMaxExclusive(64)
-    val failed = Metadata.Val(v.thisRules)
+    val failed = v.thisRules.toStream.map((Nil,_))
     // Exclusive seam
     v(64) should equal(failed)
     for(i <- 0 until TEST_COUNT) {
@@ -280,8 +278,8 @@ class ValidatorsTest extends FlatSpec with Matchers {
   "Validators.NumberRangeInclusive" should "should accept numbers between a certain range (inclusive)" in {
     val v = Validators.NumberRangeInclusive(20,64)
 //    val failed = Metadata.Val(Rules.NumberRangeInclusive(20,64) :: Nil)
-    val failMin = Metadata.Val(Rule.NumberMinInclusive(20) :: Nil)
-    val failMax = Metadata.Val(Rule.NumberMaxInclusive(64) :: Nil)
+    val failMin = Stream((Nil,Rule.NumberMinInclusive(20)))
+    val failMax = Stream((Nil,Rule.NumberMaxInclusive(64)))
     // min inclusive seam
     v(20) should equal(noFail)
     v(19) should equal(failMin)

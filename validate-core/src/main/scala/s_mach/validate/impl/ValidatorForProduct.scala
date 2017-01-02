@@ -19,6 +19,7 @@
 package s_mach.validate.impl
 
 import s_mach.codetools.macros.ProductBuilder
+import s_mach.metadata.Metadata.Path
 import s_mach.metadata._
 import s_mach.validate._
 
@@ -27,7 +28,8 @@ object ValidatorForProduct {
     unapply: A => B,
     vb: Validator[B]
   )  {
-    def apply(a: A) = vb(unapply(a))
+    def validate(basePath: Metadata.Path)(a: A) =
+      vb.validate(basePath)(unapply(a))
   }
 }
 
@@ -35,6 +37,10 @@ case class ValidatorForProduct[A](
   fields: List[(String,ValidatorForProduct.FieldValidator[A,_])] = Nil
 ) extends ValidatorImpl[A] with ProductBuilder[Validator,A] {
   import ValidatorForProduct._
+
+  val _fields = fields.reverse.map { case(fieldName,fv) =>
+    (Metadata.PathNode.SelectField(fieldName),fv)
+  }.toStream
 
   val thisRules = Nil
   val rules = TypeMetadata.Rec(
@@ -44,12 +50,19 @@ case class ValidatorForProduct[A](
     }.reverse
   )
 
-  def apply(a: A) = Metadata.Rec(
-    Nil,
-    fields.map { case (f,fv) =>
-      (f,fv(a))
-    }.reverse
-  )
+  def validate(basePath: Path)(a: A) = {
+    _fields.flatMap { case (fieldPath,fv) =>
+      fv.validate(fieldPath :: basePath)(a)
+    }
+  }
+
+//  def apply(a: A) = Metadata.Rec(
+//    Nil,
+//    fields.map { case (f,fv) =>
+//      (f,fv(a))
+//    }.reverse
+//  )
+
 
   def field[B](
     name: String, 

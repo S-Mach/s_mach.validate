@@ -18,7 +18,4 @@
 */
 package s_mach.validate
 
-case class Check[A](rule: Rule)(check: A => Boolean) {
-  def apply(a: A) : List[Rule] =
-    if(check(a)) Nil else rule :: Nil
-}
+case class Check[A](rule: Rule)(val check: A => Boolean)

@@ -18,6 +18,7 @@
 */
 package s_mach.validate.impl
 
+import s_mach.metadata.Metadata.Path
 import s_mach.metadata._
 import s_mach.validate._
 
@@ -28,9 +29,23 @@ case class TraversableValidator[M[AA] <: Traversable[AA],A](
 ) extends ValidatorImpl[M[A]] {
   val thisRules = va.thisRules
   val rules = TypeMetadata.Arr(Nil,Cardinality.ZeroOrMore,va.rules)
-  def apply(ma: M[A]) = {
-    Metadata.Arr(Nil,Cardinality.ZeroOrMore,ma.map(va.apply).toSeq)
+
+  def validate(basePath: Path)(ma: M[A]) = {
+    var i = 0
+    ma.toStream.flatMap { a =>
+      val inner = va.validate(
+        Metadata.PathNode.SelectMember(Cardinality.ZeroOrMore,i) :: basePath
+      )(a)
+      i = i + 1
+      inner
+    }
   }
+
+
+//  def apply(ma: M[A]) = {
+//    Metadata.Arr(Nil,Cardinality.ZeroOrMore,ma.map(va.apply).toSeq)
+//  }
+
 
   override def and(other: Validator[M[A]]) = {
     other match {

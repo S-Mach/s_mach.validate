@@ -39,7 +39,10 @@ trait Validator[A] {
   def rules : TypeMetadata[List[Rule]]
   /** @return test all rules against an instance returning a list of failures or
     *         if valid Nil for each metadata node */
-  def apply(a: A) : Metadata[List[Rule]]
+  def validate(basePath: Metadata.Path)(a: A) : Stream[(Metadata.Path,Rule)]
+
+  def apply(a: A) : Stream[(Metadata.Path,Rule)] =
+    validate(Nil)(a)
 
   /** @return a new Validator that tests all rules in this validator and other */
   def and(other: Validator[A]) : Validator[A]

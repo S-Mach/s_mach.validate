@@ -25,23 +25,20 @@ import s_mach.metadata._
 import s_mach.validate._
 
 object PlayJsonOps {
-  def failuresToJsError(result: Metadata[List[Rule]])(implicit i18ncfg:I18NConfig) : Option[JsError] = {
-    result.nodes.filter(_._2.value.nonEmpty) match {
-      case Nil => None
-      case failures =>
-        Some(JsError(
-          failures.toStream.map { case (path,messages) =>
-            val jsPath =
-              JsPath(path.map{
-                case Metadata.PathNode.SelectField(name) =>
-                  KeyPathNode(name)
-                case Metadata.PathNode.SelectMember(_,index) =>
-                  IdxPathNode(index)
-              })
-            (jsPath,messages.value.map(rule => ValidationError(rule.i18n)))
-          }
-        ))
-    }
+  def failuresToJsError(result: Stream[(Metadata.Path,Rule)])(implicit i18ncfg:I18NConfig) : JsError = {
+    val temp =
+      result.groupBy(_._1).toSeq.map { case (path,failures) =>
+        val jsPath =
+          JsPath(path.map{
+            case Metadata.PathNode.SelectField(name) =>
+              KeyPathNode(name)
+            case Metadata.PathNode.SelectMember(_,index) =>
+              IdxPathNode(index)
+          })
+        (jsPath,failures.map { case (_,rule) => ValidationError(rule.i18n) })
+      }
+
+    JsError(temp)
   }
 
   def wrapReadsWithValidator[A](
@@ -49,9 +46,9 @@ object PlayJsonOps {
     v:Validator[A]
   )(implicit i18ncfg: I18NConfig) : JsValue => JsResult[A] = { json =>
     f(json).flatMap { a =>
-      failuresToJsError(v(a)) match {
-        case None => JsSuccess(a)
-        case Some(error) => error
+      v(a) match {
+        case Stream.Empty => JsSuccess(a)
+        case failures => failuresToJsError(failures)
       }
     }
   }

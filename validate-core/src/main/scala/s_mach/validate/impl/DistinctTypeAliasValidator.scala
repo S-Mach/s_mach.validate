@@ -18,7 +18,7 @@
 */
 package s_mach.validate.impl
 
-import s_mach.metadata.TypeMetadata
+import s_mach.metadata.{Metadata, TypeMetadata}
 import s_mach.validate._
 
 case class DistinctTypeAliasValidator[V <: A,A](
@@ -26,7 +26,9 @@ case class DistinctTypeAliasValidator[V <: A,A](
 ) extends ValidatorImpl[V] {
   val thisRules = va.thisRules
   val rules = TypeMetadata.Val(thisRules)
-  def apply(v: V) = va(v)
+  def validate(basePath: Metadata.Path)(v: V) =
+    va.validate(basePath)(v)
+  //  def apply(v: V) = va(v)
 
   override def and(other: Validator[V]) = {
     other match {

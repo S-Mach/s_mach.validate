@@ -71,6 +71,20 @@ new s_mach.validate.impl.ValidatorImpl[$aType] {
       })
     )
   }
+
+  override def validate(basePath: s_mach.metadata.Metadata.Path)(a: $aType) = {
+    ${fields.map { field =>
+      import field._
+      q"$validatorTermName.validate(s_mach.metadata.Metadata.PathNode.SelectField($name) :: basePath)(a.$termName)".asInstanceOf[c.Tree]
+    }.reduce((a,b) => q"$a ++ $b")}
+  }
+}
+       """
+    }
+    Result(result,Result.Debug(result.toString()))
+  }
+
+  /*
   def apply(a: $aType) = {
     s_mach.metadata.Metadata.Rec(
       thisRules,
@@ -82,9 +96,5 @@ new s_mach.validate.impl.ValidatorImpl[$aType] {
       })
     )
   }
-}
-       """
-    }
-    Result(result,Result.Debug(result.toString()))
-  }
+   */
 }

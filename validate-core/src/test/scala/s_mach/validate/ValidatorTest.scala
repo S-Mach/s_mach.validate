@@ -24,6 +24,8 @@ import scala.util.Random
 import s_mach.codetools._
 import s_mach.metadata._
 import s_mach.i18n.messages._
+import s_mach.metadata.Metadata.Path
+import s_mach.metadata.Metadata.PathNode.{SelectMember, SelectField}
 
 object ValidatorTest {
   val m_test = 'test.literal
@@ -41,7 +43,11 @@ object ValidatorTest {
       val inner = Validators.NumberRangeInclusive(0,150)
       val thisRules = inner.thisRules
       val rules = TypeMetadata.Val(thisRules)
-      def apply(a: Age) = Metadata.Val(inner(a.underlying).value)
+
+      def validate(basePath: Path)(a: Age) =
+        inner.validate(basePath)(a.underlying)
+
+      //      def apply(a: Age) = Metadata.Val(inner(a.underlying).value)
       def and(other: Validator[Age]) = ???
     }
     // Note: not using Validator.forValueClass here for testing
@@ -50,11 +56,16 @@ object ValidatorTest {
       val v2 = Validators.AllLettersOrSpaces
       val thisRules = List(v1,v2).flatMap(_.thisRules)
       val rules = TypeMetadata.Val(thisRules)
-      def apply(a: Name) = Metadata.Val(
-        List(v1,v2).flatMap { r =>
-          r(a.underlying).value
+      def validate(basePath: Path)(a: Name) =
+        Stream(v1,v2).flatMap { v =>
+          v.validate(basePath)(a.underlying)
         }
-      )
+
+      //      def apply(a: Name) = Metadata.Val(
+//        List(v1,v2).flatMap { r =>
+//          r(a.underlying).value
+//        }
+//      )
       def and(other: Validator[Name]) = ???
     }
   }
@@ -103,44 +114,19 @@ class ValidatorTest extends FlatSpec with Matchers {
         )
       )
     )
+    v(Person(1,"asdf",1)) should equal(Stream.empty)
     v(Person(1,"1" * 65,151)) should equal(
-      Metadata.Rec[List[Rule]](
-        Nil,
-        Seq(
-          "id" -> Metadata.Val(List.empty[Rule]),
-          "name" -> Metadata.Val(
-            Rule.StringLengthMax(64) ::
-            Rule.AllLettersOrSpaces ::
-            Nil
-          ),
-          "age" -> Metadata.Val(
-            Rule.NumberMaxInclusive(150) ::
-            Nil
-          )
-        )
+      Stream(
+        (SelectField("name") :: Nil,Rule.StringLengthMax(64)),
+        (SelectField("name") :: Nil,Rule.AllLettersOrSpaces),
+        (SelectField("age") :: Nil,Rule.NumberMaxInclusive(150))
       )
     )
     v(Person(1,"",1)) should equal(
-      Metadata.Rec[List[Rule]](
-        Nil,
-        Seq(
-          "id" -> Metadata.Val(List.empty[Rule]),
-          "name" -> Metadata.Val(
-            Rule.StringLengthMin(1) ::
-            Nil
-          ),
-          "age" ->Metadata.Val(List.empty[Rule])
-        )
+      Stream(
+        (SelectField("name") :: Nil,Rule.StringLengthMin(1))
       )
     )
-    v(Person(1,"asdf",1)) should equal(Metadata.Rec(
-      Nil,
-      Seq(
-        "id" -> Metadata.Val(Nil),
-        "name" -> Metadata.Val(Nil),
-        "age" -> Metadata.Val(Nil)
-      )
-    ))
   }
 
   "Validator.forProductType" should "create a product validator" in {
@@ -167,44 +153,19 @@ class ValidatorTest extends FlatSpec with Matchers {
         )
       )
     )
+    v(Person(1,"asdf",1)) should equal(Stream.empty)
     v(Person(1,"1" * 65,151)) should equal(
-      Metadata.Rec[List[Rule]](
-        Nil,
-        Seq(
-          "id" -> Metadata.Val(List.empty[Rule]),
-          "name" -> Metadata.Val(
-            Rule.StringLengthMax(64) ::
-            Rule.AllLettersOrSpaces ::
-            Nil
-          ),
-          "age" -> Metadata.Val(
-             Rule.NumberMaxInclusive(150) ::
-             Nil
-          )
-        )
+      Stream(
+        (SelectField("name") :: Nil,Rule.StringLengthMax(64)),
+        (SelectField("name") :: Nil,Rule.AllLettersOrSpaces),
+        (SelectField("age") :: Nil,Rule.NumberMaxInclusive(150))
       )
     )
     v(Person(1,"",1)) should equal(
-      Metadata.Rec[List[Rule]](
-        Nil,
-        Seq(
-          "id" -> Metadata.Val(List.empty[Rule]),
-          "name" -> Metadata.Val(
-            Rule.StringLengthMin(1) ::
-            Nil
-          ),
-          "age" ->Metadata.Val(List.empty[Rule])
-        )
+      Stream(
+        (SelectField("name") :: Nil,Rule.StringLengthMin(1))
       )
     )
-    v(Person(1,"asdf",1)) should equal(Metadata.Rec(
-      Nil,
-      Seq(
-        "id" ->Metadata.Val(Nil),
-        "name" ->Metadata.Val(Nil),
-        "age" ->Metadata.Val(Nil)
-      )
-    ))
   }
 
   "Validator.forValueClass" should "create a validator for the underlying type" in {
@@ -222,15 +183,14 @@ class ValidatorTest extends FlatSpec with Matchers {
       Nil
     ))
 
-    v("1" * 65) should equal(Metadata.Val(
-      Rule.StringLengthMax(64) ::
-      Rule.AllLettersOrSpaces ::
-      Nil
+    v("1" * 65) should equal(Stream(
+      (Nil, Rule.StringLengthMax(64)),
+      (Nil, Rule.AllLettersOrSpaces)
     ))
-    v("") should equal(Metadata.Val(
-      Rule.StringLengthMin(1) :: Nil
+    v("") should equal(Stream(
+      (Nil, Rule.StringLengthMin(1))
     ))
-    v("asdf") should equal(Metadata.Val(Nil))
+    v("asdf") should equal(Stream.empty)
   }
 
   "Validator.ensure" should "create a validator with the check" in {
@@ -238,8 +198,8 @@ class ValidatorTest extends FlatSpec with Matchers {
     val v = Validator.ensure[Int](testRule)(_ < 100)
 
     v.rules should equal(TypeMetadata.Val(testRule :: Nil))
-    v(101) should equal(Metadata.Val(testRule :: Nil))
-    v(99) should equal(Metadata.Val(Nil))
+    v(101) should equal(Stream((Nil,testRule)))
+    v(99) should equal(Stream.empty)
   }
 
   "Validator.comment" should "create a validator with the comment as a rule" in {
@@ -247,7 +207,7 @@ class ValidatorTest extends FlatSpec with Matchers {
     val v = Validator.comment[String](testRule)
 
     v.rules should equal(TypeMetadata.Val(testRule :: Nil))
-    v(Random.nextString(20)) should equal(Metadata.Val(Nil))
+    v(Random.nextString(20)) should equal(Stream.empty)
   }
 
   "Validator.forOption" should "create a validator for Option" in {
@@ -266,40 +226,17 @@ class ValidatorTest extends FlatSpec with Matchers {
       )
     ))
 
-    v(Some("1" * 65)) should equal(Metadata.Arr(
-      Nil,
-      Cardinality.ZeroOrOne,
-      members = Seq(
-        Metadata.Val(
-          Rule.StringLengthMax(64) ::
-          Rule.AllLettersOrSpaces ::
-          Nil
-        )
-      )
+    v(Some("1" * 65)) should equal(Stream(
+      (SelectMember(Cardinality.ZeroOrOne,0) :: Nil,Rule.StringLengthMax(64)),
+      (SelectMember(Cardinality.ZeroOrOne,0) :: Nil,Rule.AllLettersOrSpaces)
     ))
-    v(Some("")) should equal(Metadata.Arr(
-      Nil,
-      Cardinality.ZeroOrOne,
-      members = Seq(
-        Metadata.Val(
-          Rule.StringLengthMin(1) :: Nil
-        )
-      )
+
+    v(Some("")) should equal(Stream(
+      (SelectMember(Cardinality.ZeroOrOne,0) :: Nil,Rule.StringLengthMin(1))
     ))
-    v(Some("asdf")) should equal(Metadata.Arr(
-      Nil,
-      Cardinality.ZeroOrOne,
-      members = Seq(
-        Metadata.Val(
-          Nil
-        )
-    )
-    ))
-    v(None) should equal(Metadata.Arr(
-      Nil,
-      Cardinality.ZeroOrOne,
-      members = Seq.empty
-    ))
+
+    v(Some("asdf")) should equal(Stream.empty)
+    v(None) should equal(Stream.empty)
   }
 
   "Validator.forTraversable" should "create a validator for any Traversable" in {
@@ -318,44 +255,16 @@ class ValidatorTest extends FlatSpec with Matchers {
       )
     ))
 
-    v(Seq("1" * 65,"","asdf")) should equal(Metadata.Arr[List[Rule]](
-      Nil,
-      Cardinality.ZeroOrMore,
-      members = Seq(
-        Metadata.Val(
-          Rule.StringLengthMax(64) ::
-          Rule.AllLettersOrSpaces ::
-          Nil
-        ),
-        Metadata.Val(
-          Rule.StringLengthMin(1) ::
-          Nil
-        ),
-        Metadata.Val[List[Rule]](
-          Nil
-        )
-      )
+    v(Seq("1" * 65,"","asdf")) should equal(Stream(
+      (SelectMember(Cardinality.ZeroOrMore,0) :: Nil, Rule.StringLengthMax(64)),
+      (SelectMember(Cardinality.ZeroOrMore,0) :: Nil, Rule.AllLettersOrSpaces),
+      (SelectMember(Cardinality.ZeroOrMore,1) :: Nil, Rule.StringLengthMin(1))
     ))
-    v(Seq("")) should equal(Metadata.Arr(
-      Nil,
-      Cardinality.ZeroOrMore,
-      members = Seq(
-        Metadata.Val(
-          Rule.StringLengthMin(1) :: Nil
-        )
-      )
+
+    v(Seq("")) should equal(Stream(
+      (SelectMember(Cardinality.ZeroOrMore,0) :: Nil, Rule.StringLengthMin(1))
     ))
-    v(Seq("asdf")) should equal(Metadata.Arr(
-      Nil,
-      Cardinality.ZeroOrMore,
-      members = Seq(Metadata.Val(
-        Nil
-      ))
-    ))
-    v(Seq.empty) should equal(Metadata.Arr(
-      Nil,
-      Cardinality.ZeroOrMore,
-      members = Seq.empty
-    ))
+    v(Seq("asdf")) should equal(Stream.empty)
+    v(Seq.empty) should equal(Stream.empty)
   }
 }

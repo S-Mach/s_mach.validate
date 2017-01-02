@@ -24,9 +24,15 @@ import s_mach.validate._
 case class CheckValidator[A](
   checks : List[Check[A]]
 ) extends ValidatorImpl[A] {
+  val _checks = checks.toStream
   val thisRules = checks.map(_.rule)
   val rules = TypeMetadata.Val(thisRules)
-  def apply(a: A) = Metadata.Val(checks.flatMap(_(a)))
+  def validate(basePath: Metadata.Path)(a: A) =
+    _checks.collect {
+      case check if check.check(a) == false =>
+        (basePath,check.rule)
+    }
+//    Metadata.Val(checks.flatMap(_(a)))
 
   override def and(other: Validator[A]) = {
     other match {
