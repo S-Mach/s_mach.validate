@@ -22,7 +22,7 @@ sealed trait MaybeValid[+A] {
 object MaybeValid {
   def apply[A](a: A, result: ValidatorResult) : MaybeValid[A] =
     if(result.isEmpty) {
-      Valid(a, result)
+      Valid(a)
     } else {
       Invalid(result)
     }
@@ -40,9 +40,9 @@ case class Invalid (result: ValidatorResult) extends MaybeValid[Nothing] {
 }
 
 case class Valid[+A] (
-  value: A,
-  result: ValidatorResult
+  value: A
 ) extends MaybeValid[A] {
+  def result = Stream.empty
   def fold[X](
     ifInvalid: (Invalid) => X,
     ifValid: (Valid[A]) => X
